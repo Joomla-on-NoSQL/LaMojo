@@ -452,11 +452,11 @@ class MenusModelItem extends JModelAdmin
 
 			// Update the menutype field in all nodes where necessary.
 			$db->setQuery(
-				'UPDATE `#__menu`' .
-				' SET `menutype` = '.$db->quote($menuType).
-				' WHERE `id` IN ('.implode(',', $children).')'
-				);
-				$db->query();
+				'UPDATE '.$db->nameQuote('#__menu') .
+				' SET '.$db->nameQuote('menutype').' = '.$db->quote($menuType).
+				' WHERE '.$db->nameQuote('id').' IN ('.implode(',', $children).')'
+			);
+			$db->query();
 
 				// Check for a database error.
 				if ($db->getErrorNum()) {
