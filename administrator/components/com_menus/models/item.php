@@ -726,7 +726,7 @@ class MenusModelItem extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table)
+	protected function getReorderConditions($table = null)
 	{
 		return 'menutype = ' . $this->_db->Quote($table->menutype);
 	}

@@ -43,6 +43,8 @@ if (strpos('C:\xampp\php\.\php.exe', '@php_bin') === 0) {
     set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 }
 
+set_include_path('/opt/lampp/lib/php/'. PATH_SEPARATOR . get_include_path());
+
 require_once 'PHPUnit/Util/Filter.php';
 
 PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');

@@ -97,7 +97,7 @@ class ModulesControllerModule extends JControllerForm
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function postSaveHook(JModel &$model, $validData)
+	protected function postSaveHook(JModel &$model, $validData = array())
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();

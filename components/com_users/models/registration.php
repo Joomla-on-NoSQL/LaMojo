@@ -295,8 +295,7 @@ class UsersModelRegistration extends JModelForm
 		$params = JComponentHelper::getParams('com_users');
 
 		// Initialise the table with JUser.
-		JUser::getTable('User', 'JTable');
-		$user = new JUser();
+		$user = new JUser;
 		$data = (array)$this->getData();
 
 		// Merge in the registration data.
@@ -406,7 +405,7 @@ class UsersModelRegistration extends JModelForm
 		// Check for an error.
 		if ($return !== true) {
 			$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
-			
+
 			// Send a system message to administrators receiving system mails
 			$db = JFactory::getDBO();
 			$q = "SELECT id

@@ -561,7 +561,7 @@ abstract class JModelAdmin extends JModelForm
 	 * @return	mixed
 	 * @since	1.6
 	 */
-	function saveorder($pks, $order)
+	function saveorder($pks = null, $order = null)
 	{
 		// Initialise variables.
 		$table		= $this->getTable();

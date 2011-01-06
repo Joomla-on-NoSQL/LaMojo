@@ -88,9 +88,9 @@ class WeblinksViewCategory extends JView
 		$category->params->merge($cparams);
 
 		$children = array($category->id => $children);
+		$maxLevel =  $params->get('maxLevel', -1);
 
-		$maxLevels = $params->get('maxLevel', -1);
-		$this->assignRef('maxLevel',	$maxLevels);
+		$this->assignRef('maxLevel',	$maxLevel);
 		$this->assignRef('state',		$state);
 		$this->assignRef('items',		$items);
 		$this->assignRef('category',	$category);
@@ -102,7 +102,7 @@ class WeblinksViewCategory extends JView
 		// Check for layout override only if this is not the active menu item
 		// If it is the active menu item, then the view and category id will match
 		$active	= $app->getMenu()->getActive();
-		if ((!$active) || ((strpos($active->link, 'view=category') === false) || (strpos($active->link, '&id=' . (string) $this->category->id) === false))) {			
+		if ((!$active) || ((strpos($active->link, 'view=category') === false) || (strpos($active->link, '&id=' . (string) $this->category->id) === false))) {
 			if ($layout = $category->params->get('category_layout')) {
 			$this->setLayout($layout);
 			}

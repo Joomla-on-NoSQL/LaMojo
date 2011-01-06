@@ -106,9 +106,8 @@ abstract class JButton extends JObject
 	 * @access		public
 	 * @since		1.5
 	 */
-	public function fetchId()
+	public function fetchId($type = '', $name = '', $id = '')
 	{
-		return;
 	}
 
 	/**

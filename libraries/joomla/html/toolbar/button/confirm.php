@@ -50,7 +50,7 @@ class JButtonConfirm extends JButton
 	 * @return	string	Button CSS Id
 	 * @since	1.5
 	 */
-	public function fetchId($type='Confirm', $name = '', $text = '', $task = '', $list = true, $hideMenu = false)
+	public function fetchId($type = 'Confirm', $name = '', $id = '')
 	{
 		return $this->_parent->getName().'-'.$name;
 	}
