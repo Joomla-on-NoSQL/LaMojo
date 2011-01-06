@@ -181,7 +181,7 @@ class UsersModelProfile extends JModelForm
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = 'user')
 	{
 		if (JComponentHelper::getParams('com_users')->get('frontend_userparams'))
 		{
@@ -190,7 +190,7 @@ class UsersModelProfile extends JModelForm
 				$form->loadFile('frontend_admin',false);
 			}
 		}
-		parent::preprocessForm($form, $data, 'user');
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
