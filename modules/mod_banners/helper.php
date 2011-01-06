@@ -14,7 +14,7 @@ jimport('joomla.application.component.model');
 
 class modBannersHelper
 {
-	function &getList(&$params)
+	static function &getList(&$params)
 	{
 		jimport('joomla.application.component.model');
 		JModel::addIncludePath(JPATH_ROOT.'/components/com_banners/models');

@@ -265,7 +265,7 @@ class LanguagesModelInstalled extends JModelList
 	 * @return	integer
 	 * @since	1.6
 	 */
-	public function &getTotal()
+	public function getTotal()
 	{
 		if (is_null($this->total)) {
 			$langlist = $this->getLanguageList();

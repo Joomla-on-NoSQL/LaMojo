@@ -98,7 +98,7 @@ class TemplatesHelper
 		return $options;
 	}
 
-	function parseXMLTemplateFile($templateBaseDir, $templateDir)
+	static function parseXMLTemplateFile($templateBaseDir, $templateDir)
 	{
 		$data = new JObject;
 

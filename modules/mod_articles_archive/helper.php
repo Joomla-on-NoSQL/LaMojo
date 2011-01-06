@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 class modArchiveHelper
 {
-	function getList(&$params)
+	static function getList(&$params)
 	{
 		//get database
 		$db		= JFactory::getDbo();

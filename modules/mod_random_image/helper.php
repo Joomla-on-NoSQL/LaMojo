@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 class modRandomImageHelper
 {
-	function getRandomImage(&$params, $images)
+	static function getRandomImage(&$params, $images)
 	{
 		$width	= $params->get('width');
 		$height	= $params->get('height');
@@ -50,7 +50,7 @@ class modRandomImageHelper
 		return $image;
 	}
 
-	function getImages(&$params, $folder)
+	static function getImages(&$params, $folder)
 	{
 		$type		= $params->get('type', 'jpg');
 
@@ -88,7 +88,7 @@ class modRandomImageHelper
 		return $images;
 	}
 
-	function getFolder(&$params)
+	static function getFolder(&$params)
 	{
 		$folder	= $params->get('folder');
 

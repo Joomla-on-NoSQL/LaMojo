@@ -49,7 +49,7 @@ class SearchHelper
 		return $result;
 	}
 
-	function santiseSearchWord(&$searchword, $searchphrase)
+	static function santiseSearchWord(&$searchword, $searchphrase)
 	{
 		$ignored = false;
 
@@ -89,7 +89,7 @@ class SearchHelper
 		return $ignored;
 	}
 
-	function limitSearchWord(&$searchword)
+	static function limitSearchWord(&$searchword)
 	{
 		$restriction = false;
 
@@ -111,7 +111,7 @@ class SearchHelper
 		return $restriction;
 	}
 
-	function logSearch($search_term)
+	static function logSearch($search_term)
 	{
 		$db = JFactory::getDbo();
 

@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  */
 class modStatsHelper
 {
-	function &getList(&$params)
+	static function &getList(&$params)
 	{
 		$app	= JFactory::getApplication();
 		$db		= JFactory::getDbo();

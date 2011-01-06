@@ -464,7 +464,7 @@ class JUser extends JObject
 	 * @return	object	The user table object
 	 * @since	1.5
 	 */
-	public function getTable($type = null, $prefix = 'JTable')
+	public static function getTable($type = null, $prefix = 'JTable')
 	{
 		static $tabletype;
 
