@@ -127,7 +127,7 @@ class ContentControllerArticle extends JControllerForm
 	 * @return	object	The model.
 	 * @since	1.5
 	 */
-	public function &getModel($name = 'form', $prefix = '', $config = array())
+	public function getModel($name = 'form', $prefix = '', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, $config);
 
@@ -206,7 +206,7 @@ class ContentControllerArticle extends JControllerForm
 	 *
 	 * @return	boolean	True if the record can be edited, false if not.
 	 */
-	public function edit()
+	public function edit($key = null, $urlVar = null)
 	{
 		// Initialise variables.
 		$app		= JFactory::getApplication();
@@ -268,7 +268,7 @@ class ContentControllerArticle extends JControllerForm
 	 *
 	 * @return	void
 	 */
-	public function cancel()
+	public function cancel($key = null)
 	{
 		// Check for request forgeries.
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -310,7 +310,7 @@ class ContentControllerArticle extends JControllerForm
 	/**
 	 * Save the record
 	 */
-	public function save()
+	public function save($key = null, $urlVar = null)
 	{
 		// Check for request forgeries.
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));

@@ -432,7 +432,7 @@ class JApplication extends JObject
 	 * @example	application/japplication-getcfg.php Getting a configuration value
 	 * @since	1.5
 	 */
-	public function getCfg($varname, $default=null)
+	public static function getCfg($varname, $default=null)
 	{
 		$config = JFactory::getConfig();
 		return $config->get('' . $varname, $default);

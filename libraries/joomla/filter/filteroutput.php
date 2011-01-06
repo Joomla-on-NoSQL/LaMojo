@@ -77,7 +77,7 @@ class JFilterOutput
 	 * @return	string	Processed string
 	 * @since	1.5
 	 */
-	function stringURLSafe($string)
+	static function stringURLSafe($string)
 	{
 		//remove any '-' from the string they will be used as concatonater
 		$str = str_replace('-', ' ', $string);

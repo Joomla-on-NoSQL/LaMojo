@@ -25,7 +25,7 @@ class LanguagesModelLanguage extends JModelAdmin
 	 * @return	JTable
 	 * @since	1.6
 	 */
-	public function getTable()
+	public function getTable($name='', $prefix='', $options = array())
 	{
 		return JTable::getInstance('Language');
 	}
