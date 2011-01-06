@@ -32,7 +32,7 @@ class modBannersHelper
 		$model->setState('filter.keywords', $keywords);
 		$model->setState('filter.language', $app->getLanguageFilter());
 
-		$banners = &$model->getItems();
+		$banners = $model->getItems();
 		$model->impress();
 
 		return $banners;

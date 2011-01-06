@@ -76,9 +76,8 @@ class ContactViewFeatured extends JView
 			}
 		}
 
-
-
-		$this->assignRef('maxLevel',	$params->get('maxLevel', -1));
+		$maxLevel = $params->get('maxLevel', -1);
+		$this->assignRef('maxLevel',	$maxLevel);
 		$this->assignRef('state',		$state);
 		$this->assignRef('items',		$items);
 		$this->assignRef('category',	$category);

@@ -80,7 +80,8 @@ class NewsfeedsViewCategory extends JView
 
 		$children = array($category->id => $children);
 
-		$this->assignRef('maxLevel',	$params->get('maxLevel', -1));
+		$maxLevel = $params->get('maxLevel', -1);
+		$this->assignRef('maxLevel',	$maxLevel);
 		$this->assignRef('state',		$state);
 		$this->assignRef('items',		$items);
 		$this->assignRef('category',	$category);

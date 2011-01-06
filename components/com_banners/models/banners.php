@@ -171,7 +171,7 @@ class BannersModelBanners extends JModelList
 	 * @return	array
 	 * @since	1.6
 	 */
-	function &getItems()
+	function getItems()
 	{
 		if (!isset($this->cache['items'])) {
 			$this->cache['items'] = parent::getItems();
@@ -195,7 +195,7 @@ class BannersModelBanners extends JModelList
 	function impress()
 	{
 		$trackDate = JFactory::getDate()->format('Y-m-d H');
-		$items	= &$this->getItems();
+		$items	= $this->getItems();
 		$db	= $this->getDbo();
 		$query	= $db->getQuery(true);
 

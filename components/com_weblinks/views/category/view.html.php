@@ -89,7 +89,8 @@ class WeblinksViewCategory extends JView
 
 		$children = array($category->id => $children);
 
-		$this->assignRef('maxLevel',	$params->get('maxLevel', -1));
+		$maxLevels = $params->get('maxLevel', -1);
+		$this->assignRef('maxLevel',	$maxLevels);
 		$this->assignRef('state',		$state);
 		$this->assignRef('items',		$items);
 		$this->assignRef('category',	$category);
