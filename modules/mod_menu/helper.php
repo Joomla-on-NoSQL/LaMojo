@@ -51,6 +51,7 @@ class modMenuHelper
 					|| ($end && $item->level > $end)
 					|| (!$showAll && $item->level > 1 && !in_array($item->parent_id, $path))
 					|| ($maxdepth && $item->level > $maxdepth)
+					|| ($start > 1 && !in_array($item->tree[0], $path))
 				) {
 					unset($items[$i]);
 					continue;
@@ -109,6 +110,7 @@ class modMenuHelper
 				$item->title = htmlspecialchars($item->title);
 				$item->anchor_css = htmlspecialchars($item->params->get('menu-anchor_css', ''));
 				$item->anchor_title = htmlspecialchars($item->params->get('menu-anchor_title', ''));
+				$item->menu_image = $item->params->get('menu_image', '') ? htmlspecialchars($item->params->get('menu_image', '')) : '';
 			}
 
 			if (isset($items[$lastitem])) {

@@ -11,7 +11,7 @@
 defined('_JEXEC') or die;
 JHtml::_('behavior.keepalive');
 ?>
-<div class="login<?php echo $this->params->get('pageclass_sfx')?>">
+<div class="login<?php echo $this->pageclass_sfx?>">
 	<?php if ($this->params->get('show_page_heading')) : ?>
 	<h1>
 		<?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -27,7 +27,7 @@ JHtml::_('behavior.keepalive');
 		<?php endif; ?>
 
 		<?php if (($this->params->get('login_image')!='')) :?>
-			<img src="<?php echo $this->params->get('login_image'); ?>" class="login-image" alt="<?php echo JTEXT::_('COM_USER_LOGIN_IMAGE_ALT')?>"/>
+			<img src="<?php echo $this->escape($this->params->get('login_image')); ?>" class="login-image" alt="<?php echo JTEXT::_('COM_USER_LOGIN_IMAGE_ALT')?>"/>
 		<?php endif; ?>
 
 	<?php if ($this->params->get('logindescription_show') == 1 || $this->params->get('login_image') != '') : ?>

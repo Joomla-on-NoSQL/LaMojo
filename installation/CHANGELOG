@@ -27,6 +27,47 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+07-Jan-2011 Andrew Eddie
+ # Fixed issue [#24160] Backend com_languages XXS (Ervis Tusha, Rouven Weßling).
+ # Fixed issue [#24176] XSS Vulnerability in com_content (Ian MacLennan).
+ # Fixed issue [#23675] [patch] Weblinks controller uses getWord() instead of getCmd() (Soren Jensen, Andy Capiau).
+ # Fixed issue [#23766] [patch] Consistent properties for JTable descendants (Joseph LeBlanc).
+ # Fixed issue [#23164] Improving of loading modules (Dennis Hermatski).
+ # Fixed issue [#24051] Some JHTML Behavior Housekeeping (Rouven Weßling).
+ # Fixed issue [#24173] CSS/Layout changes to accomdate longer languages in installation (Andrea Tarr).
+ # Fixed issue [#24136] Add a field for phone numbers to JForm (Rouven Weßling).
+ # Fixed issue [#24180] Fix a number of script injection issues (Rouven Weßling).
+
+07-Jan-2011 Jean-Marie Simonet
+ $ Reordering strings for plg_content_joomla.ini, updating the xx-XX version.
+ $ Correcting some strings in installation languages
+ # Fix Typo in [23818]
+ $ Adding sk-SK, be-BY, lv-LV, et-EE, ro-RO, ml-BE, lt-LT, aa-AA, no-NO in installation
+
+06-Jan-2011 Ian MacLenann
+ # [#23823] Front-end URL Error
+
+06-Jan-2011 Christophe Demko
+ # [#24111] The pageclass sfx parameter can be used to inject scripts (Rouven Weßling)
+ # [#24102] clearing div in spacer.php leads to validation problems
+ # [#24141] Submenu items appear although they have no active parent item (bill richardson)
+ # [#24123] Administrator - menu name change (Rouven Weßling)
+ # [#24148] Obsolete city name in time zones
+ # [#24118] Update Error pages for Beez2 and Beez5 (Angie Radtke, Elin Waring)
+ # [#24138] Hathor security, css, and image update/fixes (Andrea Tarr)
+ # [#23971] Category Blog View next page button does not work (Mark Dexter)
+ 
+06-Jan-2011 Jean-Marie Simonet
+ $ Adding es-ES, nl-NL, tr-TR, uk-UA, id-ID, sr-SR, sr-YU in installation
+
+06-Jan-2011 Mark Dexter
+# Revert part of [#24140] so that database password is not required during installation
+# Fix typo in language XML file
+# [#23818] com_content - Category List - New Article: pressing cancel produces error: "You are not permitted to use that link to directly access that page (#10)"
+# [#23853] The last superuser can remove himself from the SU group
+# [#24167] Notice in the router
+# [#24169] Hathor security review fixes
+
 05-Jan-2011 Christophe Demko
  # [#24133] Beez templates set role search on the wrong element (Rouven Weßling)
  # [#24135] 2 minor issue with JForm's email field (Rouven Weßling)

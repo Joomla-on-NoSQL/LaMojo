@@ -24,11 +24,11 @@ class ContentController extends JController
 	function __construct($config = array())
 	{
 		// Article frontpage Editor pagebreak proxying:
-		if(JRequest::getWord('view') === 'article' && JRequest::getVar('layout') === 'pagebreak') {
+		if (JRequest::getCmd('view') === 'article' && JRequest::getCmd('layout') === 'pagebreak') {
 			$config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
 		}
 		// Article frontpage Editor article proxying:
-		elseif(JRequest::getWord('view') === 'articles' && JRequest::getVar('layout') === 'modal') {
+		elseif(JRequest::getCmd('view') === 'articles' && JRequest::getCmd('layout') === 'modal') {
 			JHTML::_('stylesheet','system/adminlist.css', array(), true);
 			$config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
 		}
@@ -52,15 +52,17 @@ class ContentController extends JController
 		JHTML::_('behavior.caption');
 
 		// Set the default view name and format from the Request.
-		$id		= JRequest::getInt('id');
-		$vName	= JRequest::getWord('view', 'categories');
+		// Note we are using a_id to avoid collisions with the router and the return page.
+		// Frontend is a bit messier than the backend.
+		$id		= JRequest::getInt('a_id');
+		$vName	= JRequest::getCmd('view', 'categories');
 		JRequest::setVar('view', $vName);
 
 		$user = JFactory::getUser();
 
-		if ($user->get('id') || 
+		if ($user->get('id') ||
 			($_SERVER['REQUEST_METHOD'] == 'POST' &&
-				(($vName == 'category' && JRequest::getVar('layout') != 'blog') || $vName == 'archive' ))) {
+				(($vName == 'category' && JRequest::getCmd('layout') != 'blog') || $vName == 'archive' ))) {
 			$cachable = false;
 		}
 
@@ -79,11 +81,11 @@ class ContentController extends JController
 	}
 
 
-	function vote() {
+	function vote()
+	{
 		$user_rating = JRequest::getInt('user_rating', -1);
 
-		if ( $user_rating > -1 )
-		{
+		if ( $user_rating > -1 ) {
 			$url = JRequest::getString('url', '');
 			$id = JRequest::getInt('id', 0);
 			$viewName = JRequest::getString('view', $this->default_view);
@@ -91,10 +93,10 @@ class ContentController extends JController
 
 			if ($model->storeVote($id, $user_rating)) {
 				$this->setRedirect($url, JText::_('COM_CONTENT_ARTICLE_VOTE_SUCCESS'));
-			} else {
+			}
+			else {
 				$this->setRedirect($url, JText::_('COM_CONTENT_ARTICLE_VOTE_FAILURE'));
 			}
 		}
 	}
-
 }
