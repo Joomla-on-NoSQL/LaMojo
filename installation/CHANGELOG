@@ -27,6 +27,48 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+08-Jan-2011 Mark Dexter
+# [#24013] Short 'params' field length of 5k restricts modules, menus and template functionality
+# Sample data fixes (Elin Waring)
+
+08-Jan-2011 Christophe Demko
+ # [#24154] Add the required class automatically when required="true" (Jean-Marie Simonet)
+
+08-Jan-2011 Andrew Eddie
+ # Fixed issue [#24072] Redirect Component Only Lists 404 Errors - Very Hard to Generate (Steve Burge, Elin Waring).
+ # Fixed issue [#21979] Make com_users and mod_login (almost) valid XHTML strict (site) (Rouven Weßling).
+ # Fixed issue [#24087] Fix more PHP strict warnings (Rouven Weßling, Nikolai Plath).
+ # Fixed issue [#24209] Data from feeds is not filtered (Ian MacLennan).
+ # Fixed issue [#24197] Unfiltered output in the media manager - view = images (Ian MacLennan).
+ # Fixed issue [#24206] SQL Injection in templates in assignment of template styles to pages (Ian MacLennan).
+ # Fixed issue [#24198] Unfiltered output in the media manager - view = imagelist (Ian MacLennan).
+ # Fixed issue [#24195] Language should be escaped in JHtmlLanguages (Ian MacLennan).
+ # Fixed issue [#24177] *Router issue subsequent to [23818] + cancel from cat list new article wrong redirect (Jean-Marie Simonet).
+ # Fixed issue [#24196] fieldid should be properly filtered in the model (Ian MacLennan).
+ # Fixed issue [#24199] menutype isn't filtered in the com_menus item model (Ian MacLennan).
+ # Fixed issue [#24201] Value in input tag is not escaped (Ian MacLennan).
+ # Fixed issue [#24205] template source files should not be made executable (Ian MacLennan).
+ # Fixed issue [#24208] Primary keys from request should be cast to integer (Ian MacLennan).
+
+08-Jan-2011 Jean-Marie Simonet
+ $ [#24181] Strings mixed up for com_users. Thanks Rouven.
+ $ Correcting some installation langs
+ $ Adding ja-JP to installation langs
+ $ Adding en-AU to installation langs
+ # [#24220] ** [#23398] Style / layout issue with permissions settings. Thanks Andrea.
+ $ Adding missing lang string.
+ $ [#24217] Unnecessary definite article in system logout plug-in. Thanks Bill.
+ $ [#24212] Incorrect modes specified in TinyMCE editor language file. Thanks Jozsef and Bill.
+
+07-Jan-2011 Mark Dexter
+# [#24106] onContentBeforeSave() and onContentAfterSave() do not work in the backend.
+# [#24174] XSS Vulnerability in helpsearch
+
+07-Jan-2011 Christophe Demko
+ # [#24157] Library RSS deals with multiple categories for items but not for the feed itself
+ # [#24188] Lack of Atom feed format returned (bill richardson)
+ # [#24189] Duplicate word en-GB.mod_menu.ini (bill richardson)
+
 07-Jan-2011 Andrew Eddie
  # Fixed issue [#24160] Backend com_languages XXS (Ervis Tusha, Rouven Weßling).
  # Fixed issue [#24176] XSS Vulnerability in com_content (Ian MacLennan).
@@ -42,7 +84,9 @@ $ -> Language fix or change
  $ Reordering strings for plg_content_joomla.ini, updating the xx-XX version.
  $ Correcting some strings in installation languages
  # Fix Typo in [23818]
- $ Adding sk-SK, be-BY, lv-LV, et-EE, ro-RO, ml-BE, lt-LT, aa-AA, no-NO in installation
+ $ Adding sk-SK, be-BY, lv-LV, et-EE, ro-RO, nl-BE, lt-LT, aa-AA, no-NO in installation
+ $ Adding mk-MK installation lang + some changes in other langs
+ # [#24187] When Languagefilter is enabled, a query in the module helper causes a crash. Thanks Mark Visser.
 
 06-Jan-2011 Ian MacLenann
  # [#23823] Front-end URL Error
