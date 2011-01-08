@@ -57,9 +57,9 @@ class JButtonHelp extends JButton
 	 * @return		string	Button CSS Id
 	 * @since		1.5
 	 */
-	public function fetchId()
+	public function fetchId($type = '', $name = '', $id = '')
 	{
-		return $this->_parent->getName().'-'."help";
+		return $this->_parent->getName().'-help';
 	}
 
 	/**

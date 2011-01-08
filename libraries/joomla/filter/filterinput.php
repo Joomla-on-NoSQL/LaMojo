@@ -478,7 +478,7 @@ class JFilterInput extends JObject
 			}
 
 			// Autostrip script tags
-			if (JFilterInput::checkAttribute($attrSubSet)) {
+			if (self::checkAttribute($attrSubSet)) {
 				continue;
 			}
 

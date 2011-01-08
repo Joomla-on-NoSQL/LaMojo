@@ -27,7 +27,7 @@ class JButtonCustom extends JButton
 	 */
 	protected $_name = 'Custom';
 
-	public function fetchButton($type = 'Custom', $html = '', $id = 'custom')
+	public function fetchButton($type = 'Custom', $html = '', $id = '')
 	{
 		return $html;
 	}
