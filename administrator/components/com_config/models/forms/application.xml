@@ -515,6 +515,8 @@
 				value="7">COM_CONFIG_FIELD_VALUE_SIMPLE</option>
 			<option
 				value="6143">COM_CONFIG_FIELD_VALUE_MAXIMUM</option>
+			<option
+				value="32767">COM_CONFIG_FIELD_VALUE_STRICT</option>
 		</field>
 
 		<field
