@@ -13,7 +13,7 @@ abstract class MediaType{
 	 * Enter description here ...
 	 * @param $media
 	 */
-    public function getMedia($media, $width='', $height='', $params=array()){
+    public function getMedia($media='', $width='', $height='', $params=array()){
     	
     	return 'Invalid Server';
     }
@@ -26,7 +26,7 @@ abstract class MediaType{
      * @param unknown_type $height
      * @param unknown_type $params
      */
-    public function getThumb($media, $width='', $height='', $params=array()){
+    public function getThumb($media='', $width='', $height='', $params=array()){
     	
     	return '<img scr="defaultimag">';
     }

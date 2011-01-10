@@ -16,7 +16,7 @@ jimport( 'joomla.html.parameter' );
 // This lib adds the media 
 //include_once dirname(__FILE__).DS.'media'.DS.'htmlembed.php';
 //include_once dirname(__FILE__).DS.'media'.DS.'thumbnails.php';
-//include_once dirname(__FILE__).DS.'host'.DS.'mediaserver.php';
+include_once dirname(__FILE__).DS.'types'.DS.'mediatype.php';
 
 
 /**
@@ -220,9 +220,10 @@ class plgContentMedia extends JPlugin
 			// Aha...include the file based on the extension...
 			if(!file_exists("types".DS.$type.".php")){
 				include_once "types".DS."default.php";
+				//Now call the default class's getMedia
+				
 			}
 			else include_once "types".DS.$type.".php";
-			
 			
 		}
 		else{
@@ -239,6 +240,7 @@ class plgContentMedia extends JPlugin
 		
 			if(!file_exists("types".DS.$host.".php")){
 				include_once "types".DS."default.php";
+				MediaDefault.getMedia();
 			}
 			else include_once "types".DS.$host.".php";
 		}
