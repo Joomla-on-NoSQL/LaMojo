@@ -1,8 +1,11 @@
 <?php 
-function extension( $media, $params )
-{
+class MediaTypegif extends MediaType{
 	
-	return "<img src='".$media."'". "style='".$params['width']." ".$params['height']."' >";
+	public function getMedia($media='', $width='', $height='', $params=array()){
+    	
+    	return "<img src='".$media."'". "style='".$width." ".$height."' >";
+    }
+
 }
 
 ?>

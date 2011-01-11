@@ -1,7 +1,7 @@
 <?php
-class MediaDefault extends MediaType{
+class MediaTypedefault extends MediaType{
 	public function getMedia($media='', $width='', $height='', $params=array()){
     	
-    	echo "Bla Bla Bla";
+    	return "Bla Bla Bla";
     }
 }

@@ -55,12 +55,12 @@ class plgContentMedia extends JPlugin
 			// Regular Expression
 			$regex = '/\{media(.*?)}/i';
 			$total = preg_match_all( $regex, $row->text, $matches );			
-		
+			
 			// 	Default	->fixed
 			$w = (int)$this->params->def('width', 400);
 			$h = (int)$this->params->def('height', 0 );
 			$ast = (int)$this->params->def('autostart', 0 );
-			
+		
 			// Loop
 			for( $x=0; $x < $total; $x++ ){
 				// General Params		
@@ -167,11 +167,13 @@ class plgContentMedia extends JPlugin
 		$params =& $this->params;
 		
 		// Default	->fixed
+	
 		$w = (int)$params->get('width', 400);
 		$h = (int)$params->get('height', 0 );
 		$ast = (int)$params->get('autostart', 0 );
 		$item->media = self::addMedia( $item->url, $w, $h, $ast );
 		return true;
+
 	}
 	
 	/** The most important function! 
@@ -218,13 +220,16 @@ class plgContentMedia extends JPlugin
 		$type = substr( $media, strrpos($media, '.')+1 ); // type contains the text after the last '.'
 		if(ctype_alnum($type)){ // If the type is alphanumeric...
 			// Aha...include the file based on the extension...
-			if(!file_exists("types".DS.$type.".php")){
-				include_once "types".DS."default.php";
-				//Now call the default class's getMedia
-				
+			if(!file_exists(dirname(__FILE__).DS.'types'.DS.$type.'.php')){
+				$embed = self::getHost("default");
+				return $embed->getMedia($media, $width, $height, $params=array());
 			}
-			else include_once "types".DS.$type.".php";
-			
+			else{
+				// It exists
+				$embed = self::getHost($type);
+				return $embed->getMedia($media, $width, $height, $params=array());
+				//$embed->getMedia($media, $width, $height,$params=array());
+			}
 		}
 		else{
 			//This means that we don't know the extension of the file..
@@ -238,11 +243,14 @@ class plgContentMedia extends JPlugin
 				}
 			} // Now host contains only what we want...like www.youtube.com is now youtubecom :D
 		
-			if(!file_exists("types".DS.$host.".php")){
-				include_once "types".DS."default.php";
-				MediaDefault.getMedia();
+			if(!file_exists(dirname(__FILE__).DS.'types'.DS.$host.'.php')){
+				$embed = self::getHost("default");
+				return $embed->getMedia($media, $width, $height, $params=array());
 			}
-			else include_once "types".DS.$host.".php";
+			else {
+				$embed = self::getHost($host);
+				return $embed->getMedia($media, $width, $height, $params=array());
+			}
 		}
 	}
 
@@ -515,7 +523,7 @@ class plgContentMedia extends JPlugin
 	public static function getHost($type) {
         require_once dirname(__FILE__).DS.'types'.DS.$type.'.php';
         
-        $class = 'plgMediaType'.$type;
+        $class = 'MediaType'.$type;
         $host = new $class(); 
         return $host;
     }
