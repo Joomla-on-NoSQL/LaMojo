@@ -248,7 +248,7 @@ class JDatabaseSQLSrv extends JDatabase
 		$array = array( "Scrollable" => SQLSRV_CURSOR_KEYSET );
 			
 		$this->_cursor = sqlsrv_query( $this->_connection, $sql, array(), $array );
-
+		
 		if (!$this->_cursor)
 		{
 			//echo $sql;die();
@@ -476,9 +476,9 @@ class JDatabaseSQLSrv extends JDatabase
 		while ($row = sqlsrv_fetch_array( $cur, SQLSRV_FETCH_ASSOC )) {
 			$value = ($column) ? (isset($row[$column]) ? $row[$column] : $row) : $row;
 			if ($key) {
-				$array[$row[$key]] = $row;
+				$array[$row[$key]] = $value;
 			} else {
-				$array[] = $row;
+				$array[] = $value;
 			}
 		}
 		sqlsrv_free_stmt( $cur );

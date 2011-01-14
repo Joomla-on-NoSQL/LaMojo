@@ -136,7 +136,7 @@ class JTableUser extends JTable
 			$this->_db->setQuery(
 				'SELECT '.$this->_db->nameQuote('id').', '.$this->_db->nameQuote('title') .
 				' FROM '.$this->_db->nameQuote('#__usergroups') .
-				' WHERE '.$this->_db->nameQuote('id').' = '.implode(' OR '.$this->_db->nameQuote('id').' = ', array_keys($this->groups))
+				' WHERE '.$this->_db->nameQuote('id').' = '.implode(' OR '.$this->_db->nameQuote('id').' = ', $this->groups)
 			);
 			// Set the titles for the user groups.
 			$this->groups = $this->_db->loadAssocList('title','id');

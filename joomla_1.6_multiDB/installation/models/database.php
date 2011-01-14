@@ -502,7 +502,7 @@ class JInstallationModelDatabase extends JModel
 	function setDatabaseCharset(& $db, $name)
 	{
 		// Only alter the database if it supports the character set.
-		if ($db->hasUTF())
+		/*if ($db->hasUTF())
 		{
 			// Run the create database query.
 			$db->setQuery(
@@ -511,11 +511,11 @@ class JInstallationModelDatabase extends JModel
 			);
 			$db->query();
 
-			// If an error occurred return false.
-			if ($db->getErrorNum()) {
-				return false;
-			}
+		// If an error occurred return false.
+		if ($db->getErrorNum()) {
+		return false;
 		}
+		}*/
 
 		return true;
 	}

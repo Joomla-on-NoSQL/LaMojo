@@ -35,7 +35,7 @@ class UsersViewUsers extends JView
 		//get the associated groups, sqlsrv change
 		foreach($this->items as $user_values)
 		{
-			$user_values->group_names 	= $model->getUserGroups($user_values->id);
+			$user_values->group_names 	= $model->getUserDisplayedGroups($user_values->id);
 		}
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
