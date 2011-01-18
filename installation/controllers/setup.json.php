@@ -20,7 +20,7 @@ class JInstallationControllerSetup extends JController
 	function loadSampleData()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -39,7 +39,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($database->getError(), 500));
+			$this->sendJsonResponse(new JException($database->getError(), 500));
 		} else {
 			// Mark sample content as installed
 			$data = array(
@@ -53,13 +53,13 @@ class JInstallationControllerSetup extends JController
 		$r->text = JText::_('INSTL_SITE_SAMPLE_LOADED');
 
 		// Send the response.
-		$this->sendResponse($r);
+		$this->sendJsonResponse($r);
 	}
 
 	function detectFtpRoot()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -78,7 +78,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($filesystem->getError(), 500));
+			$this->sendJsonResponse(new JException($filesystem->getError(), 500));
 		}
 
 		// Create a response body.
@@ -86,13 +86,13 @@ class JInstallationControllerSetup extends JController
 		$r->root = $return;
 
 		// Send the response.
-		$this->sendResponse($r);
+		$this->sendJsonResponse($r);
 	}
 
 	function verifyFtpSettings()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -111,7 +111,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($filesystem->getError(), 500));
+			$this->sendJsonResponse(new JException($filesystem->getError(), 500));
 		}
 
 		// Create a response body.
@@ -119,68 +119,9 @@ class JInstallationControllerSetup extends JController
 		$r->valid = $return;
 
 		// Send the response.
-		$this->sendResponse($r);
-	}
-
-	/**
-	 * Method to handle a send a JSON response. The data parameter
-	 * can be a JException object for when an error has occurred or
-	 * a JObject for a good response.
-	 *
-	 * @access	public
-	 * @param	object	JObject on success, JException on failure.
-	 * @return	void
-	 * @since	1.6
-	 */
-	function sendResponse($response)
-	{
-		// Check if we need to send an error code.
-		if (JError::isError($response))
-		{
-			// Send the appropriate error code response.
-			JResponse::setHeader('status', $response->getCode());
-			JResponse::setHeader('Content-Type', 'application/json; charset=utf-8');
-			JResponse::sendHeaders();
-		}
-
-		// Send the JSON response.
-		echo json_encode(new JInstallationJsonResponse($response));
-
-		// Close the application.
-		$app = JFactory::getApplication();
-		$app->close();
-	}
-}
-
-/**
- * Joomla Core Installation JSON Response Class
- *
- * @package		Joomla.Installation
- * @since		1.6
- */
-class JInstallationJsonResponse
-{
-	function __construct($state)
-	{
-		// The old token is invalid so send a new one.
-		$this->token = JUtility::getToken(true);
-
-		// Check if we are dealing with an error.
-		if (JError::isError($state))
-		{
-			// Prepare the error response.
-			$this->error	= true;
-			$this->header	= JText::_('INSTL_HEADER_ERROR');
-			$this->message	= $state->getMessage();
-		}
-		else
-		{
-			// Prepare the response data.
-			$this->error	= false;
-			$this->data		= $state;
-		}
+		$this->sendJsonResponse($r);
 	}
 }
 
 // Set the error handler.
-//JError::setErrorHandling(E_ALL, 'callback', array('JInstallationControllerSetup', 'sendResponse'));
+//JError::setErrorHandling(E_ALL, 'callback', array('JInstallationControllerSetup', 'sendJsonResponse'));
