@@ -74,6 +74,8 @@ class ContentModelArticle extends JModelItem
 			$this->_item = array();
 		}
 
+		$this->populateState();
+
 		if (!isset($this->_item[$pk])) {
 
 			try {

@@ -22,5 +22,25 @@ window.addEvent('domready', function() {
 				}
 			}, this);
 		});
+		
+		el.addEvent('click', function(e) {
+			e.stop();
+			var form = e.target.form;
+			var req = new Request.JSON({
+				method: 'post',
+				url: form.action+'&format=json',
+				onComplete: function(r) {
+					if (r.data.success) {
+						document.id('rating-count').set('text', r.data.rating_count);
+						$$('.vote-button').each(function(el) {
+							if (el.value <= this.rating && !el.hasClass('star-on')) {
+								el.addClass('star-on');
+							}
+						}, r.data);
+					}
+				}
+			});
+			req.post(form.toQueryString()+'&user_rating='+e.target.value);
+		});
 	});
 });
