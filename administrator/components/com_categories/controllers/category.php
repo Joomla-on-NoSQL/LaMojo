@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -133,7 +133,7 @@ class CategoriesControllerCategory extends JControllerForm
 
 		// Attempt to run the batch operation.
 		if ($model->batch($vars, $cid)) {
-			$this->setMessage(JText::_('COM_CATEGORIES_BATCH_SUCCESS'));
+			$this->setMessage(JText::_('JGLOBAL_BATCH_SUCCESS'));
 
 			return true;
 		}
@@ -152,7 +152,7 @@ class CategoriesControllerCategory extends JControllerForm
 	 * @return	string	The arguments to append to the redirect URL.
 	 * @since	1.6
 	 */
-	protected function getRedirectToItemAppend($recordId = null)
+	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
 	{
 		$append = parent::getRedirectToItemAppend($recordId);
 		$append .= '&extension='.$this->extension;

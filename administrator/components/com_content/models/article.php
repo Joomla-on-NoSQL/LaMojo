@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -78,7 +78,7 @@ class ContentModelArticle extends JModelAdmin
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function prepareTable($table)
+	protected function prepareTable(&$table)
 	{
 		// Set the publish date to now
 		if($table->state == 1 && intval($table->publish_up) == 0) {
@@ -308,7 +308,7 @@ class ContentModelArticle extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'catid = '.(int) $table->catid;

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -187,7 +187,6 @@ class WeblinksModelWeblink extends JModelAdmin
 
 		if (empty($table->id)) {
 			// Set the values
-			//$table->created	= $date->toMySQL();
 
 			// Set ordering to the last item if not set
 			if (empty($table->ordering)) {
@@ -200,8 +199,6 @@ class WeblinksModelWeblink extends JModelAdmin
 		}
 		else {
 			// Set the values
-			//$table->modified	= $date->toMySQL();
-			//$table->modified_by	= $user->get('id');
 		}
 	}
 
@@ -212,7 +209,7 @@ class WeblinksModelWeblink extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'catid = '.(int) $table->catid;

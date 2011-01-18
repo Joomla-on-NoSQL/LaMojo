@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,7 +35,7 @@ class MenusControllerItem extends JControllerForm
 			$app->setUserState($context.'.type',	null);
 			$app->setUserState($context.'.link',	null);
 
-			$menuType = $app->getUserStateFromRequest($this->context.'.filter.menutype', 'menutype', 'mainmenu');
+			$menuType = $app->getUserStateFromRequest($this->context.'.filter.menutype', 'menutype', 'mainmenu', 'cmd');
 
 			$this->setRedirect(JRoute::_('index.php?option=com_menus&view=item&menutype='.$menuType.$this->getRedirectToItemAppend(), false));
 		}
@@ -69,7 +69,7 @@ class MenusControllerItem extends JControllerForm
 			return true;
 		}
 		else {
-			$this->setMessage(JText::_(JText::sprintf('JGLOBAL_ERROR_BATCH_FAILED', $model->getError())));
+			$this->setMessage(JText::sprintf('JGLOBAL_ERROR_BATCH_FAILED', $model->getError()));
 			return false;
 		}
 	}
@@ -82,7 +82,7 @@ class MenusControllerItem extends JControllerForm
 	 * @return	void
 	 * @since	1.6
 	 */
-	public function cancel()
+	public function cancel($key = null)
 	{
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
@@ -104,7 +104,7 @@ class MenusControllerItem extends JControllerForm
 	 * @return	void
 	 * @since	1.6
 	 */
-	public function edit()
+	public function edit($key = null, $urlVar = null)
 	{
 		// Initialise variables.
 		$app	= JFactory::getApplication();
@@ -125,7 +125,7 @@ class MenusControllerItem extends JControllerForm
 	 * @return	void
 	 * @since	1.6
 	 */
-	public function save()
+	public function save($key = null, $urlVar = null)
 	{
 		// Check for request forgeries.
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -140,7 +140,7 @@ class MenusControllerItem extends JControllerForm
 
 		if (!$this->checkEditId($context, $recordId)) {
 			// Somehow the person just went to the form and saved it - we don't allow that.
-			$this->setError(JText::_('JLIB_APPLICATION_ERROR_UNHELD_ID'));
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $recordId));
 			$this->setMessage($this->getError(), 'error');
 			$this->setRedirect(JRoute::_('index.php?option=com_menus&view=items'.$this->getRedirectToListAppend(), false));
 
@@ -305,17 +305,9 @@ class MenusControllerItem extends JControllerForm
 				$component = JComponentHelper::getComponent($type->request->option);
 				$data['component_id'] = $component->id;
 
-				if (isset($type->request->layout)) {
-					$app->setUserState(
-						'com_menus.edit.item.link',
-						'index.php?option='.$type->request->option.'&view='.$type->request->view.'&layout='.$type->request->layout
-					);
-				}
-				else {
-					$app->setUserState(
-						'com_menus.edit.item.link',
-						'index.php?option='.$type->request->option.'&view='.$type->request->view);
-				}
+				$app->setUserState(
+					'com_menus.edit.item.link',
+					'index.php?' . JURI::buildQuery((array)$type->request));
 			}
 		}
 		// If the type is alias you just need the item id from the menu item referenced.

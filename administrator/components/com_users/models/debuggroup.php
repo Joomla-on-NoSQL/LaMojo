@@ -1,7 +1,7 @@
 <?php
 /**
- * @version		$Id: debuggroup.php 19524 2010-11-17 11:45:07Z eddieajau $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @version		$Id: debuggroup.php 20196 2011-01-09 02:40:25Z ian $
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -79,7 +79,7 @@ class UsersModelDebugGroup extends JModelList
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
@@ -90,22 +90,22 @@ class UsersModelDebugGroup extends JModelList
 		}
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$value = $app->getUserStateFromRequest($this->context.'.filter.group_id', 'group_id', 0, 'int');
+		$value = $this->getUserStateFromRequest($this->context.'.filter.group_id', 'group_id', 0, 'int', false);
 		$this->setState('filter.group_id', $value);
 
-		$levelStart = $app->getUserStateFromRequest($this->context.'.filter.level_start', 'filter_level_start', 0, 'int');
+		$levelStart = $this->getUserStateFromRequest($this->context.'.filter.level_start', 'filter_level_start', 0, 'int');
 		$this->setState('filter.level_start', $levelStart);
 
-		$value = $app->getUserStateFromRequest($this->context.'.filter.level_end', 'filter_level_end', 0, 'int');
+		$value = $this->getUserStateFromRequest($this->context.'.filter.level_end', 'filter_level_end', 0, 'int');
 		if ($value > 0 && $value < $levelStart) {
 			$value = $levelStart;
 		}
 		$this->setState('filter.level_end', $value);
 
-		$component = $app->getUserStateFromRequest($this->context.'.filter.component', 'filter_component');
+		$component = $this->getUserStateFromRequest($this->context.'.filter.component', 'filter_component');
 		$this->setState('filter.component', $component);
 
 		// Load the parameters.

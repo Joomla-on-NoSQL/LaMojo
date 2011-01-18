@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -21,8 +21,7 @@ jimport('joomla.filesystem.file');
  */
 class MediaModelList extends JModel
 {
-
-	function getState($property = null)
+	function getState($property = null, $default = null)
 	{
 		static $set;
 
@@ -35,24 +34,28 @@ class MediaModelList extends JModel
 			$this->setState('parent', $parent);
 			$set = true;
 		}
-		return parent::getState($property);
+
+		return parent::getState($property, $default);
 	}
 
 	function getImages()
 	{
 		$list = $this->getList();
+
 		return $list['images'];
 	}
 
 	function getFolders()
 	{
 		$list = $this->getList();
+
 		return $list['folders'];
 	}
 
 	function getDocuments()
 	{
 		$list = $this->getList();
+
 		return $list['docs'];
 	}
 
@@ -81,10 +84,12 @@ class MediaModelList extends JModel
 
 		// Initialise variables.
 		if (strlen($current) > 0) {
-			$basePath = COM_MEDIA_BASE.DS.$current;
-		} else {
+			$basePath = COM_MEDIA_BASE.'/'.$current;
+		}
+		else {
 			$basePath = COM_MEDIA_BASE;
 		}
+
 		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
 
 		$images		= array ();
@@ -99,9 +104,10 @@ class MediaModelList extends JModel
 		if ($fileList !== false) {
 			foreach ($fileList as $file)
 			{
-				if (is_file($basePath.DS.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+				if (is_file($basePath.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
 					$tmp = new JObject();
 					$tmp->name = $file;
+					$tmp->title = $file;
 					$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$file));
 					$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 					$tmp->size = filesize($tmp->path);
@@ -127,7 +133,8 @@ class MediaModelList extends JModel
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 60);
 								$tmp->width_60 = $dimensions[0];
 								$tmp->height_60 = $dimensions[1];
-							} else {
+							}
+							else {
 								$tmp->width_60 = $tmp->width;
 								$tmp->height_60 = $tmp->height;
 							}
@@ -136,12 +143,15 @@ class MediaModelList extends JModel
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 16);
 								$tmp->width_16 = $dimensions[0];
 								$tmp->height_16 = $dimensions[1];
-							} else {
+							}
+							else {
 								$tmp->width_16 = $tmp->width;
 								$tmp->height_16 = $tmp->height;
 							}
+
 							$images[] = $tmp;
 							break;
+
 						// Non-image document
 						default:
 							$tmp->icon_32 = "media/mime-icon-32/".$ext.".png";
@@ -155,7 +165,8 @@ class MediaModelList extends JModel
 
 		// Iterate over the folders if they exist
 		if ($folderList !== false) {
-			foreach ($folderList as $folder) {
+			foreach ($folderList as $folder)
+			{
 				$tmp = new JObject();
 				$tmp->name = basename($folder);
 				$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$folder));

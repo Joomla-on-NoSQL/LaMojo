@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -93,12 +93,14 @@ JHtml::_('behavior.formvalidation');
 					<li><?php echo $this->form->getLabel('publish_down'); ?>
 					<?php echo $this->form->getInput('publish_down'); ?></li>
 
-					<li><?php echo $this->form->getLabel('modified'); ?>
-					<?php echo $this->form->getInput('modified'); ?></li>
+					<?php if ($this->item->modified_by) : ?>
+						<li><?php echo $this->form->getLabel('modified_by'); ?>
+						<?php echo $this->form->getInput('modified_by'); ?></li>
 
-					<li><?php echo $this->form->getLabel('version'); ?>
-					<?php echo $this->form->getInput('version'); ?></li>
-	
+						<li><?php echo $this->form->getLabel('modified'); ?>
+						<?php echo $this->form->getInput('modified'); ?></li>
+					<?php endif; ?>
+
 				</ul>
 			</fieldset>		
 			<?php echo JHtml::_('sliders.panel',JText::_('COM_CONTACT_CONTACT_DETAILS'), 'basic-options'); ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -107,7 +107,7 @@ class BannersHelper
 			return false;
 		}
 
-		JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_banners/tables');
+		JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . DS . 'tables');
 
 		foreach ($rows as $row) {
 			$purchase_type = $row->purchase_type;

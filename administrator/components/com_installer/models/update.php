@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,13 +24,37 @@ jimport('joomla.updater.update');
 class InstallerModelUpdate extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'name',
+				'client_id',
+				'type',
+				'folder',
+				'extension_id',
+				'update_id',
+				'update_site_id',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication('administrator');
 		$this->setState('message',$app->getUserState('com_installer.message'));
@@ -156,11 +180,11 @@ class InstallerModelUpdate extends JModelList
 		// Install the package
 		if (!$installer->install($package['dir'])) {
 			// There was an error installing the package
-			$msg = JText::sprintf('COM_INSTALLER_MSG_UPDATE_ERROR', $package['type']);
+			$msg = JText::sprintf('COM_INSTALLER_MSG_UPDATE_ERROR', JText::_('COM_INSTALLER_TYPE_TYPE_'.strtoupper($package['type'])));
 			$result = false;
 		} else {
 			// Package installed sucessfully
-			$msg = JText::sprintf('COM_INSTALLER_MSG_UPDATE_SUCCESS', $package['type']);
+			$msg = JText::sprintf('COM_INSTALLER_MSG_UPDATE_SUCCESS', JText::_('COM_INSTALLER_TYPE_TYPE_'.strtoupper($package['type'])));
 			$result = true;
 		}
 

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
@@ -38,9 +38,9 @@ class InstallerController extends JController
 		$document = JFactory::getDocument();
 
 		// Set the default view name and format from the Request.
-		$vName		= JRequest::getWord('view', 'install');
+		$vName		= JRequest::getCmd('view', 'install');
 		$vFormat	= $document->getType();
-		$lName		= JRequest::getWord('layout', 'default');
+		$lName		= JRequest::getCmd('layout', 'default');
 
 		// Get and render the view.
 		if ($view = $this->getView($vName, $vFormat)) {

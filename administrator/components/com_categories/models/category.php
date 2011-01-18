@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -177,8 +177,9 @@ class CategoriesModelCategory extends JModelAdmin
 			$extension	= $data['extension'];
 			$parts		= explode('.',$extension);
 
-			$this->setState('category.extension', $extension);
-			$this->setState('category.component', $parts[0]);
+			$this->setState('category.extension',	$extension);
+			$this->setState('category.component',	$parts[0]);
+			$this->setState('category.section',		@$parts[1]);
 		}
 
 		// Get the form.
@@ -245,7 +246,7 @@ class CategoriesModelCategory extends JModelAdmin
 	 * @throws	Exception if there is an error loading the form.
 	 * @since	1.6
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $groups = '')
 	{
 		jimport('joomla.filesystem.path');
 
@@ -360,7 +361,7 @@ class CategoriesModelCategory extends JModelAdmin
 		}
 
 		// Trigger the onContentBeforeSave event.
-		$result = $dispatcher->trigger($this->event_before_save, array($this->option.'.'.$this->name, $table, $isNew));
+		$result = $dispatcher->trigger($this->event_before_save, array($this->option.'.'.$this->name, &$table, $isNew));
 		if (in_array(false, $result, true)) {
 			$this->setError($table->getError());
 			return false;
@@ -373,7 +374,7 @@ class CategoriesModelCategory extends JModelAdmin
 		}
 
 		// Trigger the onContentAfterSave event.
-		$dispatcher->trigger($this->event_after_save, array($this->option.'.'.$this->name, $table, $isNew));
+		$dispatcher->trigger($this->event_after_save, array($this->option.'.'.$this->name, &$table, $isNew));
 
 		// Rebuild the tree path.
 		if (!$table->rebuildPath($table->id)) {
@@ -489,6 +490,17 @@ class CategoriesModelCategory extends JModelAdmin
 	 */
 	protected function batchAccess($value, $pks)
 	{
+		// Check that user has edit permission for every category being changed
+		// Note that the entire batch operation fails if any category lacks edit permission
+		$user	= JFactory::getUser();
+		$extension = JRequest::getWord('extension');
+		foreach ($pks as $pk) {
+			if (!$user->authorise('core.edit', $extension.'.category.'.$pk)) {
+				// Error since user cannot edit this category
+				$this->setError(JText::_('JGLOBAL_BATCH_CATEGORY_CANNOT_EDIT'));
+				return false;
+			}
+		}
 		$table = $this->getTable();
 		foreach ($pks as $pk) {
 			$table->reset();
@@ -520,6 +532,8 @@ class CategoriesModelCategory extends JModelAdmin
 
 		$table	= $this->getTable();
 		$db		= $this->getDbo();
+		$user	= JFactory::getUser();
+		$extension = JRequest::getWord('extension');
 
 		// Check that the parent exists
 		if ($parentId) {
@@ -535,12 +549,25 @@ class CategoriesModelCategory extends JModelAdmin
 					$parentId = 0;
 				}
 			}
+			// Check that user has create permission for parent category
+			$canCreate = ($parentId == $table->getRootId()) ? $user->authorise('core.create', $extension) :
+				$user->authorise('core.create', $extension.'.category.'.$parentId);
+			if (!$canCreate) {
+				// Error since user cannot create in parent category
+				$this->setError(JText::_('JGLOBAL_BATCH_CATEGORY_CANNOT_CREATE'));
+				return false;
+			}
 		}
 
 		// If the parent is 0, set it to the ID of the root item in the tree
 		if (empty($parentId)) {
 			if (!$parentId = $table->getRootId()) {
 				$this->setError($db->getErrorMsg());
+				return false;
+			}
+			// Make sure we can create in root
+			elseif (!$user->authorise('core.create', $extension)) {
+				$this->setError(JText::_('JGLOBAL_BATCH_CATEGORY_CANNOT_CREATE'));
 				return false;
 			}
 		}
@@ -660,12 +687,12 @@ class CategoriesModelCategory extends JModelAdmin
 	 */
 	protected function batchMove($value, $pks)
 	{
-		// $value comes as {parent_id}
-		$parts		= explode('.', $value);
-		$parentId	= (int) JArrayHelper::getValue($parts, 0, 1);
+		$parentId	= (int) $value;
 
 		$table	= $this->getTable();
 		$db		= $this->getDbo();
+		$user	= JFactory::getUser();
+		$extension = JRequest::getWord('extension');
 
 		// Check that the parent exists.
 		if ($parentId) {
@@ -682,7 +709,26 @@ class CategoriesModelCategory extends JModelAdmin
 					$parentId = 0;
 				}
 			}
+			// Check that user has create permission for parent category
+			$canCreate = ($parentId == $table->getRootId()) ? $user->authorise('core.create', $extension) :
+				$user->authorise('core.create', $extension.'.category.'.$parentId);
+			if (!$canCreate) {
+				// Error since user cannot create in parent category
+				$this->setError(JText::_('JGLOBAL_BATCH_CATEGORY_CANNOT_CREATE'));
+				return false;
+			}
+
+			// Check that user has edit permission for every category being moved
+			// Note that the entire batch operation fails if any category lacks edit permission
+			foreach ($pks as $pk) {
+				if (!$user->authorise('core.edit', $extension.'.category.'.$pk)) {
+					// Error since user cannot edit this category
+					$this->setError(JText::_('JGLOBAL_BATCH_CATEGORY_CANNOT_EDIT'));
+					return false;
+				}
+			}
 		}
+
 
 		// We are going to store all the children and just move the category
 		$children = array();

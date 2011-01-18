@@ -3,12 +3,13 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_media
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('_JEXEC') or die;
+$user = JFactory::getUser();
 ?>
 <table width="100%">
 	<tr valign="top">
@@ -20,7 +21,7 @@ defined('_JEXEC') or die;
 			</fieldset>
 		</td>
 		<td>
-			<?php if ($this->require_ftp): ?>
+			<?php if (($user->authorise('core.create','com_media')) and $this->require_ftp): ?>
 				<form action="index.php?option=com_media&amp;task=ftpValidate" name="ftpForm" id="ftpForm" method="post">
 					<fieldset title="<?php echo JText::_('COM_MEDIA_DESCFTPTITLE'); ?>">
 						<legend><?php echo JText::_('COM_MEDIA_DESCFTPTITLE'); ?></legend>
@@ -43,19 +44,22 @@ defined('_JEXEC') or die;
 			<form action="index.php?option=com_media&amp;task=folder.create&amp;tmpl=<?php echo JRequest::getCmd('tmpl','index');?>" name="folderForm" id="folderForm" method="post">
 				<fieldset id="folderview">
 					<div class="view">
-						<iframe src="index.php?option=com_media&amp;view=mediaList&amp;tmpl=component&amp;folder=<?php echo $this->state->folder;?>" id="folderframe" name="folderframe" width="100%" marginwidth="0" marginheight="0" scrolling="auto" frameborder="0"></iframe>
+						<iframe src="index.php?option=com_media&amp;view=mediaList&amp;tmpl=component&amp;folder=<?php echo $this->state->folder;?>" id="folderframe" name="folderframe" width="100%" marginwidth="0" marginheight="0" scrolling="auto"></iframe>
 					</div>
 					<legend><?php echo JText::_('COM_MEDIA_FILES'); ?></legend>
 					<div class="path">
+					<?php if ($user->authorise('core.create','com_media')): ?>
 						<input class="inputbox" type="text" id="folderpath" readonly="readonly" />
 						<input class="inputbox" type="text" id="foldername" name="foldername"  />
 						<input class="update-folder" type="hidden" name="folderbase" id="folderbase" value="<?php echo $this->state->folder; ?>" />
 						<button type="submit"><?php echo JText::_('COM_MEDIA_CREATE_FOLDER'); ?></button>
+					<?php endif; ?>
 					</div>
 					<?php echo JHtml::_('form.token'); ?>
 				</fieldset>
 			</form>
 
+			<?php if ($user->authorise('core.create','com_media')):?>
 			<!-- File Upload Form -->
 			<form action="<?php echo JURI::base(); ?>index.php?option=com_media&amp;task=file.upload&amp;tmpl=component&amp;<?php echo $this->session->getName().'='.$this->session->getId(); ?>&amp;<?php echo JUtility::getToken();?>=1&amp;format=json" id="uploadForm" name="uploadForm" method="post" enctype="multipart/form-data">
 				<fieldset id="uploadform">
@@ -87,6 +91,7 @@ defined('_JEXEC') or die;
 					<input type="hidden" name="format" value="html" />
 				</fieldset>
 			</form>
+			<?php endif;?>
 		</td>
 	</tr>
 </table>

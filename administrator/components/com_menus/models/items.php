@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,6 +19,38 @@ jimport('joomla.application.component.modellist');
 class MenusModelItems extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'menutype', 'a.menutype',
+				'title', 'a.title',
+				'alias', 'a.alias',
+				'published', 'a.published',
+				'access', 'a.access', 'access_level',
+				'language', 'a.language',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'lft', 'a.lft',
+				'rgt', 'a.rgt',
+				'level', 'a.level',
+				'path', 'a.path',
+				'client_id', 'a.client_id',
+				'home', 'a.home',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -26,23 +58,23 @@ class MenusModelItems extends JModelList
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication('administrator');
 
-		$search = $app->getUserStateFromRequest($this->context.'.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$published = $app->getUserStateFromRequest($this->context.'.published', 'filter_published', '');
+		$published = $this->getUserStateFromRequest($this->context.'.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
 
-		$access = $app->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
+		$access = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
 		$this->setState('filter.access', $access);
 
-		$parentId = $app->getUserStateFromRequest($this->context.'.filter.parent_id', 'filter_parent_id', 0, 'int');
+		$parentId = $this->getUserStateFromRequest($this->context.'.filter.parent_id', 'filter_parent_id', 0, 'int');
 		$this->setState('filter.parent_id',	$parentId);
 
-		$level = $app->getUserStateFromRequest($this->context.'.filter.level', 'filter_level', 0, 'int');
+		$level = $this->getUserStateFromRequest($this->context.'.filter.level', 'filter_level', 0, 'int');
 		$this->setState('filter.level', $level);
 
 		$menuType = JRequest::getVar('menutype',null);
@@ -62,7 +94,7 @@ class MenusModelItems extends JModelList
 
 		$this->setState('filter.menutype', $menuType);
 
-		$language = $app->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
+		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
 		// Component parameters.

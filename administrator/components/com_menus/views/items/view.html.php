@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_menus
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -112,7 +112,7 @@ class MenusViewItems extends JView
 												}
 											}
 											if (!empty($layout[0]->message[0])) {
-												$items->item_type_desc = JText::_(trim((string) $layout[0]->message[0]));
+												$item->item_type_desc = JText::_(trim((string) $layout[0]->message[0]));
 											}
 										}
 									}

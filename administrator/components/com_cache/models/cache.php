@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -49,11 +49,11 @@ class CacheModelCache extends JModelList
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication();
 		
-		$clientId = $app->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', 0, 'int');
+		$clientId = $this->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', 0, 'int');
 		$this->setState('clientId', $clientId == 1 ? 1 : 0);
 
 		$client	= JApplicationHelper::getClientInfo($clientId);
@@ -113,7 +113,7 @@ class CacheModelCache extends JModelList
 			'defaultgroup'	=> '',
 			'storage' 		=> $conf->get('cache_handler', ''),
 			'caching'		=> true,
-			'cachebase'		=> ($this->getState('clientId') == 1) ? JPATH_ROOT.DS.'administrator'.DS.'cache' : $conf->get('cache_path', JPATH_ROOT.DS.'cache')
+			'cachebase'		=> ($this->getState('clientId') == 1) ? JPATH_ADMINISTRATOR.DS.'cache' : $conf->get('cache_path', JPATH_SITE.DS.'cache')
 		);
 
 		jimport('joomla.cache.cache');

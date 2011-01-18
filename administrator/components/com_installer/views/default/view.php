@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -29,7 +29,7 @@ class InstallerViewDefault extends JView
 		$app = JFactory::getApplication();
 		parent::__construct($config);
 		$this->_addPath('template', $this->_basePath.DS.'views'.DS.'default'.DS.'tmpl');
-		$this->_addPath('template', JPATH_BASE.'/templates/'.$app->getTemplate().'/html/com_installer/default');
+		$this->_addPath('template', JPATH_THEMES.'/'.$app->getTemplate().'/html/com_installer/default');
 	}
 
 	/**

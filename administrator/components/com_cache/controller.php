@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -36,9 +36,9 @@ class CacheController extends JController
 		$document	= JFactory::getDocument();
 
 		// Set the default view name and format from the Request.
-		$vName		= JRequest::getWord('view', 'cache');
+		$vName		= JRequest::getCmd('view', 'cache');
 		$vFormat	= $document->getType();
-		$lName		= JRequest::getWord('layout', 'default');
+		$lName		= JRequest::getCmd('layout', 'default');
 
 		// Get and render the view.
 		if ($view = $this->getView($vName, $vFormat))
@@ -60,7 +60,7 @@ class CacheController extends JController
 			$view->assignRef('document', $document);
 
 			// Load the submenu.
-			CacheHelper::addSubmenu(JRequest::getWord('view', 'cache'));
+			CacheHelper::addSubmenu(JRequest::getCmd('view', 'cache'));
 			
 			$view->display();
 		}

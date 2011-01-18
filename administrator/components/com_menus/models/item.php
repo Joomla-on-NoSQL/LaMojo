@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -147,6 +147,12 @@ class MenusModelItem extends JModelAdmin
 	 */
 	protected function batchAccess($value, $pks)
 	{
+		// Check that user has edit permission for menus
+		$user	= JFactory::getUser();
+		if (!$user->authorise('core.edit', 'com_menus')) {
+			$this->setError(JText::_('JGLOBAL_BATCH_MENU_ITEM_CANNOT_EDIT'));
+			return false;
+		}
 		$table = $this->getTable();
 
 		foreach ($pks as $pk)
@@ -210,6 +216,13 @@ class MenusModelItem extends JModelAdmin
 				$this->setError($db->getErrorMsg());
 				return false;
 			}
+		}
+		
+		// Check that user has create permission for menus
+		$user	= JFactory::getUser();
+		if (!$user->authorise('core.create', 'com_menus')) {
+			$this->setError(JText::_('JGLOBAL_BATCH_MENU_ITEM_CANNOT_CREATE'));
+			return false;
 		}
 
 		// We need to log the parent ID
@@ -291,6 +304,11 @@ class MenusModelItem extends JModelAdmin
 				$table->title   = $title;
 				$table->alias   = $alias;
 
+				// Check the row.
+				if (!$table->check()) {
+					$this->setError($table->getError());
+					return false;
+				}
 				// Store the row.
 				if (!$table->store()) {
 					$this->setError($table->getError());
@@ -357,6 +375,18 @@ class MenusModelItem extends JModelAdmin
 				}
 			}
 		}
+		
+		// Check that user has create and edit permission for menus
+		$user	= JFactory::getUser();
+		if (!$user->authorise('core.create', 'com_menus')) {
+			$this->setError(JText::_('JGLOBAL_BATCH_MENU_ITEM_CANNOT_CREATE'));
+			return false;
+		}
+
+		if (!$user->authorise('core.edit', 'com_menus')) {
+			$this->setError(JText::_('JGLOBAL_BATCH_MENU_ITEM_CANNOT_EDIT'));
+			return false;
+		}
 
 		// We are going to store all the children and just moved the menutype
 		$children = array();
@@ -393,6 +423,12 @@ class MenusModelItem extends JModelAdmin
 					' WHERE `lft` BETWEEN '.(int) $table->lft.' AND '.(int) $table->rgt
 				);
 				$children = array_merge($children, (array) $db->loadResultArray());
+			}
+
+			// Check the row.
+			if (!$table->check()) {
+				$this->setError($table->getError());
+				return false;
 			}
 
 			// Store the row.
@@ -502,13 +538,7 @@ class MenusModelItem extends JModelAdmin
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_menus.edit.item.data', array());
-
-		if (empty($data)) {
-			$data = $this->getItem();
-		}
-
-		return $data;
+		return array_merge((array)$this->getItem(), (array)JFactory::getApplication()->getUserState('com_menus.edit.item.data', array()));
 	}
 
 	/**
@@ -530,7 +560,7 @@ class MenusModelItem extends JModelAdmin
 	 * @return	mixed	Menu item data object on success, false on failure.
 	 * @since	1.6
 	 */
-	public function &getItem($pk = null)
+	public function getItem($pk = null)
 	{
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int)$this->getState('item.id');
@@ -618,7 +648,8 @@ class MenusModelItem extends JModelAdmin
 		$this->setState('item.type', $table->type);
 
 		// Convert to the JObject before adding the params.
-		$result = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+		$properties = $table->getProperties(1);
+		$result = JArrayHelper::toObject($properties, 'JObject');
 
 		// Convert the params field to an array.
 		$registry = new JRegistry;
@@ -765,7 +796,7 @@ class MenusModelItem extends JModelAdmin
 	 * @since	1.6
 	 * @throws	Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
@@ -830,7 +861,7 @@ class MenusModelItem extends JModelAdmin
 			// TODO: Now check for a component manifest file
 		}
 
-			if ($formFile) {
+		if ($formFile) {
 			// If an XML file was found in the component, load it first.
 			// We need to qualify the full path to avoid collisions with component file names.
 
@@ -845,7 +876,7 @@ class MenusModelItem extends JModelAdmin
 
 			// Get the help data from the XML file if present.
 			$help = $xml->xpath('/metadata/layout/help');
-				if (!empty($help)) {
+			if (!empty($help)) {
 				$helpKey = trim((string) $help[0]['key']);
 				$helpURL = trim((string) $help[0]['url']);
 				$helpLoc = trim((string) $help[0]['local']);
@@ -866,7 +897,7 @@ class MenusModelItem extends JModelAdmin
 			$path='null';
 		}
 
-			if (JFile::exists($path)) {
+		if (JFile::exists($path)) {
 			// Add the component params last of all to the existing form.
 			if (!$form->load($path, true, '/config')) {
 				throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
@@ -1139,7 +1170,7 @@ class MenusModelItem extends JModelAdmin
 			{
 				if ($table->load($pk) && $table->home && $table->language == '*') {
 					// Prune items that you can't change.
-					JError::raiseWarning(403, JText::_('COM_MENUS_ERROR_UNPUBLISH_DEFAULT_HOME'));
+					JError::raiseWarning(403, JText::_('JLIB_DATABASE_ERROR_MENU_UNPUBLISH_DEFAULT_HOME'));
 					unset($pks[$i]);
 					break;
 				}

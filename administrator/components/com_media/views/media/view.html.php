@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -100,9 +100,11 @@ class MediaViewMedia extends JView
 		jimport('joomla.client.helper');
 		$ftp = !JClientHelper::hasCredentials('ftp');
 
-		$this->assignRef('session', JFactory::getSession());
+		$session	= JFactory::getSession();
+		$state		= $this->get('state');
+		$this->assignRef('session', $session);
 		$this->assignRef('config', $config);
-		$this->assignRef('state', $this->get('state'));
+		$this->assignRef('state', $state);
 		$this->assign('require_ftp', $ftp);
 		$this->assign('folders_id', ' id="media-tree"');
 		$this->assign('folders', $this->get('folderTree'));
@@ -123,19 +125,27 @@ class MediaViewMedia extends JView
 	{
 		// Get the toolbar object instance
 		$bar = JToolBar::getInstance('toolbar');
+		$user = JFactory::getUser();
 
 		// Set the titlebar text
 		JToolBarHelper::title(JText::_('COM_MEDIA'), 'mediamanager.png');
 
 		// Add a delete button
-		$title = JText::_('JTOOLBAR_DELETE');
-		$dhtml = "<a href=\"#\" onclick=\"MediaManager.submit('folder.delete')\" class=\"toolbar\">
-					<span class=\"icon-32-delete\" title=\"$title\"></span>
-					$title</a>";
-		$bar->appendButton('Custom', $dhtml, 'delete');
-		JToolBarHelper::divider();
-		JToolBarHelper::preferences('com_media', 450, 800, 'JToolbar_Options', '', 'window.location.reload()');
-		JToolBarHelper::divider();
+		if ($user->authorise('core.delete','com_media'))
+		{
+			$title = JText::_('JTOOLBAR_DELETE');
+			$dhtml = "<a href=\"#\" onclick=\"MediaManager.submit('folder.delete')\" class=\"toolbar\">
+						<span class=\"icon-32-delete\" title=\"$title\"></span>
+						$title</a>";
+			$bar->appendButton('Custom', $dhtml, 'delete');
+			JToolBarHelper::divider();
+		}
+		// Add a delete button
+		if ($user->authorise('core.admin','com_media'))
+		{
+			JToolBarHelper::preferences('com_media', 450, 800, 'JToolbar_Options', '', 'window.location.reload()');
+			JToolBarHelper::divider();
+		}
 		JToolBarHelper::help('JHELP_CONTENT_MEDIA_MANAGER');
 	}
 

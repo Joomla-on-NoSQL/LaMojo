@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_messages
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,15 +38,16 @@ JHtml::_('behavior.keepalive');
 	</fieldset>
 
 	<fieldset class="adminform">
+	<ul  class="adminformlist">
+		<li><?php echo $this->form->getLabel('lock'); ?>
+		<?php echo $this->form->getInput('lock'); ?></li>
 
-		<?php echo $this->form->getLabel('lock'); ?>
-		<?php echo $this->form->getInput('lock'); ?>
+		<li><?php echo $this->form->getLabel('mail_on_new'); ?>
+		<?php echo $this->form->getInput('mail_on_new'); ?></li>
 
-		<?php echo $this->form->getLabel('mail_on_new'); ?>
-		<?php echo $this->form->getInput('mail_on_new'); ?>
-
-		<?php echo $this->form->getLabel('auto_purge'); ?>
-		<?php echo $this->form->getInput('auto_purge'); ?>
+		<li><?php echo $this->form->getLabel('auto_purge'); ?>
+		<?php echo $this->form->getInput('auto_purge'); ?></li>
+	</ul>
 
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>

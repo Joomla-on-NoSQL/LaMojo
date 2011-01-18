@@ -7,7 +7,7 @@
 	<author>Joomla! Project</author>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
-	<copyright>Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<description>en-GB administrator language</description>
 	<files>
@@ -102,7 +102,8 @@
 		<filename>en-GB.plg_content_emailcloak.sys.ini</filename>
 		<filename>en-GB.plg_content_geshi.ini</filename>
 		<filename>en-GB.plg_content_geshi.sys.ini</filename>
-		<filename>en-GB.plg_content_josdewplayer.ini</filename>
+		<filename>en-GB.plg_content_joomla.ini</filename>
+		<filename>en-GB.plg_content_joomla.sys.ini</filename>
 		<filename>en-GB.plg_content_loadmodule.ini</filename>
 		<filename>en-GB.plg_content_loadmodule.sys.ini</filename>
 		<filename>en-GB.plg_content_pagebreak.ini</filename>
@@ -145,6 +146,8 @@
 		<filename>en-GB.plg_system_languagefilter.sys.ini</filename>
 		<filename>en-GB.plg_system_log.ini</filename>
 		<filename>en-GB.plg_system_log.sys.ini</filename>
+		<filename>en-GB.plg_system_logout.ini</filename>
+		<filename>en-GB.plg_system_logout.sys.ini</filename>
 		<filename>en-GB.plg_system_p3p.ini</filename>
 		<filename>en-GB.plg_system_p3p.sys.ini</filename>
 		<filename>en-GB.plg_system_redirect.ini</filename>
@@ -168,6 +171,8 @@
 		<name>English (United Kingdom)</name>
 		<tag>en-GB</tag>
 		<rtl>0</rtl>
+		<locale>en_GB.utf8, en_GB.UTF-8, en_GB, eng_GB, en, english, english-uk, uk, gbr, britain, england, great britain, uk, united kingdom, united-kingdom</locale>
+		<firstDay>0</firstDay>
 	</metadata>
 	<params />
 </metafile>

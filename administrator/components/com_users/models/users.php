@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,6 +19,32 @@ jimport('joomla.application.component.modellist');
 class UsersModelUsers extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'name', 'a.name',
+				'username', 'a.username',
+				'email', 'a.email',
+				'block', 'a.block',
+				'sendEmail', 'a.sendEmail',
+				'registerDate', 'a.registerDate',
+				'lastvisitDate', 'a.lastvisitDate',
+				'activation', 'a.activation',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -26,7 +52,7 @@ class UsersModelUsers extends JModelList
 	 * @return	void
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
@@ -37,17 +63,29 @@ class UsersModelUsers extends JModelList
 		}
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$active = $app->getUserStateFromRequest($this->context.'.filter.active', 'filter_active');
+		$active = $this->getUserStateFromRequest($this->context.'.filter.active', 'filter_active');
 		$this->setState('filter.active', $active);
 
-		$state = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_state');
+		$state = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_state');
 		$this->setState('filter.state', $state);
 
-		$groupId = $app->getUserStateFromRequest($this->context.'.filter.group', 'filter_group_id', null, 'int');
+		$groupId = $this->getUserStateFromRequest($this->context.'.filter.group', 'filter_group_id', null, 'int');
 		$this->setState('filter.group_id', $groupId);
+
+		$groups = json_decode(base64_decode(JRequest::getVar('groups', '', 'default', 'BASE64')));
+		if (isset($groups)) {
+			JArrayHelper::toInteger($groups);
+		}
+		$this->setState('filter.groups', $groups);
+
+		$excluded = json_decode(base64_decode(JRequest::getVar('excluded', '', 'default', 'BASE64')));
+		if (isset($excluded)) {
+			JArrayHelper::toInteger($excluded);
+		}
+		$this->setState('filter.excluded', $excluded);
 
 		// Load the parameters.
 		$params		= JComponentHelper::getParams('com_users');
@@ -93,7 +131,14 @@ class UsersModelUsers extends JModelList
 
 		// Try to load the data from internal storage.
 		if (empty($this->cache[$store])) {
-			$items = parent::getItems();
+			$groups = $this->getState('filter.groups');
+			$groupId = $this->getState('filter.group_id');
+			if (isset($groups) && (empty($groups) || $groupId && !in_array($groupId, $groups))) {
+				$items = array();
+			}
+			else {
+				$items = parent::getItems();
+			}
 
 			// Bail out on an error or empty list.
 			if (empty($items)) {
@@ -197,9 +242,17 @@ class UsersModelUsers extends JModelList
 		}
 
 		// Filter the items over the group id if set.
-		if ($groupId = $this->getState('filter.group_id')) {
+		$groupId = $this->getState('filter.group_id');
+		$groups = $this->getState('filter.groups');
+		if ($groupId || isset($groups)) {
 			$query->join('LEFT', '#__user_usergroup_map AS map2 ON map2.user_id = a.id');
-			$query->where('map2.group_id = '.(int) $groupId);
+			$query->group('a.id');
+			if ($groupId) {
+				$query->where('map2.group_id = '.(int) $groupId);
+			}
+			if (isset($groups)) {
+				$query->where('map2.group_id IN ('.implode(',', $groups).')');
+			}
 		}
 
 		// Filter the items over the search string if set.
@@ -215,6 +268,12 @@ class UsersModelUsers extends JModelList
 
 			// Add the clauses to the query.
 			$query->where('('.implode(' OR ', $searches).')');
+		}
+
+		// Filter by excluded users
+		$excluded = $this->getState('filter.excluded');
+		if (!empty($excluded)) {
+			$query->where('id NOT IN ('.implode(',', $excluded).')');
 		}
 
 		// Add the list ordering clause.

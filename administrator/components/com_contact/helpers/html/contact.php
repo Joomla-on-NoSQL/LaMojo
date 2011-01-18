@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -23,7 +23,7 @@ abstract class JHtmlContact
 	 * @return	string	The anchor tag to toggle featured/unfeatured contacts.
 	 * @since	1.6
 	 */
-	function featured($value = 0, $i)
+	static function featured($value = 0, $i)
 	{
 		// Array of image, task, title, action
 		$states	= array(

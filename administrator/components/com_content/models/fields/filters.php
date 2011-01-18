@@ -1,9 +1,9 @@
 <?php
 /**
- * @version		$Id: filters.php 19291 2010-10-29 22:47:18Z dextercowley $
+ * @version		$Id: filters.php 20196 2011-01-09 02:40:25Z ian $
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -80,7 +80,7 @@ class JFormFieldFilters extends JFormField
 			$html[] = '			'.str_repeat('<span class="gi">|&mdash;</span>', $group->level).$group->text;
 			$html[] = '		</th>';
 			$html[] = '		<td>';
-			$html[] = '				<select name="'.$this->name.'['.$group->value.'][filter_type]" id="'.$this->id.$group->value.'_filter_type" title="'.JText::_('JGLOBAL_FILTER_TYPE_LABEL').'">';
+			$html[] = '				<select name="'.$this->name.'['.$group->value.'][filter_type]" id="'.$this->id.$group->value.'_filter_type" class="hasTip" title="'.JText::_('JGLOBAL_FILTER_TYPE_LABEL').'::'.JText::_('JGLOBAL_FILTER_TYPE_DESC').'">';
 			$html[] = '					<option value="BL"'.($group_filter['filter_type'] == 'BL' ? ' selected="selected"' : '').'>'.JText::_('COM_CONTENT_OPTION_BLACK_LIST').'</option>';
 			$html[] = '					<option value="WL"'.($group_filter['filter_type'] == 'WL' ? ' selected="selected"' : '').'>'.JText::_('COM_CONTENT_OPTION_WHITE_LIST').'</option>';
 			$html[] = '					<option value="NH"'.($group_filter['filter_type'] == 'NH' ? ' selected="selected"' : '').'>'.JText::_('COM_CONTENT_OPTION_NO_HTML').'</option>';

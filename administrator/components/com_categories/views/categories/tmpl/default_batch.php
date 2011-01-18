@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_categories
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,10 +19,10 @@ $extension	= $this->escape($this->state->get('filter.extension'));
 ?>
 <fieldset class="batch">
 	<legend><?php echo JText::_('COM_CATEGORIES_BATCH_OPTIONS');?></legend>
-	<label id="batch-access-lbl" for="batch-access">
-		<?php echo JText::_('JGLOBAL_BATCH_ACCESS_LABEL'); ?>
+	<label id="batch-access-lbl" for="batch-access" class="hasTip" title="<?php echo JText::_('JGLOBAL_BATCH_ACCESS_LABEL').'::'.JText::_('JGLOBAL_BATCH_ACCESS_LABEL_DESC'); ?>">
+		<?php echo JText::_('JGLOBAL_BATCH_ACCESS_LABEL') ?>
 	</label>
-	<?php echo JHtml::_('access.assetgrouplist', 'batch[assetgroup_id]', '', 'class="inputbox"', array('title' => '', 'id' => 'batch-access'));?>
+	<?php echo JHtml::_('access.assetgrouplist', 'batch[assetgroup_id]', '', 'class="inputbox"', array('title' => JText::_('JGLOBAL_BATCH_NOCHANGE'), 'id' => 'batch-access'));?>
 
 	<?php if ($published >= 0) : ?>
 		<label id="batch-choose-action-lbl" for="batch-choose-action">
@@ -30,7 +30,7 @@ $extension	= $this->escape($this->state->get('filter.extension'));
 		</label>
 		<fieldset id="batch-choose-action" class="combo">
 			<select name="batch[category_id]" class="inputbox" id="batch-category-id">
-				<option></option>
+				<option value=""><?php echo JText::_('JSELECT') ?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('category.categories', $extension, array('published' => $published)));?>
 			</select>
 			<?php echo JHTML::_( 'select.radiolist', $options, 'batch[move_copy]', '', 'value', 'text', 'm'); ?>

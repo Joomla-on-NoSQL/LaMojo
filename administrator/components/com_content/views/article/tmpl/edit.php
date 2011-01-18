@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,13 +20,11 @@ JHtml::_('behavior.keepalive');
 ?>
 
 <script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
+	Joomla.submitbutton = function(task) {
 		if (task == 'article.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
 			<?php echo $this->form->getField('articletext')->save(); ?>
 			Joomla.submitform(task, document.getElementById('item-form'));
-		}
-		else {
+		} else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
@@ -51,14 +49,15 @@ JHtml::_('behavior.keepalive');
 
 				<li><?php echo $this->form->getLabel('access'); ?>
 				<?php echo $this->form->getInput('access'); ?></li>
-
-				<li><span class="faux-label"><?php echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ?></span>
-					<div class="button2-left"><div class="blank">
-						<button type="button" onclick="document.location.href='#access-rules';">
-							<?php echo JText::_('JGLOBAL_PERMISSIONS_ANCHOR'); ?>
-						</button>
-					</div></div>
-				</li>
+				<?php if ($this->canDo->get('core.admin')): ?>
+					<li><span class="faux-label"><?php echo JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL'); ?></span>
+						<div class="button2-left"><div class="blank">
+							<button type="button" onclick="document.location.href='#access-rules';">
+								<?php echo JText::_('JGLOBAL_PERMISSIONS_ANCHOR'); ?>
+							</button>
+						</div></div>
+					</li>
+				<?php endif; ?>
 				<li><?php echo $this->form->getLabel('language'); ?>
 				<?php echo $this->form->getInput('language'); ?></li>
 
@@ -96,14 +95,23 @@ JHtml::_('behavior.keepalive');
 					<li><?php echo $this->form->getLabel('publish_down'); ?>
 					<?php echo $this->form->getInput('publish_down'); ?></li>
 
-					<li><?php echo $this->form->getLabel('modified'); ?>
-					<?php echo $this->form->getInput('modified'); ?></li>
+					<?php if ($this->item->modified_by) : ?>
+						<li><?php echo $this->form->getLabel('modified_by'); ?>
+						<?php echo $this->form->getInput('modified_by'); ?></li>
 
-					<li><?php echo $this->form->getLabel('version'); ?>
-					<?php echo $this->form->getInput('version'); ?></li>
+						<li><?php echo $this->form->getLabel('modified'); ?>
+						<?php echo $this->form->getInput('modified'); ?></li>
+					<?php endif; ?>
 
-					<li><?php echo $this->form->getLabel('hits'); ?>
-					<?php echo $this->form->getInput('hits'); ?></li>
+					<?php if ($this->item->version) : ?>
+						<li><?php echo $this->form->getLabel('version'); ?>
+						<?php echo $this->form->getInput('version'); ?></li>
+					<?php endif; ?>
+
+					<?php if ($this->item->hits) : ?>
+						<li><?php echo $this->form->getLabel('hits'); ?>
+						<?php echo $this->form->getInput('hits'); ?></li>
+					<?php endif; ?>
 				</ul>
 			</fieldset>
 
@@ -131,22 +139,24 @@ JHtml::_('behavior.keepalive');
 	</div>
 
 	<div class="clr"></div>
+	<?php if ($this->canDo->get('core.admin')): ?>
+		<div class="width-100 fltlft">
+			<?php echo JHtml::_('sliders.start','permissions-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
 
-	<div class="width-100 fltlft">
-		<?php echo JHtml::_('sliders.start','permissions-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
+				<?php echo JHtml::_('sliders.panel',JText::_('COM_CONTENT_FIELDSET_RULES'), 'access-rules'); ?>
 
-			<?php echo JHtml::_('sliders.panel',JText::_('COM_CONTENT_FIELDSET_RULES'), 'access-rules'); ?>
+				<fieldset class="panelform">
+					<?php echo $this->form->getLabel('rules'); ?>
+					<?php echo $this->form->getInput('rules'); ?>
+				</fieldset>
 
-			<fieldset class="panelform">
-				<?php echo $this->form->getLabel('rules'); ?>
-				<?php echo $this->form->getInput('rules'); ?>
-			</fieldset>
-
-		<?php echo JHtml::_('sliders.end'); ?>
+			<?php echo JHtml::_('sliders.end'); ?>
+		</div>
+	<?php endif; ?>
+	<div>
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="return" value="<?php echo JRequest::getCmd('return');?>" />
+		<?php echo JHtml::_('form.token'); ?>
 	</div>
-
-	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="return" value="<?php echo JRequest::getCmd('return');?>" />
-	<?php echo JHtml::_('form.token'); ?>
 </form>
 

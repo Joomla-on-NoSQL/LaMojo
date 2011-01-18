@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,6 +18,40 @@ jimport('joomla.application.component.modellist');
  */
 class BannersModelBanners extends JModelList
 {
+	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'cid', 'a.cid', 'client_name',
+				'name', 'a.name',
+				'alias', 'a.alias',
+				'state', 'a.state',
+				'ordering', 'a.ordering',
+				'language', 'a.language',
+				'catid', 'a.catid', 'category_title',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'created', 'a.created',
+				'impmade', 'a.impmade',
+				'imptotal', 'a.imptotal',
+				'clicks', 'a.clicks',
+				'publish_up', 'a.publish_up',
+				'publish_down', 'a.publish_down',
+				'state', 'sticky', 'a.sticky',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
 	/**
 	 * Method to get the maximum ordering value for each category.
 	 *
@@ -174,25 +208,25 @@ class BannersModelBanners extends JModelList
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$state = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '', 'string');
+		$state = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '', 'string');
 		$this->setState('filter.state', $state);
 
-		$categoryId = $app->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id', '');
+		$categoryId = $this->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id', '');
 		$this->setState('filter.category_id', $categoryId);
 
-		$clientId = $app->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', '');
+		$clientId = $this->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', '');
 		$this->setState('filter.client_id', $clientId);
 
-		$language = $app->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
+		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
 		// Load the parameters.

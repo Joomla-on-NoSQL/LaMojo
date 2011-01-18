@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,36 +14,6 @@ defined('_JEXEC') or die;
  */
 class TemplatesTableStyle extends JTable
 {
-	/**
-	 * @var int Primary key
-	 */
-	public $id = null;
-
-	/**
-	 * @var string
-	 */
-	public $template = null;
-
-	/**
-	 * @var int
-	 */
-	public $client_id = null;
-
-	/**
-	 * @var int
-	 */
-	public $home = null;
-
-	/**
-	 * @var string
-	 */
-	public $title = null;
-
-	/**
-	 * @var string
-	 */
-	public $params = null;
-
 	/**
 	 * Constructor
 	 *

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Modules
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -348,7 +348,8 @@ class ModulesModelModule extends JModelAdmin
 			}
 
 			// Convert to the JObject before adding other data.
-			$this->_cache[$pk] = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+			$properties = $table->getProperties(1);
+			$this->_cache[$pk] = JArrayHelper::toObject($properties, 'JObject');
 
 			// Convert the params field to an array.
 			$registry = new JRegistry;
@@ -460,7 +461,7 @@ class ModulesModelModule extends JModelAdmin
 	 * @throws	Exception if there is an error loading the form.
 	 * @since	1.6
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = '')
 	{
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
@@ -503,7 +504,22 @@ class ModulesModelModule extends JModelAdmin
 		}
 
 		// Trigger the default form events.
-		parent::preprocessForm($form, $data);
+		parent::preprocessForm($form, $data, $group);
+	}
+
+	/**
+	 * Loads ContentHelper for filters before validating data.
+	 *
+	 * @param	object		$form		The form to validate against.
+	 * @param	array		$data		The data to validate.
+	 * @return	mixed		Array of filtered data if valid, false otherwise.
+	 * @since	1.1
+	 */
+	function validate($form, $data)
+	{
+		require_once(JPATH_ADMINISTRATOR.'/components/com_content/helpers/content.php');
+
+		return parent::validate($form, $data);
 	}
 
 	/**
@@ -672,7 +688,7 @@ class ModulesModelModule extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'client_id = '.(int) $table->client_id;

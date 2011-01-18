@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,8 +57,8 @@ abstract class ModulesHelper
 	{
 		// Build the filter options.
 		$options	= array();
-		$options[]	= JHtml::_('select.option',	'1',	JText::_('JENABLED'));
-		$options[]	= JHtml::_('select.option',	'0',	JText::_('JDISABLED'));
+		$options[]	= JHtml::_('select.option',	'1',	JText::_('JPUBLISHED'));
+		$options[]	= JHtml::_('select.option',	'0',	JText::_('JUNPUBLISHED'));
 		$options[]	= JHtml::_('select.option',	'-2',	JText::_('JTRASH'));
 		return $options;
 	}
@@ -149,18 +149,18 @@ abstract class ModulesHelper
 
 		$db->setQuery($query);
 		$modules = $db->loadObjectList();
+		$lang = JFactory::getLanguage();
 		foreach ($modules as $i=>$module) {
 			$extension = $module->value;
 			$path = $clientId ? JPATH_ADMINISTRATOR : JPATH_SITE;
 			$source = $path . "/modules/$extension";
-			$lang = JFactory::getLanguage();
 				$lang->load("$extension.sys", $path, null, false, false)
 			||	$lang->load("$extension.sys", $source, null, false, false)
 			||	$lang->load("$extension.sys", $path, $lang->getDefault(), false, false)
 			||	$lang->load("$extension.sys", $source, $lang->getDefault(), false, false);
 			$modules[$i]->text = JText::_($module->text);
 		}
-		JArrayHelper::sortObjects($modules,'text');
+		JArrayHelper::sortObjects($modules, 'text', 1, true, $lang->getLocale());
 		return $modules;
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * @version		$Id: positions.php 19355 2010-11-05 11:18:24Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @version		$Id: positions.php 20267 2011-01-11 03:44:44Z eddieajau $
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,31 +20,50 @@ jimport('joomla.application.component.modellist');
 class ModulesModelPositions extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'value',
+				'templates',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$state = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '', 'string');
+		$state = $this->getUserStateFromRequest($this->context.'.filter.state', 'filter_state', '', 'string');
 		$this->setState('filter.state', $state);
 
 		$clientId = JRequest::getInt('client_id',0);
 		$this->setState('filter.client_id',$clientId);
 
-		$template = $app->getUserStateFromRequest($this->context.'.filter.template', 'filter_template', '', 'string');
+		$template = $this->getUserStateFromRequest($this->context.'.filter.template', 'filter_template', '', 'string');
 		$this->setState('filter.template', $template);
 
-		$type = $app->getUserStateFromRequest($this->context.'.filter.type', 'filter_type', '', 'string');
+		$type = $this->getUserStateFromRequest($this->context.'.filter.type', 'filter_type', '', 'string');
 		$this->setState('filter.type', $type);
 
 		// Load the parameters.

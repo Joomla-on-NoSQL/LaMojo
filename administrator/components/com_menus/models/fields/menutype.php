@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -136,7 +136,6 @@ class JFormFieldMenuType extends JFormFieldList
 		$html[] = '<dl class="menu_type">';
 		$html[] = '	<dt>'.JText::_('COM_MENUS_TYPE_SYSTEM').'</dt>';
 		$html[] = '	<dd>';
-		// $html[] = '		'.JText::_('COM_MENUS_TYPE_SYSTEM_DESC');
 		$html[] = '		<ul>';
 		$html[] = '			<li>';
 		$html[] = '				<a class="choose_type" href="#" onclick="javascript:Joomla.submitbutton(\'item.setType\', \''.
@@ -256,8 +255,8 @@ class JFormFieldMenuType extends JFormFieldList
 		{
 			// Create the menu option for the component.
 			$o = new JObject;
-			$o->title		= $menu['name'];
-			$o->description	= $menu['msg'];
+			$o->title		= (string) $menu['name'];
+			$o->description	= (string) $menu['msg'];
 			$o->request		= array('option' => $component);
 
 			$options[] = $o;
@@ -284,8 +283,8 @@ class JFormFieldMenuType extends JFormFieldList
 				if ($child->getName() == 'option') {
 					// Create the menu option for the component.
 					$o = new JObject;
-					$o->title		= $child['name'];
-					$o->description	= $child['msg'];
+					$o->title		= (string) $child['name'];
+					$o->description	= (string) $child['msg'];
 					$o->request		= array('option' => $component, (string) $optionsNode['var'] => (string) $child['value']);
 
 					$options[] = $o;
@@ -293,8 +292,8 @@ class JFormFieldMenuType extends JFormFieldList
 				elseif ($child->getName() == 'default') {
 					// Create the menu option for the component.
 					$o = new JObject;
-					$o->title		= $child['name'];
-					$o->description	= $child['msg'];
+					$o->title		= (string) $child['name'];
+					$o->description	= (string) $child['msg'];
 					$o->request		= array('option' => $component);
 
 					$options[] = $o;
@@ -353,8 +352,8 @@ class JFormFieldMenuType extends JFormFieldList
 										if ($child->getName() == 'option') {
 											// Create the menu option for the component.
 											$o = new JObject;
-											$o->title		= $child['name'];
-											$o->description	= $child['msg'];
+											$o->title		= (string) $child['name'];
+											$o->description	= (string) $child['msg'];
 											$o->request		= array('option' => $component, 'view' => $view, (string) $optionsNode['var'] => (string) $child['value']);
 
 											$options[] = $o;
@@ -362,8 +361,8 @@ class JFormFieldMenuType extends JFormFieldList
 										elseif ($child->getName() == 'default') {
 											// Create the menu option for the component.
 											$o = new JObject;
-											$o->title		= $child['name'];
-											$o->description	= $child['msg'];
+											$o->title		= (string) $child['name'];
+											$o->description	= (string) $child['msg'];
 											$o->request		= array('option' => $component, 'view' => $view);
 
 											$options[] = $o;

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,6 +24,29 @@ jimport('joomla.application.component.modellist');
 class InstallerModel extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'name',
+				'client_id',
+				'enabled',
+				'type',
+				'folder',
+				'extension_id',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Returns an object list
 	 *
 	 * @param	string The query
@@ -35,6 +58,8 @@ class InstallerModel extends JModelList
 	{
 		$ordering	= $this->getState('list.ordering');
 		$search		= $this->getState('filter.search');
+		// Replace slashes so preg_match will work
+		$search 	= str_replace('/', ' ', $search);
 		$db			= $this->getDbo();
 
 		if ($ordering == 'name' || (!empty($search) && stripos($search, 'id:') !== 0)) {
@@ -49,7 +74,7 @@ class InstallerModel extends JModelList
 					}
 				}
 			}
-			JArrayHelper::sortObjects($result, $this->getState('list.ordering'), $this->getState('list.direction') == 'desc' ? -1 : 1);
+			JArrayHelper::sortObjects($result, $this->getState('list.ordering'), $this->getState('list.direction') == 'desc' ? -1 : 1, true, $lang->getLocale());
 			$total = count($result);
 			$this->cache[$this->getStoreId('getTotal')] = $total;
 			if ($total < $limitstart) {
@@ -76,7 +101,7 @@ class InstallerModel extends JModelList
 		$lang = JFactory::getLanguage();
 		foreach($items as &$item) {
 			if (strlen($item->manifest_cache)) {
-				$data = unserialize($item->manifest_cache);
+				$data = json_decode($item->manifest_cache);
 				if ($data) {
 					foreach($data as $key => $value) {
 						if ($key == 'type') {
