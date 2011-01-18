@@ -64,7 +64,7 @@ class plgContentVote extends JPlugin
 
 			if ( $view == 'article' && $row->state == 1) {
 				JFactory::getDocument()->addScript(JURI::base().'/media/plg_content_vote/vote.js');
-				$uri = &JFactory::getURI();
+				$uri = JFactory::getURI();
 				$uri->setQuery($uri->getQuery().'&hitcount=0');
 
 				$html .= '<form method="post" action="' . $uri->toString() . '">';
@@ -73,7 +73,7 @@ class plgContentVote extends JPlugin
 				$html .= JText::_( 'PLG_VOTE_USER_RATING' ) .':&#160;'. $buttons .'&#160;/&#160;';
 				$html .= $rating_count;
 				$html .= "</span>\n";
-				$html .= '<input type="hidden" name="task" value="vote" />';
+				$html .= '<input type="hidden" name="task" value="article.vote" />';
 				$html .= '<input type="hidden" name="hitcount" value="0" />';
 				$html .= '<input type="hidden" name="url" value="'.  $uri->toString() .'" />';
 				$html .= '</div>';

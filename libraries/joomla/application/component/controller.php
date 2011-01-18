@@ -977,8 +977,9 @@ class JController extends JObject
 /**
  * Joomla Core  JSON Response Class
  *
- * @package		Joomla.Installation
- * @since		1.6
+ * @package		Joomla.Framework
+ * @subpackage	Application
+ * @since		1.7
  */
 class JJsonResponse
 {
