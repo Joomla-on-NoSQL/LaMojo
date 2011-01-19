@@ -76,6 +76,7 @@ class plgContentVote extends JPlugin
 				$html .= '<input type="hidden" name="task" value="article.vote" />';
 				$html .= '<input type="hidden" name="hitcount" value="0" />';
 				$html .= '<input type="hidden" name="url" value="'.  $uri->toString() .'" />';
+				$html .= JHtml::_('form.token');
 				$html .= '</div>';
 				$html .= '</form>';
 			} else {

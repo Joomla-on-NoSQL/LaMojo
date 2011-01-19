@@ -31,6 +31,7 @@ window.addEvent('domready', function() {
 				url: form.action+'&format=json',
 				onSuccess: function(r) {
 					if (r) {
+						Joomla.replaceTokens(r.token);
 						if (r.error === false) {
 							document.id('rating-count').set('text', r.data.rating_count);
 							$$('.vote-button').each(function(el) {
@@ -46,6 +47,7 @@ window.addEvent('domready', function() {
 				onFailure: function(xhr) {
 					var r = JSON.decode(xhr.responseText);
 					if (r) {
+						Joomla.replaceTokens(r.token);
 						alert(r.message);
 					}
 				}
