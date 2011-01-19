@@ -242,7 +242,7 @@ class ContentModelArticles extends JModelList
 		$query->select('u.id AS value, u.name AS text');
 		$query->from('#__users AS u');
 		$query->join('INNER', '#__content AS c ON c.created_by = u.id');
-		$query->group('u.id');
+		$query->group('u.id, u.name');
 		$query->order('u.name');
 
 		// Setup the query
