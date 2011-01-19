@@ -1,20 +1,15 @@
 <?php
 
-require_once 'BasePage.php';
-require_once 'SeleniumConnection.php';
+require_once 'pages/BasePage.php';
+require_once 'includes/SeleniumConnection.php';
 
-class LoginPage extends BasePage {
+class AdminLoginPage extends BasePage {
   private $locators = array(
     "username" => "username",
-    "password" => "password",
-    "submit_button" => "submit",
-    "error_message" => "css=div.error > p"
+    "password" => "passwd",
+    "submit_button" => "css=button1 > a"
   );
 
-  function __construct() {
-    $this->selenium = SeleniumConnection::getInstance()->selenium;
-  }
-  
   function __set($property, $value) {
     switch($property) {
       // cases can be stacked so all the 'text' ones here
@@ -31,8 +26,6 @@ class LoginPage extends BasePage {
   
   function __get($property) {
     switch($property) {
-      case "error_message":
-        return $this->selenium->getText($this->locators[$property]);
       default:
         return $this->$property;
     }
@@ -41,6 +34,12 @@ class LoginPage extends BasePage {
   function wait_until_loaded() {
     $this->waitForElementAvailable($this->locators['username']);
   }
+
+  function open_default_base_url() {
+	global $site;
+    $this->selenium->open($site['baseurl'].'/administrator');
+  }
+
 
   function login() {
     $this->selenium->click($this->locators['submit_button']);

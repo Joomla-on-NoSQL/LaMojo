@@ -1,22 +1,19 @@
 <?php
 
-require_once 'CustomTestCase.php';
-require_once 'landingPage.php';
+require_once 'JoomlaTestCase.php';
+require_once 'AdminLoginPage.php';
 
-class PageObjectExample extends CustomTestCase {
+class PageObjectExample extends JoomlaTestCase {
   /**
   * @test
   */
   public function example()
   {
-    $landing = new LandingPage();
+    $landing = new AdminLoginPage();
     $landing->open_default_base_url();
-    $form = $landing->open_sign_in_form();
-    $form->username = "monkey";
-    $form->password = "buttress";
-    $form->login();
-    $this->assertEquals($form->error_message, "Incorrect username or password.");
+    $landing->username = 'admin';
+    $landing->password = 'admin';
+    $landing->login();
     sleep(3);
   }
 }
-?>

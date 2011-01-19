@@ -3,7 +3,7 @@
 require_once 'SeleniumConnection.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
-abstract class CustomTestCase extends PHPUnit_Framework_TestCase {
+abstract class JoomlaTestCase extends PHPUnit_Framework_TestCase {
 
   public function setUp() {
       $this->verificationErrors = array();
