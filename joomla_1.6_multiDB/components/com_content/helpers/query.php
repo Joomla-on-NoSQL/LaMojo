@@ -163,7 +163,7 @@ class ContentHelperQuery
 
 		if ($voting) {
 			// calculate voting count
-			$select = ' , ROUND(v.rating_sum / v.rating_count) AS rating, v.rating_count';
+			$select = ' , ROUND(v.rating_sum / v.rating_count, 0) AS rating, v.rating_count';
 			$join = ' LEFT JOIN #__content_rating AS v ON a.id = v.content_id';
 		}
 		else {

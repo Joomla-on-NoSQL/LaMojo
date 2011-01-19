@@ -41,8 +41,8 @@ class plgUserJoomla extends JPlugin
 
 		$db = JFactory::getDbo();
 		$db->setQuery(
-			'DELETE FROM `#__session`' .
-			' WHERE `userid` = '.(int) $user['id']
+			'DELETE FROM '.$db->nameQuote('#__session') .
+			' WHERE '.$db->nameQuote('userid').' = '.(int) $user['id']
 		);
 		$db->Query();
 

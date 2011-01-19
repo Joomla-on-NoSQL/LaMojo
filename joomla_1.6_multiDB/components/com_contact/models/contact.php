@@ -72,9 +72,24 @@ class ContactModelContact extends JModelItem
 				$db = $this->getDbo();
 				$query = $db->getQuery(true);
 
-				$query->select($this->getState('item.select', 'a.*') . ','
-				. ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug, '
-				. ' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(\':\', c.id, c.alias) ELSE c.id END AS catslug ');
+				//sqlsrv changes
+				$case_when = ' CASE WHEN ';
+				$case_when .= $query->charLength('a.alias');
+				$case_when .= ' THEN ';
+				$a_id = $query->castToChar('a.id');
+				$case_when .= $query->concat(array($a_id, 'a.alias'), ':');
+				$case_when .= ' ELSE ';
+				$case_when .= $a_id.' END as slug';
+
+				$case_when1 = ' CASE WHEN ';
+				$case_when1 .= $query->charLength('c.alias');
+				$case_when1 .= ' THEN ';
+				$c_id = $query->castToChar('c.id');
+				$case_when1 .= $query->concat(array($c_id, 'c.alias'), ':');
+				$case_when1 .= ' ELSE ';
+				$case_when1 .= $c_id.' END as catslug';
+
+				$query->select($this->getState('item.select', 'a.*') . ','.$case_when.','.$case_when1);
 				$query->from('#__contact_details AS a');
 
 				// Join on category table.
@@ -180,9 +195,24 @@ class ContactModelContact extends JModelItem
 
 		$query	= $db->getQuery(true);
 		if ($pk) {
+			//sqlsrv changes
+			$case_when = ' CASE WHEN ';
+			$case_when .= $query->charLength('a.alias');
+			$case_when .= ' THEN ';
+			$a_id = $query->castToChar('a.id');
+			$case_when .= $query->concat(array($a_id, 'a.alias'), ':');
+			$case_when .= ' ELSE ';
+			$case_when .= $a_id.' END as slug';
+
+			$case_when1 = ' CASE WHEN ';
+			$case_when1 .= $query->charLength('cc.alias');
+			$case_when1 .= ' THEN ';
+			$c_id = $query->castToChar('cc.id');
+			$case_when1 .= $query->concat(array($c_id, 'cc.alias'), ':');
+			$case_when1 .= ' ELSE ';
+			$case_when1 .= $c_id.' END as catslug';
 			$query->select('a.*, cc.access as category_access, cc.title as category_name, '
-			. ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug, '
-			. ' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(\':\', cc.id, cc.alias) ELSE cc.id END AS catslug ');
+			.$case_when.','.$case_when1);
 
 			$query->from('#__contact_details AS a');
 

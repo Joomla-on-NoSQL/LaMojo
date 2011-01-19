@@ -112,10 +112,25 @@ class ContactModelCategory extends JModelList
 		$query	= $db->getQuery(true);
 
 		// Select required fields from the categories.
-		$query->select($this->getState('list.select', 'a.*') . ','
-		. ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug, '
-		. ' CASE WHEN CHAR_LENGTH(c.alias) THEN CONCAT_WS(\':\', c.id, c.alias) ELSE c.id END AS catslug ');
-		$query->from('`#__contact_details` AS a');
+		//sqlsrv changes
+		$case_when = ' CASE WHEN ';
+		$case_when .= $query->charLength('a.alias');
+		$case_when .= ' THEN ';
+		$a_id = $query->castToChar('a.id');
+		$case_when .= $query->concat(array($a_id, 'a.alias'), ':');
+		$case_when .= ' ELSE ';
+		$case_when .= $a_id.' END as slug';
+
+		$case_when1 = ' CASE WHEN ';
+		$case_when1 .= $query->charLength('c.alias');
+		$case_when1 .= ' THEN ';
+		$c_id = $query->castToChar('c.id');
+		$case_when1 .= $query->concat(array($c_id, 'c.alias'), ':');
+		$case_when1 .= ' ELSE ';
+		$case_when1 .= $c_id.' END as catslug';
+
+		$query->select($this->getState('list.select', 'a.*') . ','.$case_when.','.$case_when1);
+		$query->from($db->nameQuote('#__contact_details').' AS a');
 		$query->where('a.access IN ('.$groups.')');
 
 		// Filter by category.
@@ -132,7 +147,7 @@ class ContactModelCategory extends JModelList
 		}
 		// Filter by start and end dates.
 		$nullDate = $db->Quote($db->getNullDate());
-		$nowDate = $db->Quote(JFactory::getDate()->toMySQL());
+		$nowDate = $db->Quote($db->toSQLDate(JFactory::getDate()));
 
 		if ($this->getState('filter.publish_date')){
 			$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
