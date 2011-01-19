@@ -287,6 +287,14 @@ input.star-on {
 	background: transparent url(../../../media/system/images/rating_star.png) no-repeat;
 }
 
+#content-rating:hover .vote-button {
+	background: transparent url(../../../media/system/images/rating_star_blank.png) no-repeat;
+}
+
+.vote-button:hover {
+	background: transparent url(../../../media/system/images/rating_star.png) no-repeat !important;
+}
+
 input.star-hover {
 	background: transparent url(../../../media/system/images/rating_star.png) no-repeat !important;
 }

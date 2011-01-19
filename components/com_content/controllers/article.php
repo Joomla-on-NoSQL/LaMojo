@@ -291,8 +291,7 @@ class ContentControllerArticle extends JControllerForm
 
 			if ($model->storeVote($id, $user_rating)) {
 				$this->setRedirect($url, JText::_('COM_CONTENT_ARTICLE_VOTE_SUCCESS'));
-			}
-			else {
+			} else {
 				$this->setRedirect($url, JText::_('COM_CONTENT_ARTICLE_VOTE_FAILURE'));
 			}
 		}

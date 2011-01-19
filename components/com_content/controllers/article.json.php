@@ -11,6 +11,8 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.controllerform');
 
 /**
+ * - JSON Protocol -
+ * 
  * @package		Joomla.Site
  * @subpackage	com_content
  */
@@ -30,15 +32,20 @@ class ContentControllerArticle extends JControllerForm
 			$id = JRequest::getInt('id', 0);
 			$viewName = JRequest::getString('view', $this->default_view);
 			$model = $this->getModel($viewName);
+
 			$r = new JObject();
 			if ($model->storeVote($id, $user_rating)) {
 				$item = &$model->getItem($id);
-				$r->success = true;
 				$r->rating = intval(@$item->rating);
 				$r->rating_count = intval(@$item->rating_count);
 				$r->message = JText::_('COM_CONTENT_ARTICLE_VOTE_SUCCESS');
 			} else {
-				$r->message = JText::_('COM_CONTENT_ARTICLE_VOTE_FAILURE');
+				$error = JError::getError();
+				if ($error) {
+					$this->sendJsonResponse($error, 500);
+				} else {
+					$this->sendJsonResponse(new JException(JText::_('COM_CONTENT_ARTICLE_VOTE_FAILURE'), 500));
+				}
 			}
 			$this->sendJsonResponse($r);
 		}

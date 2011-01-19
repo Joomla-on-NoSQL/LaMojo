@@ -68,8 +68,8 @@ class plgContentVote extends JPlugin
 				$uri->setQuery($uri->getQuery().'&hitcount=0');
 
 				$html .= '<form method="post" action="' . $uri->toString() . '">';
-				$html .= '<div id="content_vote">';
-				$html .= '<span id="content_rating">';
+				$html .= '<div id="content-vote">';
+				$html .= '<span id="content-rating">';
 				$html .= JText::_( 'PLG_VOTE_USER_RATING' ) .':&#160;'. $buttons .'&#160;/&#160;';
 				$html .= '<span id="rating-count">'.$rating_count.'</span>';
 				$html .= "</span>\n";

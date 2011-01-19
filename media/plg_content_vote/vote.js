@@ -29,14 +29,24 @@ window.addEvent('domready', function() {
 			var req = new Request.JSON({
 				method: 'post',
 				url: form.action+'&format=json',
-				onComplete: function(r) {
-					if (r.data.success) {
-						document.id('rating-count').set('text', r.data.rating_count);
-						$$('.vote-button').each(function(el) {
-							if (el.value <= this.rating && !el.hasClass('star-on')) {
-								el.addClass('star-on');
-							}
-						}, r.data);
+				onSuccess: function(r) {
+					if (r) {
+						if (r.error === false) {
+							document.id('rating-count').set('text', r.data.rating_count);
+							$$('.vote-button').each(function(el) {
+								if (el.value <= this.rating && !el.hasClass('star-on')) {
+									el.addClass('star-on');
+								}
+							}, r.data);
+						} else {
+							alert(r.message);
+						}
+					}
+				},
+				onFailure: function(xhr) {
+					var r = JSON.decode(xhr.responseText);
+					if (r) {
+						alert(r.message);
 					}
 				}
 			});
