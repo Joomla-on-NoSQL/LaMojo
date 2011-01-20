@@ -75,7 +75,7 @@ abstract class JHtmlSliders
 			$close = '';
 		}
 
-		return $close.'<div class="panel"><h3 class="pane-toggler title" id="'.$id.'"><a href="javascript:void(0);"><span>'.$text.'</span></a></h3><div class="pane-slider content">';
+		return $close.'<div class="panel"><h3 class="pane-toggler title" id="'.$id.'"><a href="#"><span>'.$text.'</span></a></h3><div class="pane-slider content">';
 	}
 
 	/**

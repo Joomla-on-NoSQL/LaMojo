@@ -1,8 +1,3 @@
-// Only define the Joomla namespace if not defined.
-if (typeof(Joomla) === 'undefined') {
-	var Joomla = {};
-}
-
 window.addEvent('domready', function() {
 	$$('.vote-button').each(function(el) {
 		el.addEvent('mouseenter', function(e) {

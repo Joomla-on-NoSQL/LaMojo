@@ -46,7 +46,7 @@ JHtml::_('behavior.noframes');
 	}
 </script>
 </head>
-<body onload="javascript:setFocus()">
+<body onload="setFocus()">
 	<div id="border-top" class="h_blue">
 		<div>
 			<div>

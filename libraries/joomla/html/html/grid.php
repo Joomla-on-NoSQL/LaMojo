@@ -128,7 +128,7 @@ abstract class JHtmlGrid
 		}
 		else {
 			$href = '
-			<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task_access .'\')" '. $color_access .'>
+			<a href="#" onclick="return listItemTask(\'cb'. $i .'\',\''. $task_access .'\')" '. $color_access .'>
 			'. JText::_($row->groupname) .'</a>'
 			;
 		}
@@ -186,7 +186,7 @@ abstract class JHtmlGrid
 		$action = $value ? JText::_('JLIB_HTML_UNPUBLISH_ITEM') : JText::_('JLIB_HTML_PUBLISH_ITEM');
 
 		$href = '
-		<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $prefix.$task .'\')" title="'. $action .'">'.
+		<a href="" onclick="return listItemTask(\'cb'. $i .'\',\''. $prefix.$task .'\')" title="'. $action .'">'.
 		JHTML::_('image','admin/'.$img, $alt, array('border' => 0), true).'</a>'
 		;
 
