@@ -1,6 +1,6 @@
 <?php
 /**
- * @version		$Id: helper.php 20196 2011-01-09 02:40:25Z ian $
+ * @version		$Id: helper.php 20348 2011-01-18 21:52:44Z infograf768 $
  * @package		Joomla.Site
  * @subpackage	mod_languages
  * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
@@ -17,6 +17,7 @@ abstract class modLanguagesHelper
 {
 	public static function getList(&$params)
 	{
+		$lang = JFactory::getLanguage();
 		$languages	= JLanguageHelper::getLanguages();
 		$db			= JFactory::getDBO();
 		$app		= JFactory::getApplication();
@@ -35,6 +36,7 @@ abstract class modLanguagesHelper
 			}
 			else {
 				if ($app->getLanguageFilter()) {
+					$language->active =  $language->lang_code == $lang->getTag();
 					if ($app->getCfg('sef')=='1') {
 						$itemid = isset($homes[$language->lang_code]) ? $homes[$language->lang_code]->id : $homes['*']->id;
 						$language->link = JRoute::_('index.php?lang='.$language->sef.'&Itemid='.$itemid);
