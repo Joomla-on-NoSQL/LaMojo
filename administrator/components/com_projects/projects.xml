@@ -7,7 +7,7 @@
 	<authorUrl>jcamp.3den.org</authorUrl>
 	<copyright>(C) 2010 jCamp team. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
-	<version>1.0 Alpha2</version>
+	<version>0.13 Alpha</version>
 	<description>COM_PROJECTS_DESC</description>
 	<install> 
 		<!-- Runs on install -->
@@ -28,9 +28,9 @@
 	<files folder="components/com_projects">
 		    <filename>controller.php</filename>
 		    <filename>index.html</filename>
-		    <filename>projects.php</filename>
-		    <folder>controllers</folder>
-		    <folder>helpers</folder>
+	    <filename>projects.php</filename>
+	    <folder>controllers</folder>
+	    <folder>helpers</folder>
 			<folder>models</folder>
 		    <folder>views</folder>
 	</files> 
