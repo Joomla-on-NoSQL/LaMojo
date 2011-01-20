@@ -14,6 +14,5 @@ class PageObjectExample extends JoomlaTestCase {
     $landing->username = 'admin';
     $landing->password = 'admin';
     $landing->login();
-    sleep(3);
   }
 }

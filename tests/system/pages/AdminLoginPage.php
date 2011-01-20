@@ -7,7 +7,7 @@ class AdminLoginPage extends BasePage {
   private $locators = array(
     "username" => "username",
     "password" => "passwd",
-    "submit_button" => "css=button1 > a"
+    "submit_button" => "link=Log in"
   );
 
   function __set($property, $value) {
@@ -44,7 +44,12 @@ class AdminLoginPage extends BasePage {
   function login() {
     $this->selenium->click($this->locators['submit_button']);
     $this->selenium->waitForPageToLoad(parent::$string_timeout);
+    if ($this->selenium->isElementPresent($this->locators['username']) {
+		return $this;
+	} else {
+		$controlPanelPage = new ControlPanelPage();
+		$controlPanelPage->wait_until_loaded();
+		return $controlPanelPage;
+	}
   }
 }
-
-?>
