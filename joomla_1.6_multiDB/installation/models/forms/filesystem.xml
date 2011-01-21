@@ -62,8 +62,9 @@
 				label="INSTL_CLOUD_ACCESS_KEY"
 				required="true"
 			/>
-			<field name="domain_name" type="text" id="domain_name" class="inputbox"
+			<field name="secret_key" type="text" id="secret_key" class="inputbox"
 				label="INSTL_CLOUD_DOMAIN_NAME"
+				required="true"
 			/>
 		</fieldset>
 	</fieldset>

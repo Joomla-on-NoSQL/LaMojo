@@ -261,10 +261,10 @@ window.addEvent('domready', function(){
 								</tr>
 								<tr  class="server_details_req">
 						       <td>
-										<?php echo $this->form->getLabel('domain_name'); ?>
+										<?php echo $this->form->getLabel('secret_key'); ?>
 									</td>
 									<td>
-										<?php echo $this->form->getInput('domain_name'); ?>
+										<?php echo $this->form->getInput('secret_key'); ?>
 									</td><td>
 									<em>
 										<?php echo JText::_('INSTL_CLOUD_DOMAIN_NAME_DESC'); ?>

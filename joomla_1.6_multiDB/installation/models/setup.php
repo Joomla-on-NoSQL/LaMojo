@@ -394,6 +394,7 @@ class JInstallationModelSetup extends JModel
 		{
 			$form->setFieldAttribute('acc_name', 'required', 'false');
 			$form->setFieldAttribute('access_key', 'required', 'false');
+			$form->setFieldAttribute('secret_key', 'required', 'false');
 		}
 		// Filter and validate the form data.
 		$data = $form->filter($data);

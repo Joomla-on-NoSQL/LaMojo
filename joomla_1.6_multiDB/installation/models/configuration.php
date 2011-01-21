@@ -83,7 +83,7 @@ class JInstallationModelConfiguration extends JModel
 		$registry->set('storage_type', $options->storage_type);
 		$registry->set('cloud_acc_name', $options->acc_name);
 		$registry->set('cloud_access_key', $options->access_key);
-		$registry->set('domain_name', $options->domain_name);
+		$registry->set('secret_key', $options->secret_key);
 		
 		/* Locale Settings */
 		$registry->set('offset', 'UTC');
