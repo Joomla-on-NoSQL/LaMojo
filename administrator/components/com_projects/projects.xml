@@ -26,13 +26,13 @@
 	    </sql>
 	</update>
 	<files folder="components/com_projects">
-		    <filename>controller.php</filename>
-		    <filename>index.html</filename>
+	    <filename>controller.php</filename>
+	    <filename>index.html</filename>
 	    <filename>projects.php</filename>
 	    <folder>controllers</folder>
 	    <folder>helpers</folder>
 			<folder>models</folder>
-		    <folder>views</folder>
+	    <folder>views</folder>
 	</files> 
 	<media destination="com_projects" folder="media/com_projects">
 		<filename>index.html</filename>
@@ -44,14 +44,14 @@
 	</languages>
 
 	<administration>
-		    <menu link="index.php?option=com_projects">COM_PROJECTS</menu> 
-		    <submenu>
+	    <menu link="index.php?option=com_projects">COM_PROJECTS</menu> 
+	    <submenu>
           <menu link="option=com_projects" img="class:article">COM_PROJECTS_PROJECTS</menu>
           <menu link="option=com_categories&amp;view=categories&amp;extension=com_projects" img="class:category" alt="Portfolios">COM_PROJECTS_PORTFOLIOS</menu>
           <menu link="option=com_categories&amp;view=categories&amp;extension=com_projects.document" img="class:category" alt="COM_PROJECTS_DOCUMENT_CATEGORIES_DESC">COM_PROJECTS_DOCUMENT_CATEGORIES</menu>
 					<menu link="option=com_categories&amp;view=categories&amp;extension=com_projects.task" img="class:category" alt="COM_PROJECTS_TASK_CATEGORIES_DESC">COM_PROJECTS_TASK_CATEGORIES</menu>
-		    </submenu>  
-		    <files folder="administrator/components/com_projects">
+	    </submenu>  
+	    <files folder="administrator/components/com_projects">
 		      <filename>index.html</filename>
 		      <filename>controller.php</filename>
 		      <filename>projects.php</filename>
@@ -63,10 +63,10 @@
           <folder>sql</folder>		            
           <folder>tables</folder>
 					<folder>views</folder>
-		    </files>
-	    	<languages folder="administrator/language">
+	  </files>
+    <languages folder="administrator/language">
 				<language tag="en-GB">en-GB/en-GB.com_projects.ini</language>
 				<language tag="en-GB">en-GB/en-GB.com_projects.sys.ini</language>
-			</languages>
+		</languages>
 	</administration>
 </extension>

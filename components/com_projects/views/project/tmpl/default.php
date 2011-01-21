@@ -57,22 +57,22 @@ $pageClass = $this->params->get('pageclass_sfx');
     <div class="one3">
 		<?php
 		// Tasks and Milestones
-		if ($params->get('show_tasks') || $this->canDo->get('task.view')) {
+		if ($this->canDo->get('task.view')) {
 			echo $this->loadTemplate('tasks');
 		}
 
 		// Tickets
-		if ($params->get('show_tickets') || $this->canDo->get('ticket.view')) {
+		if ($this->canDo->get('ticket.view')) {
 			echo $this->loadTemplate('tickets');
 		}
 
 		// Documents
-		if ($params->get('show_documents') || $this->canDo->get('document.view')) {
+		if ($this->canDo->get('document.view')) {
 			echo $this->loadTemplate('documents');
 		}
 
 		// Members
-		if ($params->get('show_members') || $this->canDo->get('is.member')) {
+		if ($this->canDo->get('members.view')) {
 			echo $this->loadTemplate('members');
 		}
 		?>

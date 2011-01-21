@@ -14,7 +14,6 @@
 		<action name="document.delete" title="COM_PROJECTS_ACTION_DOCUMENT_DELETE_LABEL" description="COM_PROJECTS_ACTION_DOCUMENT_DELETE_DESC" />
 		
 		<action name="core.edit" title="COM_PROJECTS_ACTION_PROJECT_EDIT_LABEL" description="COM_PROJECTS_ACTION_PROJECT_EDIT_DESC" />
-		<action name="core.edit.state" title="COM_PROJECTS_ACTION_PROJECT_EDITSTATE_LABEL" description="COM_PROJECTS_ACTION_PROJECT_EDITSTATE_DESC" />
 		<action name="task.edit" title="COM_PROJECTS_ACTION_TASK_EDIT_LABEL" description="COM_PROJECTS_ACTION_TASK_EDIT_LABEL" />
 		<action name="ticket.edit" title="COM_PROJECTS_ACTION_TICKET_EDIT_LABEL" description="COM_PROJECTS_ACTION_TICKET_EDIT_LABEL" />	
 		<action name="document.edit" title="COM_PROJECTS_ACTION_DOCUMENT_EDIT_LABEL" description="COM_PROJECTS_ACTION_DOCUMENT_EDIT_LABEL" />
@@ -30,6 +29,5 @@
 		<action name="core.create" title="COM_CATEGORY_ACCESS_CREATE" description="COM_CATEGORY_ACCESS_CREATE_DESC" />
 		<action name="core.delete" title="COM_CATEGORY_ACCESS_DELETE" description="COM_CATEGORY_ACCESS_DELETE_DESC" />
 		<action name="core.edit" title="COM_CATEGORY_ACCESS_EDIT" description="COM_CATEGORY_ACCESS_EDIT_DESC" />
-		<action name="core.edit.state" title="JACTION_EDITSTATE" description="COM_CATEGORY_ACCESS_EDITSTATE_DESC" />
 	</section>
 </access>

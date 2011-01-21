@@ -50,9 +50,6 @@ class ProjectsHelper
 			JText::_('COM_PROJECTS_TASK_CATEGORIES'),
 			'index.php?option=com_categories&extension=com_projects.task',
 			$extension == 'com_projects.task'
-		);
-		
-		
-				
+		);				
 	}
 }

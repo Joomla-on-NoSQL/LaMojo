@@ -2,36 +2,8 @@
 <config>
 
 	<fieldset name="permissions"
-		label="JCONFIG_PERMISSIONS_LABEL"
-		description="JCONFIG_PERMISSIONS_DESC">
+		label="JCONFIG_PERMISSIONS_LABEL">
 		
-		<field name="task.access"
-			type="accesslevel"
-			label="COM_PROJECTS_FIELD_ACCESS_TASKS_LABEL"
-			description="COM_PROJECTS_FIELD_ACCESS_TASKS_DESC" />
-			
-
-		<field name="ticket.access"
-			type="accesslevel"
-			label="COM_PROJECTS_FIELD_ACCESS_TICKETS_LABEL"
-			description="COM_PROJECTS_FIELD_ACCESS_TICKETS_DESC" />
-
-		<field name="document.access"
-			type="accesslevel"
-			label="COM_PROJECTS_FIELD_ACCESS_DOCUMENTS_LABEL"
-			description="COM_PROJECTS_FIELD_ACCESS_DOCUMENTS_DESC" />
-		
-		<field name="members.access"
-			type="accesslevel"
-			label="COM_PROJECTS_FIELD_ACCESS_MEMBERS_LABEL"
-			description="COM_PROJECTS_FIELD_ACCESS_MEMBERS_DESC" />
-		
-		
-		<field name="spacer_access"
-			type="spacer"
-			hr="true"
-			/>
-			
 		<field name="rules"	type="rules" label="JCONFIG_PERMISSIONS_LABEL"
 			filter="rules" component="com_projects"	section="component"/>	
 			
@@ -40,6 +12,7 @@
 	<fieldset name="layout"
 		label="COM_PROJCETS_FIELD_LAYOUTS_SETTINGS_LABEL"
 		description="COM_PROJCETS_FIELD_LAYOUTS_SETTINGS_DESC">
+		
 		
 		<field name="style"
 			type="filelist"
@@ -99,6 +72,27 @@
 			<option	value="-2">COM_PROJECTS_FIELD_LISTING_TICKETS_DENIED</option>
 		</field>
 
+
+    <field type="spacer" hr="true" />
+    <field name="task_access"
+      type="accesslevel"
+      label="COM_PROJECTS_FIELD_ACCESS_TASKS_LABEL"
+      description="COM_PROJECTS_FIELD_ACCESS_TASKS_DESC" />
+      
+    <field name="ticket_access"
+      type="accesslevel"
+      label="COM_PROJECTS_FIELD_ACCESS_TICKETS_LABEL"
+      description="COM_PROJECTS_FIELD_ACCESS_TICKETS_DESC" />
+
+    <field name="document_access"
+      type="accesslevel"
+      label="COM_PROJECTS_FIELD_ACCESS_DOCUMENTS_LABEL"
+      description="COM_PROJECTS_FIELD_ACCESS_DOCUMENTS_DESC" />
+    
+    <field name="members_access"
+      type="accesslevel"
+      label="COM_PROJECTS_FIELD_ACCESS_MEMBERS_LABEL"
+      description="COM_PROJECTS_FIELD_ACCESS_MEMBERS_DESC" />  
 	</fieldset>
 	
 	
@@ -117,55 +111,8 @@
 			<option	value="documents">COM_PROJECTS_DOCUMENTS</option>
 			<option	value="tasks">COM_PROJECTS_TASKS</option>
 		</field>
-				
-		<field name="use_content_plugins_portfolios"
-			type="radio"
-			label="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_PORTFOLIOS_LABEL"
-			description="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_PORTFOLIOS_DESC"
-			size="1"
-			default="1">
-			<option	value="0">JNO</option>
-			<option	value="1">JYES</option>
-		</field>
-
-		<field name="use_content_plugins_projects"
-			type="radio"
-			label="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_PROJECTS_LABEL"
-			description="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_PROJECTS_DESC"
-			size="1"
-			default="1">
-			<option	value="0">JNO</option>
-			<option	value="1">JYES</option>
-		</field>
-
-		<field name="use_content_plugins_documents"
-			type="radio"
-			label="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_DOCUMENTS_LABEL"
-			description="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_DOCUMENTS_DESC"
-			size="1"
-			default="1">
-			<option	value="0">JNO</option>
-			<option	value="1">JYES</option>
-		</field>
-
-		<field name="use_content_plugins_tasks"
-			type="radio"
-			label="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_TASKS_LABEL"
-			description="COM_PROJECTS_FIELD_USE_CONTENT_PLUGINS_TASKS_DESC"
-			size="1"
-			default="1">
-			<option	value="0">JNO</option>
-			<option	value="1">JYES</option>
-		</field>
 		
-		<field
-			name="spacer1"
-			label="COM_PROJECTS_CONFIG_PLUGINS_SETTINGS_LABEL"
-			description="COM_PROJECTS_CONFIG_PLUGINS_SETTINGS_DESC"
-			type="spacer"
-			hr="true"
-			/>
-		
+		<field type="spacer" hr="true" />
 		<field name="menu_integration"
 			type="checkboxes"
 			class="radio"

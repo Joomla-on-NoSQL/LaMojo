@@ -19,72 +19,70 @@ jimport('joomla.application.component.controllerform');
  */
 class ProjectsControllerProject extends JControllerForm {
 	protected $text_prefix = 'COM_PROJECTS_PROJECT';
-    protected $view_item = 'project';
-    protected $view_list = 'projects';
-	protected $_context = 'com_projects.edit.project';
-	
+	protected $view_item = 'project';
+	protected $view_list = 'projects';
 
-    /**
-     * Method to get a model object, loading it if required.
-     *
-     * @param	string	The model name. Optional.
-     * @param	string	The class prefix. Optional.
-     * @param	array	Configuration array for model. Optional.
-     *
-     * @return	object	The model.
-     */
-    public function getModel($name = 'Project', $prefix = 'ProjectsModel', $config = array()) {
-        return parent::getModel($name, $prefix, $config);
-    }
- 
-    /**
-     * Assigns members to a project
-     *
-     * @since	1.6
-     */
-    public function assignMembers() {
-        // Check for request forgeries
-        JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+	/**
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param	string	The model name. Optional.
+	 * @param	string	The class prefix. Optional.
+	 * @param	array	Configuration array for model. Optional.
+	 *
+	 * @return	object	The model.
+	 */
+	public function getModel($name = 'Project', $prefix = 'ProjectsModel', $config = array()) {
+		return parent::getModel($name, $prefix, $config);
+	}
 
-        $model = $this->getModel();
-        $members = JRequest::getVar('cid', array(), '', 'array');
+	/**
+	 * Assigns members to a project
+	 *
+	 * @since	1.6
+	 */
+	public function assignMembers() {
+		// Check for request forgeries
+		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-        $id = JRequest::getInt('id', 0);
+		$model = $this->getModel();
+		$members = JRequest::getVar('cid', array(), '', 'array');
 
-        if (!$model->addMembers($id, $members)) {
-            JError::raiseWarning(500, JText::_('JERROR_AN_ERROR_HAS_OCCURRED'));
-            return false;
-        }
+		$id = JRequest::getInt('id', 0);
 
-        $this->setRedirect(        		
-        		ProjectsHelper::getLink('members.assign', $id),
-                JText::_('COM_PROJECTS_MEMBERS_ASSIGN_SUCCESSFUL'));
+		if (!$model->addMembers($id, $members)) {
+			JError::raiseWarning(500, JText::_('JERROR_AN_ERROR_HAS_OCCURRED'));
+			return false;
+		}
 
-        return true;
-    }
+		$this->setRedirect(
+		ProjectsHelper::getLink('members.assign', $id),
+		JText::_('COM_PROJECTS_MEMBERS_ASSIGN_SUCCESSFUL'));
 
-    /**
-     * deletes members from a project
-     *
-     * @since	1.6
-     */
-    public function unassignMembers() {
-        // Check for request forgeries
-        JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		return true;
+	}
 
-        $model = $this->getModel();
-        $members = JRequest::getVar('cid', array(), '', 'array');
-        $id = JRequest::getInt('id', 0);
+	/**
+	 * deletes members from a project
+	 *
+	 * @since	1.6
+	 */
+	public function unassignMembers() {
+		// Check for request forgeries
+		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
-        if (!$model->removeMembers($id, $members)) {
-            JError::raiseWarning(500, JText::_('JERROR_AN_ERROR_HAS_OCCURRED'));
-            return false;
-        }
+		$model = $this->getModel();
+		$members = JRequest::getVar('cid', array(), '', 'array');
+		$id = JRequest::getInt('id', 0);
 
-        $this->setRedirect(        		
-        		ProjectsHelper::getLink('members.unassign', $id),
-                JText::_('COM_PROJECTS_MEMBERS_DELETE_SUCCESSFUL'));
-        return true;
-    }
+		if (!$model->removeMembers($id, $members)) {
+			JError::raiseWarning(500, JText::_('JERROR_AN_ERROR_HAS_OCCURRED'));
+			return false;
+		}
+
+		$this->setRedirect(
+		ProjectsHelper::getLink('members.unassign', $id),
+		JText::_('COM_PROJECTS_MEMBERS_DELETE_SUCCESSFUL'));
+		return true;
+	}
 
 }

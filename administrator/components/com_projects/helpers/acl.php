@@ -74,7 +74,7 @@ abstract class ProjectsHelperACL {
         	in_array($record->access, $authorisedLevels): 
         	true; 
         $assets->set('is.authorised', $is_authorised);        
-        
+
         // acctions
         $resources = array(
             'task',
@@ -85,7 +85,6 @@ abstract class ProjectsHelperACL {
         $actions = array(
             '.create',
             '.edit',
-        	'.edit.state',
             '.delete', 
         );
 
@@ -95,17 +94,14 @@ abstract class ProjectsHelperACL {
             // Actions
             foreach ($actions as &$action) {
                 $assets->set($resource . $action,
-                	(
-                		$is_member &&
-                        $user->authorise($resource . $action, $assetName)
-                	)
+                		$user->authorise($resource.$action, $assetName)
                 );
             }
 
             // View
             $assets->set($resource . '.view',
                 ( 
-                	in_array($params->get($resource.'.access'), $authorisedLevels) ||   
+                	in_array($params->get($resource.'_access'), $authorisedLevels) ||   
             		(
 	                    $is_member &&
 	                    $assets->get($resource . '.create') ||
@@ -115,7 +111,11 @@ abstract class ProjectsHelperACL {
                 )
             );
         }
-         
+        
+        // More
+        $assets->set('members.view', in_array($params->get('members_access'), $authorisedLevels));
+        
+        //var_dump($params);die();        
         
         return $assets;
     }
@@ -134,7 +134,5 @@ abstract class ProjectsHelperACL {
         }
 
         return $assets->get($action, false);
-    }
-    
+    }   
 }
-?>

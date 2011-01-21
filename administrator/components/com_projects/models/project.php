@@ -56,7 +56,7 @@ class ProjectsModelProject extends JModelAdmin
 	 */
 	protected function canEditState($record)
 	{
-		return $this->canDo('core.edit.state', $record);
+		return $this->canEdit($record);
 	}
 	
 	/**
@@ -68,10 +68,6 @@ class ProjectsModelProject extends JModelAdmin
 	protected function canEdit($record)
 	{
 		return $this->canDo('core.edit', $record);
-		return ProjectsHelperACL::canDo('core.edit', 
-			$record->get('catid'), 
-			$record->get('id'),
-			$record);
 	}
 
 	/**
@@ -84,6 +80,8 @@ class ProjectsModelProject extends JModelAdmin
 	 */
 	protected function populateState()
 	{
+		return parent::populateState();
+		
 		$app = JFactory::getApplication();	
 		
 		$pk = (int) $app->getUserStateFromRequest($this->context.'.id', 'id');
@@ -188,6 +186,7 @@ class ProjectsModelProject extends JModelAdmin
 		if(!is_object($this->item)){
 			$app = JFactory::getApplication();
 			$this->item = parent::getItem($pk);
+
 			if(!empty($this->item)){
 				if(empty($this->item->id)){ // when creating a new project, try to set current portfolio as default
 					$this->setState('portfolio.id',$app->getUserState('portfolio.id'));
@@ -213,9 +212,9 @@ class ProjectsModelProject extends JModelAdmin
 					$db->setQuery($query);
 					$this->item->progress = $db->loadResult();
 				}
-
 			}
 		}
+
 		return $this->item;
 	}
 
@@ -354,11 +353,9 @@ class ProjectsModelProject extends JModelAdmin
 				$this->getState('project.id'): 
 				$this->getDbo()->insertID();
 			
-			$user_id = !empty($data['created_by'])? $data['created_by']: JFactory::getUser()->id;
-						
-            $this->addMembers($id, $user_id);
-           	
-            $app = JFactory::getApplication();	
+			$user_id = !empty($data['created_by'])? $data['created_by']: JFactory::getUser()->id;			
+      $this->addMembers($id, $user_id);
+      $app = JFactory::getApplication();	
 			$app->setUserState('project.id', $id);
 		}
 		

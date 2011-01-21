@@ -33,7 +33,7 @@ class ProjectsViewProject extends JView
 		$this->item		= $this->get('Item');
 		$this->form		= $this->get('Form');
 		$this->canDo	= ProjectsHelperACL::getActions();
-		
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode("\n", $errors));
@@ -63,17 +63,10 @@ class ProjectsViewProject extends JView
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||($canDo->get('core.create'))))
 		{
-
 			JToolBarHelper::apply('project.apply', 'JTOOLBAR_APPLY');
 			JToolBarHelper::save('project.save', 'JTOOLBAR_SAVE');
 		}
-		if (!$checkedOut && ($canDo->get('core.create'))){			
-			JToolBarHelper::custom('project.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
-		}
-		// If an existing item, can save to a copy.
-		if (!$isNew && $canDo->get('core.create')) {
-			JToolBarHelper::custom('project.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
-		}
+
 		if (empty($this->item->id)) {
 			JToolBarHelper::cancel('project.cancel', 'JTOOLBAR_CANCEL');
 		}

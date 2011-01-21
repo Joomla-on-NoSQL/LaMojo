@@ -60,8 +60,6 @@ class ProjectsViewProjects extends JView
 		}
 		if ($canDo->get('core.edit')) {
 			JToolBarHelper::editList('project.edit','JTOOLBAR_EDIT');
-		}
-		if ($canDo->get('core.edit.state')) {
 
 			JToolBarHelper::divider();
 			JToolBarHelper::custom('projects.publish', 'publish.png', 'publish_f2.png','JTOOLBAR_PUBLISH', true);
@@ -73,7 +71,7 @@ class ProjectsViewProjects extends JView
 		}
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'projects.delete','JTOOLBAR_EMPTY_TRASH');
-		} else if ($canDo->get('core.edit.state')) {
+		} else if ($canDo->get('core.edit')) {
 			JToolBarHelper::trash('projects.trash','JTOOLBAR_TRASH');
 		}
 		JToolBarHelper::divider();
