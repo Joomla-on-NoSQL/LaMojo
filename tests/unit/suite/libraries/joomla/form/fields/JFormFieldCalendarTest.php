@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -280,6 +280,7 @@ class JFormFieldCalendarTest extends JoomlaTestCase
 		$calendar = new JFormFieldCalendarInspector;
 
 		if ($expectedParameters[0] == 'strftime(\'%Y-%m-%d\')') {
+			date_default_timezone_set('UTC');
 			$expectedParameters[0] = strftime('%Y-%m-%d');
 		}
 

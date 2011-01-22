@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -61,7 +61,7 @@ class ContactControllerContacts extends JControllerAdmin
 			if (!$user->authorise('core.edit.state', 'com_contact.contact.'.(int) $id)) {
 				// Prune items that you can't change.
 				unset($ids[$i]);
-				JError::raiseNotice(403, JText::_('JERROR_CORE_EDIT_STATE_NOT_PERMITTED'));
+				JError::raiseNotice(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 			}
 		}
 
@@ -90,9 +90,9 @@ class ContactControllerContacts extends JControllerAdmin
 	 * @return	JModel
 	 * @since	1.6
 	 */
-	public function &getModel($name = 'Contact', $prefix = 'ContactModel')
+	public function getModel($name = 'Contact', $prefix = 'ContactModel', $config = array('ignore_request' => true))
 	{
-		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+		$model = parent::getModel($name, $prefix, $config);
 
 		return $model;
 	}

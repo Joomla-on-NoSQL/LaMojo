@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -47,11 +47,11 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 			<div class="m">
 				<div class="far-right">
 <?php if ($this->document->direction == 'ltr') : ?>
-					<div class="button1-right"><div class="prev"><a href="index.php?view=license" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
-					<div class="button1-left"><div class="next"><a onclick="validateForm(document.getElementById('adminForm'), 'setup.database');" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
+					<div class="button1-right"><div class="prev"><a href="index.php?view=license" rel="prev" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
+					<div class="button1-left"><div class="next"><a href="javascript:void(0);" onclick="Install.submitform('setup.database');" rel="next" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
 <?php elseif ($this->document->direction == 'rtl') : ?>
-					<div class="button1-right"><div class="prev"><a onclick="validateForm(document.getElementById('adminForm'), 'setup.database');" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
-					<div class="button1-left"><div class="next"><a href="index.php?view=license" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
+					<div class="button1-right"><div class="prev"><a href="javascript:void(0);" onclick="Install.submitform('setup.database');" rel="next" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
+					<div class="button1-left"><div class="next"><a href="index.php?view=license" rel="prev" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
 <?php endif; ?>
 				</div>
 				<span class="step"><?php echo JText::_('INSTL_DATABASE'); ?></span>
@@ -84,7 +84,7 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 							<?php echo JText::_('INSTL_BASIC_SETTINGS'); ?>
 						</h3>
 						<div class="section-smenu">
-							<table class="content2">
+							<table class="content2 db-table">
 								<tr>
 									<td></td>
 									<td></td>
@@ -150,32 +150,6 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 										</em>
 									</td>
 								</tr>
-							</table>
-							<br /><br />
-						</div>
-
-						<h3 class="title-smenu moofx-toggler" title="<?php echo JText::_('JADVANCED'); ?>">
-							<?php echo JText::_('INSTL_ADVANCED_SETTINGS'); ?>
-						</h3>
-						<div class="section-smenu moofx-slider">
-							<table class="content2">
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<?php echo $this->form->getLabel('db_old'); ?>
-										<br />
-										<?php echo $this->form->getInput('db_old'); ?>
-									</td>
-									<td>
-										<em>
-										<?php echo JText::_('INSTL_DATABASE_OLD_PROCESS_DESC'); ?>
-										</em>
-									</td>
-								</tr>
 								<tr>
 									<td colspan="2">
 										<?php echo $this->form->getLabel('db_prefix'); ?>
@@ -188,6 +162,18 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 										</em>
 									</td>
 								</tr>
+								<tr>
+									<td colspan="2">
+										<?php echo $this->form->getLabel('db_old'); ?>
+										<br />
+										<?php echo $this->form->getInput('db_old'); ?>
+									</td>
+									<td>
+										<em>
+										<?php echo JText::_('INSTL_DATABASE_OLD_PROCESS_DESC'); ?>
+										</em>
+									</td>
+								</tr>																
 							</table>
 						</div>
 						<div class="clr"></div>

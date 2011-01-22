@@ -1,7 +1,7 @@
 <?php
 /**
  * @version
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -133,7 +133,10 @@ class ContactControllerContact extends JController
 			}
 		}
 
-		$msg = JText::_('COM_CONTACT_EMAIL_THANKS');
+		if (!JError::isError($sent)) {
+			$msg = JText::_('COM_CONTACT_EMAIL_THANKS');
+		}
+
 		//redirect if it is set
 		if ($contact->params->get('redirect'))
 		{
@@ -146,103 +149,6 @@ class ContactControllerContact extends JController
 		}
 
 		$this->setRedirect($link, $msg);
-	}
-
-	/**
-	 * Method to output a vCard
-	 *
-	 * @static
-	 * @since 1.0
-	 */
-	function vcard()
-	{
-		// Initialise some variables
-		$app	= JFactory::getApplication();
-		$db		= JFactory::getDbo();
-		$user	= JFactory::getUser();
-
-		$SiteName = $app->getCfg('sitename');
-		$contactId = JRequest::getVar('contact_id', 0, '', 'int');
-		// Get a Contact table object and load the selected contact details
-		JTable::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_contact/tables');
-		$contact = JTable::getInstance('contact', 'Table');
-		$contact->load($contactId);
-		$user = JFactory::getUser();
-
-		// Get the contact detail parameters
-		$params = new JRegistry;
-		$params->loadJSON($contact->params);
-
-		// Show the Vcard if contact parameter indicates (prevents direct access)
-		$groups = $user->authorisedLevels();
-		if (($params->get('allow_vcard', 0)) && (in_array($contact->access, $groups)))
-		{
-			// Parse the contact name field and build the nam information for the vcard.
-			$firstname	= null;
-			$middlename = null;
-			$surname	= null;
-
-			// How many parts do we have?
-			$parts = explode(' ', $contact->name);
-			$count = count($parts);
-
-			switch ($count) {
-				case 1 :
-					// only a first name
-					$firstname = $parts[0];
-					break;
-
-				case 2 :
-					// first and last name
-					$firstname = $parts[0];
-					$surname = $parts[1];
-					break;
-
-				default :
-					// we have full name info
-					$firstname = $parts[0];
-					$surname = $parts[$count -1];
-					for ($i = 1; $i < $count -1; $i ++) {
-						$middlename .= $parts[$i].' ';
-					}
-					break;
-			}
-			// quick cleanup for the middlename value
-			$middlename = trim($middlename);
-
-			// Create a new vcard object and populate the fields
-			require_once JPATH_ADMINISTRATOR.'/components/com_contact/helpers/vcard.php';
-			$v = new JvCard();
-
-			$v->setPhoneNumber($contact->telephone, 'PREF;WORK;VOICE');
-			$v->setPhoneNumber($contact->fax, 'WORK;FAX');
-			$v->setName($surname, $firstname, $middlename, '');
-			$v->setAddress('', '', $contact->address, $contact->suburb, $contact->state, $contact->postcode, $contact->country, 'WORK;POSTAL');
-			$v->setEmail($contact->email_to);
-			$v->setNote($contact->misc);
-			$v->setURL(JURI::base(), 'WORK');
-			$v->setTitle($contact->con_position);
-			$v->setOrg(html_entity_decode($SiteName, ENT_COMPAT, 'UTF-8'));
-
-			$filename = str_replace(' ', '_', $contact->name);
-			$v->setFilename($filename);
-
-			$output = $v->getVCard(html_entity_decode($SiteName, ENT_COMPAT, 'UTF-8'));
-			$filename = $v->getFileName();
-
-			// Send vCard file headers
-			header('Content-Disposition: attachment; filename='.$filename);
-			header('Content-Length: '.strlen($output));
-			header('Connection: close');
-			header('Content-Type: text/x-vCard; name='.$filename);
-			header('Cache-Control: store, cache');
-			header('Pragma: cache');
-
-			print $output;
-		} else {
-			JError::raiseWarning('SOME_ERROR_CODE', 'ContactController::vCard: '.JText::_('JERROR_ALERTNOAUTHOR'));
-			return false;
-		}
 	}
 
 	/**
@@ -276,14 +182,14 @@ class ContactControllerContact extends JController
 			}
 		}
 
-		// Determine banned e-mails
+		// Determine banned emails
 		$configEmail	= $pparams->get('banned_email', '');
 		$paramsEmail	= $params->get('banned_mail', '');
 		$bannedEmail	= $configEmail . ($paramsEmail ? ';'.$paramsEmail : '');
 
 		// Prevent form submission if one of the banned text is discovered in the email field
 		if (false === $this->_checkText($email, $bannedEmail)) {
-			$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT', JText::_('COM_CONTACT_CONTACT_EMAIL_ADDRESS')));
+			$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT', JText::_('JGLOBAL_EMAIL')));
 			return false;
 		}
 

@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Site
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,10 +22,10 @@ function modChrome_none($module, &$params, &$attribs)
  */
 function modChrome_table($module, &$params, &$attribs)
 { ?>
-	<table cellpadding="0" cellspacing="0" class="moduletable<?php echo $params->get('moduleclass_sfx'); ?>">
+	<table cellpadding="0" cellspacing="0" class="moduletable<?php echo htmlspecialchars($params->get('moduleclass_sfx')); ?>">
 	<?php if ($module->showtitle != 0) : ?>
 		<tr>
-			<th valign="top">
+			<th>
 				<?php echo $module->title; ?>
 			</th>
 		</tr>
@@ -44,9 +44,9 @@ function modChrome_table($module, &$params, &$attribs)
  */
 function modChrome_horz($module, &$params, &$attribs)
 { ?>
-	<table cellspacing="1" cellpadding="0" border="0" width="100%">
+	<table cellspacing="1" cellpadding="0" width="100%">
 		<tr>
-			<td valign="top">
+			<td>
 				<?php modChrome_table($module, $params, $attribs); ?>
 			</td>
 		</tr>
@@ -60,7 +60,7 @@ function modChrome_horz($module, &$params, &$attribs)
 function modChrome_xhtml($module, &$params, &$attribs)
 {
 	if (!empty ($module->content)) : ?>
-		<div class="moduletable<?php echo $params->get('moduleclass_sfx'); ?>">
+		<div class="moduletable<?php echo htmlspecialchars($params->get('moduleclass_sfx')); ?>">
 		<?php if ($module->showtitle != 0) : ?>
 			<h3><?php echo $module->title; ?></h3>
 		<?php endif; ?>
@@ -74,7 +74,7 @@ function modChrome_xhtml($module, &$params, &$attribs)
  */
 function modChrome_rounded($module, &$params, &$attribs)
 { ?>
-		<div class="module<?php echo $params->get('moduleclass_sfx'); ?>">
+		<div class="module<?php echo htmlspecialchars($params->get('moduleclass_sfx')); ?>">
 			<div>
 				<div>
 					<div>

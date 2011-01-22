@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,8 +33,22 @@ class ModulesController extends JController
 		require_once JPATH_COMPONENT.'/helpers/modules.php';
 
 		// Load the submenu.
-		ModulesHelper::addSubmenu(JRequest::getWord('view', 'modules'));
-		
+		ModulesHelper::addSubmenu(JRequest::getCmd('view', 'modules'));
+
+		$view		= JRequest::getCmd('view', 'modules');
+		$layout 	= JRequest::getCmd('layout', 'default');
+		$id			= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == 'module' && $layout == 'edit' && !$this->checkEditId('com_modules.edit.module', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_modules&view=modules', false));
+
+			return false;
+		}
+
 		parent::display();
 	}
 }

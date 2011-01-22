@@ -4,7 +4,7 @@
  *
  * @package Joomla
  * @subpackage UnitTest
- * @copyright Copyright (C) 2005 - 2010 Open Source Matters, Inc.
+ * @copyright Copyright (C) 2005 - 2011 Open Source Matters, Inc.
  * @version $Id$
  *
  */
@@ -74,10 +74,32 @@ class JStringTest_DataSet {
 	);
 
 	static public $strcasecmpTests = array (
-		array('THIS IS STRING1', 'this is string1', 0),
-		array('this is string1', 'this is string2', -1),
-		array('this is string2', 'this is string1', 1),
-		array('бгдпт', 'бгдпт', 0)
+		array('THIS IS STRING1', 'this is string1', false, 0),
+		array('this is string1', 'this is string2', false, -1),
+		array('this is string2', 'this is string1', false, 1),
+		array('бгдпт', 'бгдпт', false, 0),
+		array('àbc', 'abc', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 1),
+		array('àbc', 'bcd', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('é', 'è', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('É', 'é', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 0),
+		array('œ', 'p', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('œ', 'n', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 1),
+	);
+
+	static public $strcmpTests = array (
+		array('THIS IS STRING1', 'this is string1', false, -1),
+		array('this is string1', 'this is string2', false, -1),
+		array('this is string2', 'this is string1', false, 1),
+		array('a', 'B', false, 1),
+		array('A', 'b', false, -1),
+		array('Àbc', 'abc', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 1),
+		array('Àbc', 'bcd', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('É', 'è', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('é', 'È', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('Œ', 'p', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
+		array('Œ', 'n', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 1),
+		array('œ', 'N', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), 1),
+		array('œ', 'P', array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'), -1),
 	);
 
 	static public $strcspnTests = array (

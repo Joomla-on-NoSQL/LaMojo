@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Modules
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -59,7 +59,6 @@ class ModulesViewModule extends JView
 		$checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 		$canDo		= ModulesHelper::getActions($this->state->get('filter.category_id'), $this->item->id);
 		$item		= $this->get('Item');
-		$client		= $item->client_id;
 
 		JToolBarHelper::title( JText::sprintf('COM_MODULES_MANAGER_MODULE', JText::_($this->item->module)), 'module.png');
 
@@ -82,7 +81,17 @@ class ModulesViewModule extends JView
 		}
 
 		// Get the help information for the menu item.
+		$lang = JFactory::getLanguage();
+
 		$help = $this->get('Help');
-		JToolBarHelper::help($help->key, $help->local, $help->url);
+		if ($lang->hasKey($help->url)) {
+			$debug = $lang->setDebug(false);
+			$url = JText::_($help->url);
+			$lang->setDebug($debug);
+		}
+		else {
+			$url = null;
+		}
+		JToolBarHelper::help($help->key, false, $url);
 	}
 }

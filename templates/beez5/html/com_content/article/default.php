@@ -3,7 +3,7 @@
  * @version		$Id: default.php 17137 2010-05-17 07:00:07Z infograf768 $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 $app = JFactory::getApplication();
 $templateparams = $app->getTemplate(true)->params;
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers');
 
 // Create shortcut to parameters.
 $params = $this->item->params;
@@ -22,8 +22,9 @@ if ($templateparams->get('html5') != 1) :
 	//evtl. ersetzen durch JPATH_COMPONENT.'/views/...'
 
 else :
-	JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');?>
-<article class="item-page<?php echo $params->get('pageclass_sfx')?>">
+	JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers');
+?>
+<article class="item-page<?php echo $this->pageclass_sfx?>">
 <?php if ($this->params->get('show_page_heading', 1)) : ?>
 
 <?php if ($this->params->get('show_page_heading', 1) And $params->get('show_title')) :?>
@@ -120,13 +121,20 @@ else :
 		<?php echo JText::sprintf('COM_CONTENT_PUBLISHED_DATE', JHTML::_('date',$this->item->publish_up, JText::_('DATE_FORMAT_LC2'))); ?>
 		</dd>
 <?php endif; ?>
-<?php if ($params->get('show_author') && !empty($this->item->author)) : ?>
-	<dd class="createdby">
-		<?php $author = $params->get('link_author', 0) ? JHTML::_('link',JRoute::_('index.php?option=com_users&view=profile&member_id='.$this->item->created_by),$this->item->author) : $this->item->author; ?>
-		<?php $author=($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
-	<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
-		</dd>
-<?php endif; ?>
+<?php if ($params->get('show_author') && !empty($this->item->author )) : ?>
+	<dd class="createdby"> 
+		<?php $author =  $this->item->author; ?>
+		<?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
+
+			<?php if (!empty($this->item->contactid ) &&  $params->get('link_author') == true):?>
+				<?php 	echo JText::sprintf('COM_CONTENT_WRITTEN_BY' , 
+				 JHTML::_('link',JRoute::_('index.php?option=com_contact&view=contact&id='.$this->item->contactid),$author)); ?>
+
+			<?php else :?>
+				<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
+			<?php endif; ?>
+	</dd>
+<?php endif; ?>	
 <?php if ($params->get('show_hits')) : ?>
 		<dd class="hits">
 		<?php echo JText::sprintf('COM_CONTENT_ARTICLE_HITS', $this->item->hits); ?>

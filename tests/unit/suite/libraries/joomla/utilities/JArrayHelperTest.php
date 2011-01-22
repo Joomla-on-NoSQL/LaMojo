@@ -4,7 +4,7 @@
  *
  * @version   $Id$
  * @package   Joomla.UnitTest
- * @copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license   GNU General Public License
  */
 require_once 'PHPUnit/Framework.php';
@@ -22,11 +22,6 @@ require_once JPATH_BASE . '/libraries/joomla/utilities/arrayhelper.php';
 class JArrayHelperTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var JArrayHelper
-	 */
-	protected $object;
-
-	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
@@ -34,17 +29,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 */
 	protected function setUp()
 	{
-		$this->object = new JArrayHelper;
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 *
-	 * @return void
-	 */
-	protected function tearDown()
-	{
+		jimport('joomla.utilities.string');
 	}
 
 	/**
@@ -52,7 +37,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function numericInputs()
+	function getTestToIntegerData()
 	{
 		return array(
 			'floating with single argument' => array(
@@ -89,7 +74,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test using member call to convert an array to all integers.
+	 * Test convert an array to all integers.
 	 *
 	 * @param string $input   The array being input
 	 * @param string $default The default value
@@ -97,29 +82,12 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param string $message The failure message
 	 *
 	 * @return void
-	 * @dataProvider numericInputs
+	 * @dataProvider getTestToIntegerData
 	 */
-	public function testToIntegerByCallingMember($input, $default, $expect, $message)
-	{
-		$this->object->toInteger($input, $default);
-		$this->assertEquals($expect, $input, "Called as member - " . $message);
-	}
-
-	/**
-	 * Test using static call to convert an array to all integers.
-	 *
-	 * @param string $input   The array being input
-	 * @param string $default The default value
-	 * @param string $expect  The expected return value
-	 * @param string $message The failure message
-	 *
-	 * @return void
-	 * @dataProvider numericInputs
-	 */
-	public function testToIntegerByCallingStatic($input, $default, $expect, $message)
+	public function testToInteger($input, $default, $expect, $message)
 	{
 		JArrayHelper::toInteger($input, $default);
-		$this->assertEquals($expect, $input, "Called as static - " . $message);
+		$this->assertEquals($expect, $input, $message);
 	}
 
 	/**
@@ -127,13 +95,13 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function objectInputs()
+	function getTestToObjectData()
 	{
 		return array(
 			'single object' => array(
 				array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				null,
-				(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				'Should turn array into single object'
 			),
 			'multiple objects' => array(
@@ -143,17 +111,17 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 					'third' => array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				null,
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				'Should turn multiple dimension array into nested objects'
 			),
 			'single object with class' => array(
 				array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				'stdClass',
-				(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				'Should turn array into single object'
 			),
 			'multiple objects with class' => array(
@@ -163,10 +131,10 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 					'third' => array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				'stdClass',
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				'Should turn multiple dimension array into nested objects'
 			),
@@ -174,7 +142,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test using member call to convert array to object.
+	 * Test convert array to object.
 	 *
 	 * @param string $input	The array being input
 	 * @param string $className The class name to build
@@ -182,34 +150,14 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param string $message   The failure message
 	 *
 	 * @return void
-	 * @dataProvider objectInputs
+	 * @dataProvider getTestToObjectData
 	 */
-	public function testToObjectByCallingMember($input, $className, $expect, $message)
-	{
-		$this->assertEquals(
-			$expect,
-			$this->object->toObject($input),
-			"Called as member - " . $message
-		);
-	}
-
-	/**
-	 * Test using static call to convert array to object.
-	 *
-	 * @param string $input	The array being input
-	 * @param string $className The class name to build
-	 * @param string $expect	The expected return value
-	 * @param string $message   The failure message
-	 *
-	 * @return void
-	 * @dataProvider objectInputs
-	 */
-	public function testToObjectByCallingStatic($input, $className, $expect, $message)
+	public function testToObject($input, $className, $expect, $message)
 	{
 		$this->assertEquals(
 			$expect,
 			JArrayHelper::toObject($input),
-			"Called as static - " . $message
+			$message
 		);
 	}
 
@@ -218,7 +166,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function stringInputs()
+	function getTestToStringData()
 	{
 		return array(
 			'single dimension 1' => array(
@@ -312,7 +260,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Tests converting array to string as a member function call.
+	 * Tests converting array to string.
 	 *
 	 * @param array  $input	The array being input
 	 * @param string $inner	The inner glue
@@ -323,49 +271,21 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param bool   $defaults Use function defaults (true) or full argument list
 	 *
 	 * @return void
-	 * @dataProvider stringInputs
+	 * @dataProvider getTestToStringData
 	 */
-	public function testToStringByCallingMember($input, $inner, $outer, $keepKey, $expect,
-	$message, $defaults) {
+	public function testToString(
+		$input, $inner, $outer, $keepKey, $expect, $message, $defaults)
+	{
 		if ($defaults) {
-			$output = $this->object->toString($input);
+			$output = JArrayHelper::toString($input);
 		} else {
-			$output = $this->object->toString($input, $inner, $outer, $keepKey);
+			$output = JArrayHelper::toString($input, $inner, $outer, $keepKey);
 		}
 
 		$this->assertEquals(
 			$expect,
 			$output,
-			"Called as member - " . $message
-		);
-	}
-
-	/**
-	 * Tests converting array to string as a static function call.
-	 *
-	 * @param array  $input	The array being input
-	 * @param string $inner	The inner glue
-	 * @param string $outer	The outer glue
-	 * @param bool   $keepKey  Keep the outer key
-	 * @param string $expect   The expected return value
-	 * @param string $message  The failure message
-	 * @param bool   $defaults Use function defaults (true) or full argument list
-	 *
-	 * @return void
-	 * @dataProvider stringInputs
-	 */
-	public function testToStringByCallingStatic($input, $inner, $outer, $keepKey, $expect,
-	$message, $defaults) {
-		if ($defaults) {
-			$output = $this->object->toString($input);
-		} else {
-			$output = $this->object->toString($input, $inner, $outer, $keepKey);
-		}
-
-		$this->assertEquals(
-			$expect,
-			$output,
-			"Called as static - " . $message
+			$message
 		);
 	}
 
@@ -374,11 +294,11 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function fromObjectInputs()
+	function getTestFromObjectData()
 	{
 		return array(
 			'single 1' => array(
-				(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				null,
 				null,
 				array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
@@ -386,7 +306,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 				true
 			),
 			'single 2' => array(
-				(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				true,
 				null,
 				array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
@@ -394,18 +314,34 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 				false
 			),
 			'single 3' => array(
-				(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				true,
 				'/^(integer|float)/',
 				array('integer' => 12, 'float' => 1.29999),
 				'Should turn object into single dimension array getting only integer and float attribs',
 				false
 			),
+			'single 4' => array(
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				null,
+				null,
+				array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should turn nested objects into single dimension array',
+				false
+			),
 			'multiple 1' => array(
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				null,
 				null,
@@ -418,10 +354,10 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 				true
 			),
 			'multiple 2' => array(
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				true,
 				null,
@@ -434,34 +370,42 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 				true
 			),
 			'multiple 3' => array(
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				false,
 				null,
-				array(),
-				'Should turn nested objects into single dimension (empty) array',
+				array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should turn nested objects into single dimension array',
 				false
 			),
 			'multiple 4' => array(
-				(object)array(
+				(object) array(
 					'first' => 'Me',
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				false,
 				null,
-				array('first' => 'Me'),
+				array(
+					'first' => 'Me',
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
 				'Should turn nested objects into single dimension array',
 				false
 			),
 			'multiple 5' => array(
-				(object)array(
-					'first' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'second' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					'third' => (object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				(object) array(
+					'first' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'second' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				true,
 				'/(first|second|integer|string)/',
@@ -472,11 +416,35 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 				'Should turn nested objects into multiple dimension array of int and string',
 				false
 			),
+			'multiple 6' => array(
+				(object) array(
+					'first' => array(
+						'integer' => 12,
+						'float' => 1.29999,
+						'string' => 'A Test String',
+						'third' => (object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					),
+					'second' => array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				null,
+				null,
+				array(
+					'first' => array(
+						'integer' => 12,
+						'float' => 1.29999,
+						'string' => 'A Test String',
+						'third' => array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					),
+					'second' => array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should turn nested objects into multiple dimension array',
+				true
+			),
 		);
 	}
 
 	/**
-	 * Tests conversion of object to string called as a member function.
+	 * Tests conversion of object to string.
 	 *
 	 * @param array  $input	The array being input
 	 * @param bool   $recurse  Recurse through multiple dimensions?
@@ -486,48 +454,22 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param bool   $defaults Use function defaults (true) or full argument list
 	 *
 	 * @return void
-	 * @dataProvider fromObjectInputs
+	 * @dataProvider getTestFromObjectData
 	 */
-	public function testFromObjectByCallingMember($input, $recurse, $regex, $expect, $message, $defaults)
+	public function testFromObject(
+		$input, $recurse, $regex, $expect, $message, $defaults)
 	{
 		if ($defaults) {
-			$output = $this->object->fromObject($input);
-		} else {
-			$output = $this->object->fromObject($input, $recurse, $regex);
-		}
-
-		$this->assertEquals(
-			$expect,
-			$output,
-			"Called as member - " . $message
-		);
-	}
-
-	/**
-	 * Tests conversion of object to string called as a static function.
-	 *
-	 * @param array  $input	The array being input
-	 * @param bool   $recurse  Recurse through multiple dimensions?
-	 * @param string $regex	Regex to select only some attributes
-	 * @param string $expect   The expected return value
-	 * @param string $message  The failure message
-	 * @param bool   $defaults Use function defaults (true) or full argument list
-	 *
-	 * @return void
-	 * @dataProvider fromObjectInputs
-	 */
-	public function testFromObjectByCallingStatic($input, $recurse, $regex, $expect,
-	$message, $defaults) {
-		if ($defaults) {
 			$output = JArrayHelper::fromObject($input);
-		} else {
+		}
+		else {
 			$output = JArrayHelper::fromObject($input, $recurse, $regex);
 		}
 
 		$this->assertEquals(
 			$expect,
 			$output,
-			"Called as static - " . $message
+			$message
 		);
 	}
 
@@ -536,7 +478,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function getColumnInputs()
+	function getTestGetColumnData()
 	{
 		return array(
 			'generic array' => array(
@@ -563,10 +505,10 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 			),
 			'object array' => array(
 				array(
-					(object)array('one' => 1, 'two' => 2, 'three' => 3, 'four' => 4, 'five' => 5),
-					(object)array('one' => 6, 'two' => 7, 'three' => 8, 'four' => 9, 'five' => 10),
-					(object)array('one' => 11, 'two' => 12, 'three' => 13, 'four' => 14, 'five' => 15),
-					(object)array('one' => 16, 'two' => 17, 'three' => 18, 'four' => 19, 'five' => 20)
+					(object) array('one' => 1, 'two' => 2, 'three' => 3, 'four' => 4, 'five' => 5),
+					(object) array('one' => 6, 'two' => 7, 'three' => 8, 'four' => 9, 'five' => 10),
+					(object) array('one' => 11, 'two' => 12, 'three' => 13, 'four' => 14, 'five' => 15),
+					(object) array('one' => 16, 'two' => 17, 'three' => 18, 'four' => 19, 'five' => 20)
 				),
 				'four',
 				array(4, 9, 14, 19),
@@ -576,7 +518,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test pulling data from a single column (by index or association) called as member.
+	 * Test pulling data from a single column (by index or association).
 	 *
 	 * @param array  $input   Input array
 	 * @param mixed  $index   Column to pull, either by association or number
@@ -584,29 +526,9 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param string $message The failure message
 	 *
 	 * @return void
-	 * @dataProvider getColumnInputs
+	 * @dataProvider getTestGetColumnData
 	 */
-	public function testGetColumnByCallingMember($input, $index, $expect, $message)
-	{
-		$this->assertEquals(
-			$expect,
-			$this->object->getColumn($input, $index),
-			$message
-		);
-	}
-
-	/**
-	 * Test pulling data from a single column (by index or association) called as static.
-	 *
-	 * @param array  $input   Input array
-	 * @param mixed  $index   Column to pull, either by association or number
-	 * @param array  $expect  The expected results
-	 * @param string $message The failure message
-	 *
-	 * @return void
-	 * @dataProvider getColumnInputs
-	 */
-	public function testGetColumnByCallingStatic($input, $index, $expect, $message)
+	public function testGetColumn($input, $index, $expect, $message)
 	{
 		$this->assertEquals(
 			$expect,
@@ -620,7 +542,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function getValueInputs()
+	function getTestGetValueData()
 	{
 		$input = array('one' => 1, 'two' => 2, 'three' => 3, 'four' => 4, 'five' => 5,
 					'six' => 6, 'seven' => 7, 'eight' => 8, 'nine' => 'It\'s nine', 'ten' => 10,
@@ -705,7 +627,7 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test get value from an array called as member function.
+	 * Test get value from an array.
 	 *
 	 * @param array  $input	Input array
 	 * @param mixed  $index	Element to pull, either by association or number
@@ -716,39 +638,9 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 * @param bool   $defaults Use the defaults (true) or full argument list
 	 *
 	 * @return void
-	 * @dataProvider getValueInputs
+	 * @dataProvider getTestGetValueData
 	 */
-	public function testGetValueByCallingMember(
-		$input, $index, $default, $type, $expect, $message, $defaults)
-	{
-		if ($defaults) {
-			$output = $this->object->getValue($input, $index);
-		} else {
-			$output = $this->object->getValue($input, $index, $default, $type);
-		}
-
-		$this->assertEquals(
-			$expect,
-			$output,
-			$message
-		);
-	}
-
-	/**
-	 * Test get value from an array called as static function.
-	 *
-	 * @param array  $input	Input array
-	 * @param mixed  $index	Element to pull, either by association or number
-	 * @param mixed  $default  The defualt value, if element not present
-	 * @param $type  $type	The type of value returned
-	 * @param array  $expect   The expected results
-	 * @param string $message  The failure message
-	 * @param bool   $defaults Use the defaults (true) or full argument list
-	 *
-	 * @return void
-	 * @dataProvider getValueInputs
-	 */
-	public function testGetValueByCallingStatic(
+	public function testGetValue(
 		$input, $index, $default, $type, $expect, $message, $defaults)
 	{
 		if ($defaults) {
@@ -793,163 +685,330 @@ class JArrayHelperTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return array
 	 */
-	function sortObjectInputs()
+	function getTestSortObjectData()
 	{
-		$input = array(
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+		$input1 = array(
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
 				);
+		$input2 = array(
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+				);
+
+		$input3 = array(
+					(object) array('string' => 'A Test String', 'integer' => 1, ),
+					(object) array('string' => 'é Test String', 'integer' => 2, ),
+					(object) array('string' => 'è Test String', 'integer' => 3, ),
+					(object) array('string' => 'É Test String', 'integer' => 4, ),
+					(object) array('string' => 'È Test String', 'integer' => 5, ),
+					(object) array('string' => 'Œ Test String', 'integer' => 6, ),
+					(object) array('string' => 'œ Test String', 'integer' => 7, ),
+					(object) array('string' => 'L Test String', 'integer' => 8, ),
+					(object) array('string' => 'P Test String', 'integer' => 9, ),
+					(object) array('string' => 'p Test String', 'integer' => 10, ),
+				);
+
+
 
 		return array(
 			'by int defaults' => array(
-				$input,
+				$input1,
 				'integer',
 				null,
+				false,
+				false,
 				array(
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
 				),
 				'Should be sorted by the integer field in ascending order',
 				true
 			),
 			'by int ascending' => array(
-				$input,
+				$input1,
 				'integer',
 				1,
+				false,
+				false,
 				array(
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
 				),
 				'Should be sorted by the integer field in ascending order full argument list',
 				false
 			),
 			'by int descending' => array(
-				$input,
+				$input1,
 				'integer',
 				-1,
+				false,
+				false,
 				array(
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
 				),
 				'Should be sorted by the integer field in descending order',
 				false
 			),
 			'by string ascending' => array(
-				$input,
+				$input1,
 				'string',
 				1,
+				false,
+				false,
 				array(
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
 				),
 				'Should be sorted by the string field in ascending order full argument list',
 				false
 			),
 			'by string descending' => array(
-				$input,
+				$input1,
 				'string',
 				-1,
+				false,
+				false,
 				array(
-					(object)array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
-					(object)array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
-					(object)array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
-					(object)array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
-					(object)array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
-					(object)array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 'T Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'G Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
 				),
 				'Should be sorted by the string field in descending order',
+				false
+			),
+			'by casesensitive string ascending' => array(
+				$input2,
+				'string',
+				1,
+				true,
+				false,
+				array(
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+				),
+				'Should be sorted by the string field in ascending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string descending' => array(
+				$input2,
+				'string',
+				-1,
+				true,
+				false,
+				array(
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should be sorted by the string field in descending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string,integer ascending' => array(
+				$input2,
+				array('string','integer'),
+				1,
+				true,
+				false,
+				array(
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+				),
+				'Should be sorted by the string,integer field in descending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string,integer descending' => array(
+				$input2,
+				array('string','integer'),
+				-1,
+				true,
+				false,
+				array(
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should be sorted by the string,integer field in descending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string,integer ascending,descending' => array(
+				$input2,
+				array('string','integer'),
+				array(1,-1),
+				true,
+				false,
+				array(
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+				),
+				'Should be sorted by the string,integer field in ascending,descending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string,integer descending,ascending' => array(
+				$input2,
+				array('string','integer'),
+				array(-1,1),
+				true,
+				false,
+				array(
+					(object) array('integer' => 5, 'float' => 1.29999, 'string' => 't Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'g Test String'),
+					(object) array('integer' => 1, 'float' => 1.29999, 'string' => 'N Test String'),
+					(object) array('integer' => 6, 'float' => 1.29999, 'string' => 'L Test String'),
+					(object) array('integer' => 22, 'float' => 1.29999, 'string' => 'E Test String'),
+					(object) array('integer' => 15, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 35, 'float' => 1.29999, 'string' => 'C Test String'),
+					(object) array('integer' => 12, 'float' => 1.29999, 'string' => 'A Test String'),
+				),
+				'Should be sorted by the string,integer field in descending,ascending order with casesensitive comparisons',
+				false
+			),
+			'by casesensitive string ascending' => array(
+				$input3,
+				'string',
+				1,
+				true,
+				array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'),
+				array(
+					(object) array('string' => 'A Test String', 'integer' => 1, ),
+					(object) array('string' => 'é Test String', 'integer' => 2, ),
+					(object) array('string' => 'É Test String', 'integer' => 4, ),
+					(object) array('string' => 'è Test String', 'integer' => 3, ),
+					(object) array('string' => 'È Test String', 'integer' => 5, ),
+					(object) array('string' => 'L Test String', 'integer' => 8, ),
+					(object) array('string' => 'œ Test String', 'integer' => 7, ),
+					(object) array('string' => 'Œ Test String', 'integer' => 6, ),
+					(object) array('string' => 'p Test String', 'integer' => 10, ),
+					(object) array('string' => 'P Test String', 'integer' => 9, ),
+				),
+				'Should be sorted by the string field in ascending order with casesensitive comparisons and fr_FR locale',
+				false
+			),
+			'by caseinsensitive string, integer ascending' => array(
+				$input3,
+				array('string', 'integer'),
+				1,
+				false,
+				array('fr_FR.utf8', 'fr_FR.UTF-8', 'fr_FR.UTF-8@euro', 'French_Standard', 'french', 'fr_FR', 'fre_FR'),
+				array(
+					(object) array('string' => 'A Test String', 'integer' => 1, ),
+					(object) array('string' => 'é Test String', 'integer' => 2, ),
+					(object) array('string' => 'É Test String', 'integer' => 4, ),
+					(object) array('string' => 'è Test String', 'integer' => 3, ),
+					(object) array('string' => 'È Test String', 'integer' => 5, ),
+					(object) array('string' => 'L Test String', 'integer' => 8, ),
+					(object) array('string' => 'Œ Test String', 'integer' => 6, ),
+					(object) array('string' => 'œ Test String', 'integer' => 7, ),
+					(object) array('string' => 'P Test String', 'integer' => 9, ),
+					(object) array('string' => 'p Test String', 'integer' => 10, ),
+				),
+				'Should be sorted by the string,integer field in ascending order with caseinsensitive comparisons and fr_FR locale',
 				false
 			),
 		);
 	}
 
 	/**
-	 * test sorting an array of objects called as static function.
+	 * test sorting an array of objects.
 	 *
-	 * @param array  $input	Input array of objects
-	 * @param mixed  $key		Key to sort on
-	 * @param mixed  $direction Ascending (1) or Descending(-1)
-	 * @param array  $expect	The expected results
-	 * @param string $message   The failure message
-	 * @param bool   $defaults  Use the defaults (true) or full argument list
+	 * @param	array	$input		Input array of objects
+	 * @param	mixed	$key		Key to sort on
+	 * @param	mixed	$direction	Ascending (1) or Descending(-1)
+	 * @param	array	$expect		The expected results
+	 * @param	string	$message	The failure message
+	 * @param	bool	$defaults	Use the defaults (true) or full argument list
 	 *
 	 * @return void
-	 * @dataProvider sortObjectInputs
+	 * @dataProvider getTestSortObjectData
 	 */
-	public function testSortObjectsByCallingStatic(
-		$input, $key, $direction, $expect, $message, $defaults)
+	public function testSortObjects(
+		$input, $key, $direction, $casesensitive, $locale, $expect, $message, $defaults)
 	{
-		if ($defaults) {
-			$output = JArrayHelper::sortObjects($input, $key);
-		} else {
-			$output = JArrayHelper::sortObjects($input, $key, $direction);
-		}
+		// Skip for MAC until PHP sort bug is fixed
+		if (substr(php_uname(), 0, 6) != 'Darwin') 
+		{
+			if ($defaults) {
+				$output = JArrayHelper::sortObjects($input, $key);
+			}
+			else {
+				$output = JArrayHelper::sortObjects($input, $key, $direction, $casesensitive, $locale);
+			}
 
-		$this->assertEquals(
+			$this->assertEquals(
 			$expect,
 			$output,
 			$message
-		);
-	}
-
-	/**
-	 * test sorting an array of objects called as member function.
-	 *
-	 * @param array  $input		Input array of objects
-	 * @param mixed  $key		Key to sort on
-	 * @param mixed  $direction Ascending (1) or Descending(-1)
-	 * @param array  $expect	The expected results
-	 * @param string $message   The failure message
-	 * @param bool   $defaults  Use the defaults (true) or full argument list
-	 *
-	 * @return void
-	 * @dataProvider sortObjectInputs
-	 */
-	public function testSortObjectsByCallingMember(
-		$input, $key, $direction, $expect, $message, $defaults)
-	{
-		if ($defaults) {
-			$output = $this->object->sortObjects($input, $key);
-		} else {
-			$output = $this->object->sortObjects($input, $key, $direction);
+			);
 		}
-
-		$this->assertEquals(
-			$expect,
-			$output,
-			$message
-		);
 	}
 }

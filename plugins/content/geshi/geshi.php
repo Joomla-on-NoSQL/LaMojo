@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	plg_geshi
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -46,7 +46,7 @@ class plgContentGeshi extends JPlugin
 	{
 		jimport('joomla.utilities.utility');
 
-		require_once JPATH::dirname(__FILE__).'/geshi/geshi.php';
+		require_once dirname(__FILE__).DS.'geshi'.DS.'geshi.php';
 
 		$args = JUtility::parseAttributes($matches[1]);
 		$text = $matches[2];

@@ -1,10 +1,13 @@
 <?php
+// no direct access
+defined('_JEXEC') or die;
+
 /*************************************************************************************
  * sql.php
  * -------
  * Author: Nigel McNie (nigel@geshi.org)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter)
- * Release Version: 1.0.8.4
+ * Release Version: 1.0.8.8
  * Date Started: 2004/06/04
  *
  * SQL language file for GeSHi.
@@ -51,7 +54,7 @@
 
 $language_data = array (
     'LANG_NAME' => 'SQL',
-    'COMMENT_SINGLE' => array(1 =>'--', 2 => '#'),
+    'COMMENT_SINGLE' => array(1 =>'--'),
     'COMMENT_MULTI' => array('/*' => '*/'),
     'CASE_KEYWORDS' => 1,
     'QUOTEMARKS' => array("'", '"', '`'),
@@ -97,7 +100,7 @@ $language_data = array (
             ),
         'COMMENTS' => array(
             1 => 'color: #808080; font-style: italic;',
-            2 => 'color: #808080; font-style: italic;',
+            //2 => 'color: #808080; font-style: italic;',
             'MULTI' => 'color: #808080; font-style: italic;'
             ),
         'ESCAPE_CHAR' => array(

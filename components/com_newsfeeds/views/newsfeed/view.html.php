@@ -3,7 +3,7 @@
  * version $Id$
  * @package		Joomla
  * @subpackage	Newsfeeds
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  *
  */
@@ -62,7 +62,7 @@ class NewsfeedsViewNewsfeed extends JView
 		// Get Category Model data
 		$categoryModel = JModel::getInstance('Category', 'NewsfeedsModel', array('ignore_request' => true));
 		$categoryModel->setState('category.id', $item->catid);
-		$categoryModel->setState('list.ordering', 'a.title');
+		$categoryModel->setState('list.ordering', 'a.name');
 		$categoryModel->setState('list.direction', 'asc');		
 		$items = $categoryModel->getItems();
 		}
@@ -81,52 +81,70 @@ class NewsfeedsViewNewsfeed extends JView
 		$item->parent_slug = $item->category_alias ? ($item->parent_id . ':' . $item->parent_alias) : $item->parent_id;
 
 		// check if cache directory is writeable
-		$cacheDir = JPATH_BASE.'/cache/';
+		$cacheDir = JPATH_CACHE.DS;
 
 		if (!is_writable($cacheDir)) {
-			echo JText::_('CACHE_DIRECTORY_UNWRITABLE');
+			JError::raiseNotice('0', JText::_('COM_NEWSFEEDS_CACHE_DIRECTORY_UNWRITABLE'));
 			return;
 		}
 
 		// Merge newsfeed params. If this is single-newsfeed view, menu params override newsfeed params
 		// Otherwise, newsfeed params override menu item params
 		$params = $state->get('params');
-		$newsfeed_params = new JRegistry;
-		$newsfeed_params->loadJSON($item->params);
+		$newsfeed_params = clone $item->params;
 		$active = $app->getMenu()->getActive();
 		$temp = clone ($params);
-
-		if ($active) {
+		
+		// Check to see which parameters should take priority
+		if ($active)
+		{
 			$currentLink = $active->link;
-
-			if (strpos($currentLink, 'view=newsfeed')) {
+			// If the current view is the active item and an newsfeed view for this feed, then the menu item params take priority
+			if (strpos($currentLink, 'view=newsfeed') && (strpos($currentLink, '&id='.(string) $item->id)))
+			{
+				// $item->params are the newsfeed params, $temp are the menu item params
+				// Merge so that the menu item params take priority
 				$newsfeed_params->merge($temp);
 				$item->params = $newsfeed_params;
+				// Load layout from active query (in case it is an alternative menu item)
+				if (isset($active->query['layout']))
+				{
+					$this->setLayout($active->query['layout']);
+				}
 			}
-			else {
+			else
+			{
+				// Current view is not a single newsfeed, so the newsfeed params take priority here
+				// Merge the menu item params with the newsfeed params so that the newsfeed params take priority
 				$temp->merge($newsfeed_params);
 				$item->params = $temp;
+				// Check for alternative layouts (since we are not in a single-newsfeed menu item)
+				if ($layout = $item->params->get('newsfeed_layout'))
+				{
+					$this->setLayout($layout);
+				}
 			}
 		}
-		else {
+		else
+		{
+			// Merge so that newsfeed params take priority
 			$temp->merge($newsfeed_params);
 			$item->params = $temp;
+			// Check for alternative layouts (since we are not in a single-newsfeed menu item)
+			if ($layout = $item->params->get('newsfeed_layout')) 
+			{
+				$this->setLayout($layout);
+			}
 		}
 
 		$offset = $state->get('list.offset');
 
 		// Check the access to the newsfeed
-		$levels = $user->authorisedLevels();
+		$levels = $user->getAuthorisedViewLevels();
 
 		if (!in_array($item->access, $levels) OR ((in_array($item->access,$levels) AND (!in_array($item->category_access, $levels))))) {
 			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
-
 			return;
-		}
-
-		// Override the layout.
-		if ($layout = $params->get('layout')) {
-			$this->setLayout($layout);
 		}
 
 		// Get the current menu item
@@ -136,7 +154,7 @@ class NewsfeedsViewNewsfeed extends JView
 
 		// Get the newsfeed
 		$newsfeed = $item;
-
+		
 		$temp = new JRegistry();
 		$temp->loadJSON($item->params);
 		$params->merge($temp);
@@ -174,6 +192,9 @@ class NewsfeedsViewNewsfeed extends JView
 		// feed elements
 		$newsfeed->items = array_slice($newsfeed->items, 0, $newsfeed->numarticles);
 
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
 		$this->assignRef('params'  , $params  );
 		$this->assignRef('newsfeed', $newsfeed);
 		$this->assignRef('state', $state);
@@ -206,36 +227,45 @@ class NewsfeedsViewNewsfeed extends JView
 			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
 		}
 		else {
-			$this->params->def('page_heading', JText::_('JGLOBAL_NEWSFEEDS'));
+			$this->params->def('page_heading', JText::_('COM_NEWSFEEDS_DEFAULT_PAGE_TITLE'));
 		}
 
 		$title = $this->params->get('page_title', '');
+		
+		$id = (int) @$menu->query['id'];
+
+		// if the menu item does not concern this newsfeed
+		if ($menu && ($menu->query['option'] != 'com_newsfeeds' || $menu->query['view'] != 'newsfeed' || $id != $this->item->id))
+		{
+			// If this is not a single newsfeed menu item, set the page title to the newsfeed title
+			if ($this->item->name) {
+				$title = $this->item->name;
+			}
+			
+			$path = array(array('title' => $this->item->name, 'link' => ''));
+			$category = JCategories::getInstance('Newsfeeds')->get($this->item->catid);
+			while (($menu->query['option'] != 'com_newsfeeds' || $menu->query['view'] == 'newsfeed' || $id != $category->id) && $category->id > 1)
+			{
+				$path[] = array('title' => $category->title, 'link' => NewsfeedsHelperRoute::getCategoryRoute($category->id));
+				$category = $category->getParent();
+			}
+ 			$path = array_reverse($path);
+			foreach($path as $item)
+			{
+				$pathway->addItem($item['title'], $item['link']);
+			}
+		}
+
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
+			$title = $app->getCfg('sitename');
 		}
 		else if ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
-		$this->document->setTitle($title);
-
-		if ($menu && $menu->query['view'] != 'newsfeed') {
-			$id = (int) @$menu->query['id'];
-			$path = array($this->item->name  => '');
-			$category = JCategories::getInstance('Newsfeeds')->get($this->item->catid);
-			if ($category){
-				while ($id != $category->id && $category->id > 1)
-				{
-					$path[$category->title] = NewsfeedHelperRoute::getCategoryRoute($category->id);
-					$category = $category->getParent();
-				}
-				$path = array_reverse($path);
- 			}
-		}
-
 		if (empty($title)) {
-			$title = $this->item->title;
+			$title = $this->item->name;
 		}
-		$this->document->setTitle($title);
+		$this->document->setTitle($title);		
 
 		if ($this->item->metadesc) {
 			$this->document->setDescription($this->item->metadesc);

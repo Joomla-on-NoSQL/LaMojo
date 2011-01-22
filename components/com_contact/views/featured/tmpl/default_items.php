@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -48,7 +48,7 @@ $params = &$this->item->params;
 			<?php endif; ?>
 			<?php if ($this->params->get('show_email_headings')) : ?>
 			<th class="item-email">
-				<?php echo JText::_('COM_CONTACT_CONTACT_EMAIL_ADDRESS'); ?>
+				<?php echo JText::_('JGLOBAL_EMAIL'); ?>
 			</th>
 			<?php endif; ?>
 			<?php if ($this->params->get('show_telephone_headings')) : ?>

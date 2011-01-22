@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Document
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -202,11 +202,11 @@ class JDocumentFeed extends JDocument
 		 */
 		$cache		= 0;
 		$cache_time = 3600;
-		$cache_path = JPATH_BASE.'/cache';
+		$cache_path = JPATH_CACHE;
 
 		// set filename for rss feeds
 		$file = strtolower(str_replace('.', '', $type));
-		$file = $cache_path.'/'.$file.'_'.$option.'.xml';
+		$file = $cache_path.DS.$file.'_'.$option.'.xml';
 
 
 		// Instantiate feed renderer and set the mime encoding
@@ -311,7 +311,7 @@ class JFeedItem extends JObject
 	 *
 	 * optional
 	 *
-	 * @var		string
+	 * @var		array or string
 	 * @access	public
 	 */
 	 var $category;
@@ -364,7 +364,7 @@ class JFeedItem extends JObject
 	 * @var		string
 	 * @access	public
 	 */
-	 var $pubDate;
+	 var $date;
 
 	 /**
 	 * Source element

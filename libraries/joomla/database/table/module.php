@@ -3,13 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Table
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('JPATH_BASE') or die;
 
+jimport('joomla.database.table');
 jimport('joomla.database.tableasset');
 
 /**
@@ -67,7 +68,7 @@ class JTableModule extends JTable
 	 */
 	public function bind($array, $ignore = '')
 	{
-		if (is_array($array['params'])) {
+		if (isset($array['params']) && is_array($array['params'])) {
 			$registry = new JRegistry();
 			$registry->loadArray($array['params']);
 			$array['params'] = (string)$registry;

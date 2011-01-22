@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,7 +57,7 @@ class UsersModelRegistration extends JModelForm
 		}
 
 		// Load the users plugin group.
-		JPluginHelper::importPlugin('users');
+		JPluginHelper::importPlugin('user');
 
 		// Activate the user.
 		$user = JFactory::getUser($userId);
@@ -164,29 +164,6 @@ class UsersModelRegistration extends JModelForm
 			return false;
 		}
 
-		/*
-		// TODO: Should we send a confirming email for activation? We don't in 1.5.
-		// Compile the notification mail values.
-		$data = $user->getProperties();
-		$data['fromname'] = $config->get('fromname');
-		$data['mailfrom'] = $config->get('mailfrom');
-		$data['sitename'] = $config->get('sitename');
-
-		// Load the message template and bind the data.
-		jimport('joomla.utilities.simpletemplate');
-		$template = JxSimpleTemplate::getInstance('com_users.registration.confirm');
-		$template->bind($data);
-
-		// Send the registration e-mail.
-		$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $template->getTitle(), $template->getBody());
-
-		// Check for an error.
-		if ($return !== true) {
-			$this->setError(JText::_('USERS ACTIVATION SEND MAIL FAILED'));
-			return false;
-		}
-		*/
-
 		return $user;
 	}
 
@@ -219,7 +196,7 @@ class UsersModelRegistration extends JModelForm
 			// Get the default new user group, Registered if not specified.
 			$system	= $params->get('new_usertype', 2);
 
-			$this->data->groups[$system] = null;
+			$this->data->groups[] = $system;
 
 			// Unset the passwords.
 			unset($this->data->password1);
@@ -227,7 +204,7 @@ class UsersModelRegistration extends JModelForm
 
 			// Get the dispatcher and load the users plugins.
 			$dispatcher	= JDispatcher::getInstance();
-			JPluginHelper::importPlugin('users');
+			JPluginHelper::importPlugin('user');
 
 			// Trigger the data preparation event.
 			$results = $dispatcher->trigger('onContentPrepareData', array('com_users.registration', $this->data));
@@ -283,9 +260,9 @@ class UsersModelRegistration extends JModelForm
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = 'user')
 	{
-		parent::preprocessForm($form, $data, 'user');
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
@@ -318,16 +295,13 @@ class UsersModelRegistration extends JModelForm
 		$params = JComponentHelper::getParams('com_users');
 
 		// Initialise the table with JUser.
-		JUser::getTable('User', 'JTable');
-		$user = new JUser();
+		$user = new JUser;
 		$data = (array)$this->getData();
 
 		// Merge in the registration data.
-		foreach ($data as $k => $v) {
-			$temp[$k] = $v;
+		foreach ($temp as $k => $v) {
+			$data[$k] = $v;
 		}
-
-		$data = $temp;
 
 		// Prepare the data for the user object.
 		$data['email']		= $data['email1'];
@@ -348,7 +322,7 @@ class UsersModelRegistration extends JModelForm
 		}
 
 		// Load the users plugin group.
-		JPluginHelper::importPlugin('users');
+		JPluginHelper::importPlugin('user');
 
 		// Store the data.
 		if (!$user->save()) {
@@ -363,7 +337,7 @@ class UsersModelRegistration extends JModelForm
 		$data['sitename']	= $config->get('sitename');
 		$data['siteurl']	= JUri::base();
 
-		// Handle account activation/confirmation e-mails.
+		// Handle account activation/confirmation emails.
 		if ($useractivation == 2)
 		{
 			// Set the link to confirm the user email.
@@ -425,12 +399,34 @@ class UsersModelRegistration extends JModelForm
 			);
 		}
 
-		// Send the registration e-mail.
+		// Send the registration email.
 		$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
 		// Check for an error.
 		if ($return !== true) {
 			$this->setError(JText::_('COM_USERS_REGISTRATION_SEND_MAIL_FAILED'));
+
+			// Send a system message to administrators receiving system mails
+			$db = JFactory::getDBO();
+			$q = "SELECT id
+				FROM #__users
+				WHERE block = 0
+				AND sendEmail = 1";
+			$db->setQuery($q);
+			$sendEmail = $db->loadResultArray();
+			if (count($sendEmail) > 0) {
+				$jdate = new JDate();
+				// Build the query to add the messages
+				$q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
+					VALUES ";
+				$messages = array();
+				foreach ($sendEmail as $userid) {
+					$messages[] = "(".$userid.", ".$userid.", '".$jdate->toMySQL()."', '".JText::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT')."', '".JText::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username'])."')";
+				}
+				$q .= implode(',', $messages);
+				$db->setQuery($q);
+				$db->query();
+			}
 			return false;
 		}
 

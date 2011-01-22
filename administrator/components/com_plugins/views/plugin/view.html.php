@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -63,6 +63,19 @@ class PluginsViewPlugin extends JView
 		}
 		JToolBarHelper::cancel('plugin.cancel', 'JTOOLBAR_CLOSE');
 		JToolBarHelper::divider();
-		JToolBarHelper::help('JHELP_EXTENSIONS_PLUGIN_MANAGER_EDIT');
+		// Get the help information for the plugin item.
+
+		$lang = JFactory::getLanguage();
+
+		$help = $this->get('Help');
+		if ($lang->hasKey($help->url)) {
+			$debug = $lang->setDebug(false);
+			$url = JText::_($help->url);
+			$lang->setDebug($debug);
+		}
+		else {
+			$url = null;
+		}
+		JToolBarHelper::help($help->key, false, $url);
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -102,7 +102,8 @@ class JFormFieldTest extends JoomlaTestCase
 		);
 
 		$this->assertThat(
-			$field->getId($field->id, $field->name),
+			// use original 'id' and 'name' here (from XML definition of the form field)
+			$field->getId((string) $colours['id'], (string) $colours['name']),
 			$this->equalTo('params_colours'),
 			'Line:'.__LINE__.' The property should be computed from the XML.'
 		);
@@ -144,7 +145,40 @@ class JFormFieldTest extends JoomlaTestCase
 
 		$this->assertThat(
 			$field->getLabel(),
-			$this->equalTo('<label id="title_id-lbl" for="title_id" class="hasTip required" title="Title::The title.">Title</label>'),
+			$this->equalTo('<label id="title_id-lbl" for="title_id" class="hasTip required" title="Title::The title.">Title<span class="star">&#160;*</span></label>'),
+			'Line:'.__LINE__.' The property should be computed from the XML.'
+		);
+	}
+
+	/**
+	 * Tests the JFormField::getTitle method
+	 */
+	public function testGetTitle()
+	{
+		$form = new JFormInspector('form1');
+
+		$this->assertThat(
+			$form->load(JFormDataHelper::$loadFieldDocument),
+			$this->isTrue(),
+			'Line:'.__LINE__.' XML string should load successfully.'
+		);
+
+		$field = new JFormFieldInspector($form);
+
+		// Standard usage.
+
+		$xml = $form->getXML();
+		$title = array_pop($xml->xpath('fields/field[@name="title"]'));
+
+		$this->assertThat(
+			$field->setup($title, 'The title'),
+			$this->isTrue(),
+			'Line:'.__LINE__.' The setup method should return true if successful.'
+		);
+
+		$this->assertThat(
+			$field->getTitle(),
+			$this->equalTo('Title'),
 			'Line:'.__LINE__.' The property should be computed from the XML.'
 		);
 	}
@@ -272,6 +306,12 @@ class JFormFieldTest extends JoomlaTestCase
 			'Line:'.__LINE__.' The property should be computed from the XML.'
 		);
 
+		$this->assertEquals(
+			$field->group,
+			'params',
+			'Line:'.__LINE__.' The property should be set to the the group name.'
+		);
+
 		// Test hidden field type.
 
 		$id = array_pop($xml->xpath('fields/field[@name="id"]'));
@@ -302,6 +342,22 @@ class JFormFieldTest extends JoomlaTestCase
 			$field->hidden,
 			$this->isTrue(),
 			'Line:'.__LINE__.' The hidden property should be set from the hidden attribute.'
+		);
+
+		// Test automatic generated name.
+
+		$spacer = array_pop($xml->xpath('fields/field[@type="spacer"]'));
+
+		$this->assertThat(
+			$field->setup($spacer, ''),
+			$this->isTrue(),
+			'Line:'.__LINE__.' The setup method should return true if successful.'
+		);
+
+		$this->assertThat(
+			$field->name,
+			$this->equalTo('__field1'),
+			'Line:'.__LINE__.' The spacer name should be set using an automatic generated name.'
 		);
 	}
 }

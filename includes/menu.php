@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -39,16 +39,12 @@ class JMenuSite extends JMenu
 			$query->leftJoin('#__extensions AS e ON m.component_id = e.extension_id');
 			$query->where('m.published = 1');
 			$query->where('m.parent_id > 0');
+			$query->where('m.client_id = 0');
 			$query->order('m.lft');
 
 			$user = JFactory::getUser();
-			$groups = implode(',', $user->authorisedLevels());
+			$groups = implode(',', $user->getAuthorisedViewLevels());
 			$query->where('m.access IN (' . $groups . ')');
-
-			// Filter by language
-			if ($app->isSite() && $app->getLanguageFilter()) {
-				$query->where('m.language in (' . $db->Quote(JFactory::getLanguage()->getTag()) . ',' . $db->Quote('*') . ')');
-			}
 
 			// Set the query
 			$db->setQuery($query);
@@ -82,4 +78,47 @@ class JMenuSite extends JMenu
 			$this->_items = $data;
 		}
 	}
+	/**
+	 * Gets menu items by attribute
+	 *
+	 * @param	string	$attributes	The field name
+	 * @param	string	$values		The value of the field
+	 * @param	boolean	$firstonly	If true, only returns the first item found
+	 *
+	 * @return	array
+	 */
+	public function getItems($attributes, $values, $firstonly = false)
+	{
+		$attributes = (array) $attributes;
+		$values = (array) $values;
+		$app	= JFactory::getApplication();
+		// Filter by language if not set
+		if ($app->isSite() && $app->getLanguageFilter() && !array_key_exists('language',$attributes)) {
+			$attributes[]='language';
+			$values[]=array(JFactory::getLanguage()->getTag(), '*');
+		}
+		return parent::getItems($attributes, $values, $firstonly);
+	}
+
+	/**
+	 * Get menu item by id
+	 *
+	 * @param	string	$language	The language code.
+	 *
+	 * @return	object	The item object
+	 * @since	1.5
+	 */
+	function getDefault($language='*')
+	{
+		if (array_key_exists($language, $this->_default) && JFactory::getApplication()->getLanguageFilter()) {
+			return $this->_items[$this->_default[$language]];
+		}
+		else if (array_key_exists('*', $this->_default)) {
+			return $this->_items[$this->_default['*']];
+		}
+		else {
+			return 0;
+		}
+	}
+
 }

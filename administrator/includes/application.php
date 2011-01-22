@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Administrator
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -78,7 +78,12 @@ class JAdministrator extends JApplication
 			}
 		}
 
+		// Execute the parent initialise method.
 		parent::initialise($options);
+
+		// Load Library language
+		$lang = JFactory::getLanguage();
+		$lang->load('lib_joomla', JPATH_ADMINISTRATOR);
 	}
 
 	/**
@@ -141,7 +146,7 @@ class JAdministrator extends JApplication
 				break;
 		}
 
-		$document->setTitle(htmlspecialchars_decode($this->getCfg('sitename')). ' - ' .JText::_('JADMINISTRATION'));
+		$document->setTitle($this->getCfg('sitename'). ' - ' .JText::_('JADMINISTRATION'));
 		$document->setDescription($this->getCfg('MetaDesc'));
 
 		$contents = JComponentHelper::renderComponent($component);
@@ -244,20 +249,28 @@ class JAdministrator extends JApplication
 
 		if (!isset($template))
 		{
+			$admin_style = JFactory::getUser()->getParam('admin_style');
 			// Load the template name from the database
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('template, params');
 			$query->from('#__template_styles');
 			$query->where('client_id = 1');
-			$query->where('home = 1');
+			if ($admin_style)
+			{
+				$query->where('id = '.(int)$admin_style);
+			}
+			else
+			{
+				$query->where('home = 1');
+			}
 			$db->setQuery($query);
 			$template = $db->loadObject();
 
 			$template->template = JFilterInput::getInstance()->clean($template->template, 'cmd');
 			$template->params = new JRegistry($template->params);
 
-			if (!file_exists(JPATH_THEMES.'/'.$template->template.'/index.php'))
+			if (!file_exists(JPATH_THEMES.DS.$template->template.DS.'index.php'))
 			{
 				$template->params = new JRegistry();
 				$template->template = 'bluestork';

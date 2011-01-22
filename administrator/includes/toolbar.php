@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -25,17 +25,18 @@ abstract class JToolBarHelper
 	 * this is due to the nature of how the css has been used to postion the title in respect to the toolbar.
 	 *
 	 * @param	string	$title	The title.
-	 * @param	string	$icon	The name of the image.
+	 * @param	string	$icon	The space-separated names of the image.
 	 * @since	1.5
 	 */
 	public static function title($title, $icon = 'generic.png')
 	{
 		// Strip the extension.
-		$icon = preg_replace('#\.[^.]*$#', '', $icon);
+		$icons = explode(' ',$icon);
+		foreach($icons as &$icon) {
+			$icon = 'icon-48-'.preg_replace('#\.[^.]*$#', '', $icon);
+		}
 
-		$html = "<div class=\"pagetitle icon-48-$icon\"><h2>\n";
-		$html .= "$title\n";
-		$html .= "</h2></div>\n";
+		$html = '<div class="pagetitle '.implode(' ', $icons).'"><h2>'.$title.'</h2></div>';
 
 		$app = JFactory::getApplication();
 		$app->set('JComponentTitle', $html);
@@ -123,13 +124,14 @@ abstract class JToolBarHelper
 	 * @param	string	$ref		The name of the popup file (excluding the file extension for an xml file).
 	 * @param	bool	$com		Use the help file in the component directory.
 	 * @param	string	$override	Use this URL instead of any other
+	 * @param	string	$component	Name of component to get Help (null for current component)
 	 * @since	1.0
 	 */
-	public static function help($ref, $com = false, $override = null)
+	public static function help($ref, $com = false, $override = null, $component = null)
 	{
 		$bar = JToolBar::getInstance('toolbar');
 		// Add a help button.
-		$bar->appendButton('Help', $ref, $com, $override);
+		$bar->appendButton('Help', $ref, $com, $override, $component);
 	}
 
 	/**
@@ -158,7 +160,7 @@ abstract class JToolBarHelper
 	{
 		$bar = JToolBar::getInstance('toolbar');
 		// Add an upload button.
-		$bar->appendButton('Popup', 'upload', $alt, 'index.php?option=com_media&tmpl=component&task=popupUpload&directory='.$directory, 640, 520);
+		$bar->appendButton('Popup', 'upload', $alt, 'index.php?option=com_media&tmpl=component&task=popupUpload&folder='.$directory, 800, 520);
 	}
 
 	/**
@@ -205,7 +207,7 @@ abstract class JToolBarHelper
 
 	/**
 	 * Writes the common 'new' icon for the button bar.
-	 * Extended version of addNew() calling hideMainMenu() before submitbutton().
+	 * Extended version of addNew() calling hideMainMenu() before Joomla.submitbutton().
 	 *
 	 * @param	string	$task	An override for the task.
 	 * @param	string	$alt	An override for the alt text.
@@ -317,7 +319,7 @@ abstract class JToolBarHelper
 
 	/**
 	 * Writes a common 'edit' button for a list of records.
-	 * Extended version of editList() calling hideMainMenu() before submitbutton().
+	 * Extended version of editList() calling hideMainMenu() before Joomla.submitbutton().
 	 *
 	 * @param	string	$task	An override for the task.
 	 * @param	string	$alt	An override for the alt text.
@@ -345,7 +347,7 @@ abstract class JToolBarHelper
 
 	/**
 	 * Writes a common 'edit' button for a template html.
-	 * Extended version of editHtml() calling hideMainMenu() before submitbutton().
+	 * Extended version of editHtml() calling hideMainMenu() before Joomla.submitbutton().
 	 *
 	 * @param	string	$task	An override for the task.
 	 * @param	string	$alt	An override for the alt text.
@@ -373,7 +375,7 @@ abstract class JToolBarHelper
 
 	/**
 	 * Writes a common 'edit' button for a template css.
-	 * Extended version of editCss() calling hideMainMenu() before submitbutton().
+	 * Extended version of editCss() calling hideMainMenu() before Joomla.submitbutton().
 	 *
 	 * @param	string	$task	An override for the task.
 	 * @param	string	$alt	An override for the alt text.
@@ -406,7 +408,7 @@ abstract class JToolBarHelper
 
 	/**
 	 * Writes a common 'delete' button for a list of records.
-	 * Extended version of deleteList() calling hideMainMenu() before submitbutton().
+	 * Extended version of deleteList() calling hideMainMenu() before Joomla.submitbutton().
 	 *
 	 * @param	string	$msg	Postscript for the 'are you sure' message.
 	 * @param	string	$task	An override for the task.
@@ -488,7 +490,7 @@ abstract class JToolBarHelper
 	 * @param	string	$path		An alternative path for the configuation xml relative to JPATH_SITE.
 	 * @since	1.0
 	 */
-	public static function preferences($component, $height = '450', $width = '800', $alt = 'JToolbar_Options', $path = '', $onClose = '')
+	public static function preferences($component, $height = '550', $width = '875', $alt = 'JToolbar_Options', $path = '', $onClose = '')
 	{
 		$component = urlencode($component);
 		$path = urlencode($path);

@@ -4,7 +4,7 @@
  *
  * @version   $Id$
  * @package   Joomla.UnitTest
- * @copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license   GNU General Public License
  */
 require_once 'PHPUnit/Framework.php';
@@ -107,7 +107,6 @@ class JLoaderTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * The success of this test depends on some files being in the file system to be imported. If the FS changes, this test may need revisited.
-	 * The files are libraries/joomla/factory.php and libraries/bitfolge/vcard.php
 	 *
 	 * @param	string	$filePath		Path to object
 	 * @param	string	$base			Path to location of object

@@ -3,7 +3,7 @@
 	<name>weblinks</name>
 	<author>Joomla! Project</author>
 	<creationDate>April 2006</creationDate>
-	<copyright>(C) 2005 - 2010 Open Source Matters. All rights reserved.
+	<copyright>(C) 2005 - 2011 Open Source Matters. All rights reserved.
 	</copyright>
 	<license>GNU General Public License version 2 or later; see
 		LICENSE.txt</license>
@@ -11,6 +11,17 @@
 	<authorUrl>www.joomla.org</authorUrl>
 	<version>1.6.0</version>
 	<description>COM_WEBLINKS_XML_DESCRIPTION</description>
+	
+	<install> <!-- Runs on install -->
+    	<sql>
+        	<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+  		</sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+    	<sql>
+        	<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+  		</sql>
+   </uninstall>
 
 	<files folder="site">
 		<filename>index.html</filename>
@@ -42,7 +53,6 @@
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>
-			<filename>category.xml</filename>
 			<filename>config.xml</filename>
 			<filename>controller.php</filename>
 			<filename>index.html</filename>
@@ -50,6 +60,7 @@
 			<folder>controllers</folder>
 			<folder>helpers</folder>
 			<folder>models</folder>
+			<folder>sql</folder>
 			<folder>tables</folder>
 			<folder>views</folder>
 		</files>

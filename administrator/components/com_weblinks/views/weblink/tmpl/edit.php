@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_weblinks
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,11 +15,11 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 ?>
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'weblink.cancel' || document.formvalidator.isValid(document.id('weblink-form'))) {
 			<?php echo $this->form->getField('description')->save(); ?>
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('weblink-form'));
 		}
 		else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
@@ -27,7 +27,7 @@ JHtml::_('behavior.formvalidation');
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_weblinks'); ?>" method="post" name="adminForm" id="weblink-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_weblinks&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="weblink-form" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo empty($this->item->id) ? JText::_('COM_WEBLINKS_NEW_WEBLINK') : JText::sprintf('COM_WEBLINKS_EDIT_WEBLINK', $this->item->id); ?></legend>
@@ -87,17 +87,27 @@ JHtml::_('behavior.formvalidation');
 				<li><?php echo $this->form->getLabel('publish_down'); ?>
 				<?php echo $this->form->getInput('publish_down'); ?></li>
 
-				<li><?php echo $this->form->getLabel('modified'); ?>
-				<?php echo $this->form->getInput('modified'); ?></li>
+				<?php if ($this->item->modified_by) : ?>
+					<li><?php echo $this->form->getLabel('modified_by'); ?>
+					<?php echo $this->form->getInput('modified_by'); ?></li>
 
-				<li><?php echo $this->form->getLabel('version'); ?>
-				<?php echo $this->form->getInput('version'); ?></li>
+					<li><?php echo $this->form->getLabel('modified'); ?>
+					<?php echo $this->form->getInput('modified'); ?></li>
+				<?php endif; ?>
+
+				<?php if ($this->item->hits) : ?>
+					<li><?php echo $this->form->getLabel('hits'); ?>
+					<?php echo $this->form->getInput('hits'); ?></li>
+				<?php endif; ?>
+
 			</ul>
 		</fieldset>
 
 		<?php echo $this->loadTemplate('params'); ?>
 
 		<?php echo $this->loadTemplate('metadata'); ?>
+
+		<?php echo JHtml::_('sliders.end'); ?>
 
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Event
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -112,11 +112,14 @@ class JDispatcher extends JObservable
 			// Fire the event for an object based observer.
 			if (is_object($this->_observers[$key])) {
 				$args['event'] = $event;
-				$result[] = $this->_observers[$key]->update($args);
+				$value = $this->_observers[$key]->update($args);
 			}
 			// Fire the event for a function based observer.
 			elseif (is_array($this->_observers[$key])) {
-				$result[] = call_user_func_array($this->_observers[$key]['handler'], $args);
+				$value = call_user_func_array($this->_observers[$key]['handler'], $args);
+			}
+			if (isset($value)) {
+				$result[] = $value;
 			}
 		}
 

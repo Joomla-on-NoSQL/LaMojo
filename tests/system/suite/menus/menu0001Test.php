@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * checks that all menu choices are shown in back end
  */
@@ -56,8 +56,8 @@ class Menu0001 extends SeleniumJoomlaTestCase
 		$this->select("jform_published", "label=Published");
 		$this->select("jform_menutype", "label=Functional Test Menu");
 		echo "Open Select Article modal\n";
+		sleep(2);
 		$this->click("link=Select / Change");
-
 		for ($second = 0; ; $second++) {
 			if ($second >= 60) $this->fail("timeout");
 			try {
@@ -79,6 +79,15 @@ class Menu0001 extends SeleniumJoomlaTestCase
 
 		$this->click("//li[@id='toolbar-save']/a/span");
 		$this->waitForPageToLoad("30000");
+		
+		// Open menu item and make sure type displays
+		$this->click("link=Functional Test Menu");
+		$this->waitForPageToLoad("30000");
+		$this->click("link=Functional Test Menu Item");
+		$this->waitForPageToLoad("30000");
+		$this->assertTrue($this->isElementPresent("//li//input[@value='Single Article']"));
+		$this->click("//li[@id='toolbar-save']/a/span");
+		$this->waitForPageToLoad("30000");		
 
 		echo "Navigate to Module Manager and add new menu module\n";
 		$this->click("link=Module Manager");
@@ -99,9 +108,32 @@ class Menu0001 extends SeleniumJoomlaTestCase
 		echo "Fill in menu name and info\n";
 
 		$this->type("jform_title", "Functional Test Menu");
+
+		$this->click("link=Select position");
+		for ($second = 0; ; $second++) {
+			if ($second >= 60) $this->fail("timeout");
+			try {
+				if ($this->isElementPresent("//iframe[contains(@src, 'jSelectPosition')]")) break;
+			} catch (Exception $e) {}
+			sleep(1);
+		}
+
+		$this->type("filter_search", "position");
+		$this->click("//button[@type='submit']");
+		$this->waitForPageToLoad("30000");
+		$this->click("link=position-7");
+
+		for ($second = 0; ; $second++) {
+			if ($second >= 60) $this->fail("timeout");
+			try {
+				if (!$this->isElementPresent("//iframe[contains(@src, 'jSelectPosition')]")) break;
+			} catch (Exception $e) {}
+			sleep(1);
+		}
+
 		$this->select("jform_published", "label=Published");
 		$this->select("jform[assignment]", "label=No pages");
-		$this->select("jform_position", "label=position-7");
+
 		$this->select("jform[assignment]", "label=On all pages");
 		$this->select("jform_params_menutype", "label=Functional Test Menu");
 		echo "Save menu\n";
@@ -157,6 +189,7 @@ class Menu0001 extends SeleniumJoomlaTestCase
 		$this->gotoAdmin();
 		$this->doAdminLogout();
 		echo "Finished testMenuItemAdd()\n";
+		$this->deleteAllVisibleCookies();
 	}
 
 	function testUnpublishedCategoryList()
@@ -192,9 +225,10 @@ class Menu0001 extends SeleniumJoomlaTestCase
 		$this->togglePublished("Sample Data-Articles");
 		$this->doAdminLogout();
 		$this->gotoSite();
-		$this->click("link=Category List Test");
+		$link = $this->cfg->path . 'index.php/category-list-test';
+		$this->open($link, 'true');
 		$this->waitForPageToLoad("30000");
-		$this->assertElementContainsText("//dl[@id='system-message']", 'Category not found');
+		$this->assertTrue($this->isTextPresent("Category not found"));
 
 		$this->gotoAdmin();
 		$this->doAdminLogin();
@@ -217,7 +251,7 @@ class Menu0001 extends SeleniumJoomlaTestCase
 		$this->assertTrue($this->isElementPresent("//dl[@id='system-message'][contains(., 'success')]"));
 		$this->doAdminLogout();
 		echo "Finished testUnpublishedCategoryList()\n";
-
+		$this->deleteAllVisibleCookies();
 	}
 }
 

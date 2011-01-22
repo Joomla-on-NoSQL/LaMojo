@@ -3,7 +3,7 @@
  * @version                $Id$
  * @package                Joomla.Site
  * @subpackage        tpl_beez2
- * @copyright        Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright        Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license                GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,7 +19,7 @@ if ($showRightColumn==0 and $showleft==0) {
         $showno = 0;
 }
 
-JHTML::_('behavior.mootools');
+JHTML::_('behavior.framework', true);
 
 // get params
 $color              = $this->params->get('templatecolor');
@@ -33,7 +33,7 @@ $templateparams     = $app->getTemplate(true)->params;
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->language; ?>" lang="<?php echo $this->language; ?>" dir="<?php echo $this->direction; ?>" >
         <head>
                 <jdoc:include type="head" />
-                <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/template.css" type="text/css" />
+                <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/system/css/system.css" type="text/css" />
                 <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/position.css" type="text/css" media="screen,projection" />
                 <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/layout.css" type="text/css" media="screen,projection" />
                 <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/print.css" type="text/css" media="Print" />
@@ -50,7 +50,7 @@ $templateparams     = $app->getTemplate(true)->params;
                  endforeach;
         endif;
 ?>
-                <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/<?php echo $color; ?>.css" type="text/css" />
+                <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/<?php echo htmlspecialchars($color); ?>.css" type="text/css" />
                 <?php if ($this->direction == 'rtl') : ?>
                 <link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez_20/css/template_rtl.css" type="text/css" />
                 <?php endif; ?>
@@ -82,11 +82,10 @@ $templateparams     = $app->getTemplate(true)->params;
                 <![endif]-->
                 <script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez_20/javascript/md_stylechanger.js"></script>
                 <script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez_20/javascript/hide.js"></script>
-                <script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez_20/javascript/html5.js"></script>
 
                 <script type="text/javascript">
-                        var big ='<?php echo $this->params->get('wrapperLarge');?>%';
-                        var small='<?php echo $this->params->get('wrapperSmall'); ?>%';
+                        var big ='<?php echo (int)$this->params->get('wrapperLarge');?>%';
+                        var small='<?php echo (int)$this->params->get('wrapperSmall'); ?>%';
                         var altopen='<?php echo JText::_('TPL_BEEZ2_ALTOPEN',true); ?>';
                         var altclose='<?php echo JText::_('TPL_BEEZ2_ALTCLOSE',true); ?>';
                         var bildauf='<?php echo $this->baseurl ?>/templates/beez_20/images/plus.png';
@@ -113,13 +112,13 @@ $templateparams     = $app->getTemplate(true)->params;
                                         <h1 id="logo">
 
                                         <?php if ($logo): ?>
-                                        <img src="<?php echo $this->baseurl ?>/<?php echo $logo; ?>"  alt="<?php echo $templateparams->get('sitetitle');?>" />
+                                        <img src="<?php echo $this->baseurl ?>/<?php echo htmlspecialchars($logo); ?>"  alt="<?php echo htmlspecialchars($templateparams->get('sitetitle'));?>" />
                                         <?php endif;?>
                                         <?php if (!$logo ): ?>
-                                        <?php echo $templateparams->get('sitetitle');?>
+                                        <?php echo htmlspecialchars($templateparams->get('sitetitle'));?>
                                         <?php endif; ?>
                                         <span class="header1">
-                                        <?php echo $templateparams->get('sitedescription');?>
+                                        <?php echo htmlspecialchars($templateparams->get('sitedescription'));?>
                                         </span></h1>
                                 </div><!-- end logoheader -->
                                         <ul class="skiplinks">
@@ -142,9 +141,9 @@ $templateparams     = $app->getTemplate(true)->params;
                         </div><!-- end header -->
                         <div id="<?php echo $showRightColumn ? 'contentarea2' : 'contentarea'; ?>">
                                         <div id="breadcrumbs">
-                                                <p>
+                                            
                                                         <jdoc:include type="modules" name="position-2" />
-                                                </p>
+                                            
                                         </div>
 
                                         <?php if ($navposition=='left' AND $showleft) : ?>
@@ -195,7 +194,7 @@ $templateparams     = $app->getTemplate(true)->params;
 
 
                                         <div id="right">
-                                                <a name="additional"></a>
+                                                <a id="additional"></a>
                                                 <jdoc:include type="modules" name="position-6" style="beezDivision" headerLevel="3"/>
                                                 <jdoc:include type="modules" name="position-8" style="beezDivision" headerLevel="3"  />
                                                 <jdoc:include type="modules" name="position-3" style="beezDivision" headerLevel="3"  />
@@ -245,7 +244,7 @@ $templateparams     = $app->getTemplate(true)->params;
 
                                         <jdoc:include type="modules" name="position-14" />
                                         <p>
-                                                <?php echo JText::_('TPL_BEEZ2_POWERED_BY');?> <a href="http://www.joomla.org/">Joomla!</a>
+                                                <?php echo JText::_('TPL_BEEZ2_POWERED_BY');?> <a href="http://www.joomla.org/">Joomla!&#174;</a>
                                         </p>
 
 

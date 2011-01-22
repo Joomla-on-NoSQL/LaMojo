@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,10 +38,24 @@ class ContentController extends JController
 		require_once JPATH_COMPONENT.'/helpers/content.php';
 
 		// Load the submenu.
-		ContentHelper::addSubmenu(JRequest::getWord('view', 'articles'));
+		ContentHelper::addSubmenu(JRequest::getCmd('view', 'articles'));
+
+		$view		= JRequest::getCmd('view', 'articles');
+		$layout 	= JRequest::getCmd('layout', 'articles');
+		$id			= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == 'article' && $layout == 'edit' && !$this->checkEditId('com_content.edit.article', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_content&view=articles', false));
+
+			return false;
+		}
 
 		parent::display();
-		
+
 		return $this;
 	}
 }

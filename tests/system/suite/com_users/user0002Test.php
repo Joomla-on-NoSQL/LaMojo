@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * Adds a user in back end and logs in as new user in front end
  */
@@ -19,10 +19,10 @@ class User0002Test extends SeleniumJoomlaTestCase
 	$this->doAdminLogin();
 
 	$salt1 = mt_rand();
-	$userName = 'My Test User' . $salt1;
+	$username = 'My Test User' . $salt1;
 	$login = 'TestUser' . $salt1;
 	$email = $login . '@test.com';
-	$this->createUser($userName, $login, 'password', $email, 'Author');
+	$this->createUser($username, $login, 'password', $email, 'Author');
 
     echo("Verify existence of new user.\n");
     try {
@@ -44,13 +44,13 @@ class User0002Test extends SeleniumJoomlaTestCase
     $this->click("link=Go to site home page.");
     $this->waitForPageToLoad("30000");
     echo("Log in as TestUser.\n");
-    $this->type("modlgn_username", "TestUser" . $salt1);
-    $this->type("modlgn_passwd", "password");
+    $this->type("modlgn-username", "TestUser" . $salt1);
+    $this->type("modlgn-passwd", "password");
     $this->click("Submit");
     $this->waitForPageToLoad("30000");
     echo("Verify existence of new user.\n");
     try {
-        $this->assertTrue($this->isTextPresent($userName));
+        $this->assertTrue($this->isTextPresent($username));
     } catch (PHPUnit_Framework_AssertionFailedError $e) {
         array_push($this->verificationErrors, $this->getTraceFiles($e));
     }
@@ -66,7 +66,7 @@ class User0002Test extends SeleniumJoomlaTestCase
     $this->waitForPageToLoad("30000");
 
     echo "Filter on user name\n";
-    $this->type("filter_search", $userName);
+    $this->type("filter_search", $username);
     $this->click("//button[@type='submit']");
     $this->waitForPageToLoad("30000");
 
@@ -83,5 +83,6 @@ class User0002Test extends SeleniumJoomlaTestCase
     $this->click("link=Log out");
     $this->waitForPageToLoad("30000");
     $this->countErrors();
+	$this->deleteAllVisibleCookies();
   }
 }

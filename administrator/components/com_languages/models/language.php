@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -25,7 +25,7 @@ class LanguagesModelLanguage extends JModelAdmin
 	 * @return	JTable
 	 * @since	1.6
 	 */
-	public function getTable()
+	public function getTable($name='', $prefix='', $options = array())
 	{
 		return JTable::getInstance('Language');
 	}
@@ -44,14 +44,8 @@ class LanguagesModelLanguage extends JModelAdmin
 		$params		= JComponentHelper::getParams('com_languages');
 
 		// Load the User state.
-		if (JRequest::getWord('layout') === 'edit') {
-			$langId = (int) $app->getUserState('com_languages.edit.language.id');
-			$this->setState('language.id', $langId);
-		}
-		else {
-			$langId = (int) JRequest::getInt('id');
-			$this->setState('language.id', $langId);
-		}
+		$langId = (int) JRequest::getInt('lang_id');
+		$this->setState('language.id', $langId);
 
 		// Load the parameters.
 		$this->setState('params', $params);
@@ -83,7 +77,8 @@ class LanguagesModelLanguage extends JModelAdmin
 			return $false;
 		}
 
-		$value = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+		$properties = $table->getProperties(1);
+		$value = JArrayHelper::toObject($properties, 'JObject');
 
 		return $value;
 	}
@@ -163,7 +158,7 @@ class LanguagesModelLanguage extends JModelAdmin
 		}
 
 		// Trigger the onExtensionBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_langauges.language', &$table, $isNew));
+		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_languages.language', &$table, $isNew));
 
 		// Check the event responses.
 		if (in_array(false, $result, true)) {
@@ -178,7 +173,7 @@ class LanguagesModelLanguage extends JModelAdmin
 		}
 
 		// Trigger the onExtensionAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_langauges.language', &$table, $isNew));
+		$dispatcher->trigger('onExtensionAfterSave', array('com_languages.language', &$table, $isNew));
 
 		$this->setState('language.id', $table->lang_id);
 

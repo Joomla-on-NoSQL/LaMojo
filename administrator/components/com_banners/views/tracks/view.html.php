@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,18 +57,17 @@ class BannersViewTracks extends JView
 		JToolBarHelper::title(JText::_('COM_BANNERS_MANAGER_TRACKS'), 'banners-tracks.png');
 
 		$bar = JToolBar::getInstance('toolbar');
-		$bar->appendButton('Popup', 'export', 'JTOOLBAR_EXPORT', 'index.php?option=com_banners&amp;view=download&amp;tmpl=component',600,250);
-
+			$bar->appendButton('Popup', 'export', 'JTOOLBAR_EXPORT', 'index.php?option=com_banners&amp;view=download&amp;tmpl=component',600,250);
 		$document = JFactory::getDocument();
 		$app = JFactory::getApplication();
 		if ($canDo->get('core.delete')) {
 			$bar->appendButton('Confirm','COM_BANNERS_DELETE_MSG', 'delete', 'COM_BANNERS_TRACKS_DELETE', 'tracks.delete',false);
+			JToolBarHelper::divider();
 		}
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_banners');
+			JToolBarHelper::divider();
 		}
-		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_BANNERS_TRACKS');
 	}
 }

@@ -29,7 +29,8 @@ h4
 fieldset
 {
         margin:10px 0 ;
-        padding:15px 5px;
+        padding:15px 0px;
+        border:solid 1px
 }
 
 p
@@ -67,11 +68,14 @@ em
 
 #header form .inputbox
 {
-        margin:1px 11px 1px 1px;
         font-size:1em;
         width:13em;
         padding:3px;
 }
+
+#header form .inputbox { margin: 2px 13px 2px 2px;}
+#header form .inputbox:focus { margin: 1px 11px 0 1px; }
+
 
 #header ul
 {
@@ -168,26 +172,27 @@ em
 {
         padding:0 0 0 0px;
         text-align:left;
-        margin:5px 20px 5px 0px;
+        margin:15px 20px 15px 0px;
         font-size:0.85em
 }
 
 #breadcrumbs p
 {
-        padding:5px;
+        padding:5px 5px 5px 0;
         display:inline;
 }
 
 #breadcrumbs span
 {
-        padding:7px;
+        padding:0px;
 }
 
 #breadcrumbs span a:link,
 #breadcrumbs span a:visited
 {
         text-transform:none;
-        font-weight:normal
+        font-weight:normal;
+       
 }
 
 #breadcrumbs span a:hover,
@@ -437,7 +442,8 @@ ul.menu li.active ul li.active ul li a:link,
 .item-page
 {
         padding:0 5px;
-        display:block
+        display:block;
+        overflow:hidden
 }
 
 
@@ -578,7 +584,8 @@ ul#archive-items
         padding:0
 }
 
-ul#archive-items li
+ul#archive-items li.row0,
+ul#archive-items li.row1
 {
         padding:10px 0;
         margin:10px 0;
@@ -935,7 +942,7 @@ form fieldset dd
         padding:0 5px
 }
 
-.form_limit
+.form-limit
 {
         margin:20px 0 0;
         text-align:right;
@@ -986,8 +993,9 @@ label.ordering
 .word input
 {
         font-weight:bold;
-        margin:1px 1px 1px 10px;
-         padding:3px;
+        margin:0px 10px 0px 10px;
+        padding:4px;
+        font-size:1em
 }
 
 .word input:focus
@@ -1032,33 +1040,37 @@ form .search label
 
 /* ++++++++++++++  search results  ++++++++++++++++++ */
 
-dl.search_results
+dl.search-results
 {
 
 }
 
-dl.search_results dt.result-title
+dl.search-results dt.result-title
 {
         padding:15px 15px 0px 5px;
         font-weight:bold;
 }
 
-dl.search_results dd
+dl.search-results dd
 {
         padding:2px 15px 2px 5px
 }
 
-dl.search_results dd.result-text
+dl.search-results dd.result-text
 {
         padding:10px 15px 10px 5px;
         line-height:1.7em
 }
 
-dl.search_results dd.result-created
+dl.search-results dd.result-created
 {
         padding:2px 15px 15px 5px
 }
 
+dl.search-results dd.result-category
+{
+	 padding:10px 15px 5px 5px
+}
 
 /* ########################### contacts ########################### */
 
@@ -1070,6 +1082,25 @@ dl.search_results dd.result-created
 .contact-category
 {
         padding:0 10px
+}
+
+.contact-category  #adminForm fieldset.filters
+{
+	border:0;
+	padding:0
+}
+
+.contact-image
+{
+	margin:10px 0;
+	overflow:hidden;
+}
+
+.contact-image img
+{
+/* as you like
+float:right;
+float:left */
 }
 
 address
@@ -1090,7 +1121,7 @@ span.contact-image
     display:block
 }
 
-.jcontact-address
+.contact-address
 
 {
 margin:20px 0 10px 0;
@@ -1098,13 +1129,13 @@ margin:20px 0 10px 0;
 }
 
 
-.contact_email div
+.contact-email div
 {
         padding:2px 0;
         margin:0 0 10px 0;
 }
 
-.contact_email label
+.contact-email label
 {
         width:17em;
         float:left;
@@ -1114,7 +1145,7 @@ margin:20px 0 10px 0;
 #contact_textmsg
 {padding: 2px 0 10px 0}
 
-#contact_email_copy
+#contact-email-copy
 {
         float:left;
         margin-right:10px;
@@ -1190,21 +1221,47 @@ dl#content-pane.tabs {
 #users-profile-custom dt
 {
         float:left;
-        width:10em;
-        padding:3px 0
+        width:12em;
+        padding:3px 0;
 }
 
 #users-profile-core dd,
 #users-profile-custom dd
 {
-        padding:3px 0
+        padding:3px 0;
 }
 
-#member-profile fieldset
+#member-profile fieldset,
+.registration fieldset
 {
         margin:10px 0 15px 0;
         padding:15px;
 }
+
+#users-profile-core legend,
+#users-profile-custom legend,
+.profile-edit legend,
+.registration legend
+{
+		font-weight:bold
+}
+
+.profile-edit form#member-profile fieldset dd,
+.registration form#member-registration fieldset dd
+{ float:none; padding:5px 0}
+
+.profile-edit form#member-profile fieldset dd input,
+.profile-edit form#member-profile fieldset dd select,
+.registration form#member-registration fieldset dd input
+{width:17em}
+
+.profile-edit form#member-profile fieldset dt,
+.registration form#member-registration fieldset dt
+{padding:5px 5px 5px 0; width:13em}
+
+
+span.optional
+{font-size:0.9em}
 
 /*#################### tables ############################ */
 
@@ -1289,10 +1346,6 @@ table.category th a img
 }
 .filter-search .inputbox
 {width:6em}
-
-fieldset.filters
-{
-}
 
 legend.element-invisible
 {
@@ -1405,6 +1458,7 @@ p.error
 
 }
 
+a.mceButton:hover  {background:none !important}
 
 /* ++++++++++++++  pagebreak  ++++++++++++++ */
 table.contenttoc
@@ -1435,7 +1489,7 @@ form#adminForm
 
 }
 
-form#adminForm fieldset
+.edit form#adminForm fieldset
 {
         padding:20px 15px;
         margin:10px 0 15px 0;
@@ -1454,19 +1508,19 @@ form#adminForm fieldset
         vertical-align:top;
 }
 
-form#adminForm .formelm_area
+form#adminForm .formelm-area
 {
         padding:5px 0
 }
 
-form#adminForm .formelm_area label
+form#adminForm .formelm-area label
 {
         vertical-align:top;
         display:inline-block;
         width:7.9em
 }
 
-.formelm_buttons
+.formelm-buttons
 {
         text-align:right;
         margin-bottom:10px
@@ -1492,15 +1546,12 @@ margin-top:10px !important}
 .tip
 {
         font-size:0.8em;
+        text-align:left;
         padding:3px;
+        max-width:400px
 }
 
-.tool-tip
-{
-        font-size:0.8em;
-}
-
-.tool-title
+.tip-title
 {
         font-weight:bold;
 }
@@ -1628,58 +1679,54 @@ dl.weblink-count dt,
 dl.weblink-count dd
 {
         display:inline;
-        font-size:0.85em
 }
 
 /* ++++++++++++++  login  ++++++++++++++ */
 
-#form-login
+#login-form
 {
         padding-top:5px
 }
 
-#form-login fieldset
+#login-form fieldset
 {
         padding:0
 }
 
-#form-login .inputbox
+#login-form .inputbox
 {
         padding:2px
 }
 
-#form-login fieldset.input
+#login-form fieldset.input
 {
         padding:10px 0 0 0;
         margin:0px 0 10px 5px
 }
 
-#form-login label
+#login-form label
 {
         margin-right:10px;
-                width:8.4em;
-                display:block;
-                float:left
+        width:8.4em;
+        display:block;
+        float:left
 }
 
 #form-login-remember label
-{float:none;
-width:auto;
-display:inline}
-#form-login ul
 {
-        margin-left:5px
+	float:none;
+	width:auto;
+	display:inline
 }
 
-#form-login div
+.logout-button
 {
-        margin:0 0 10px 5px;
-        padding:10px 0 0;
-        text-align:left
+	margin-top:10px
 }
 
 input.button,
-button.button
+button.button,
+button.validate
 {
         cursor:pointer;
         padding:3px 5px 3px 7px ;
@@ -1688,8 +1735,8 @@ button.button
         font-family:arial;
 }
 
-#modlgn_username,
-#modlgn_passwd
+#modlgn-username,
+#modlgn-passwd
 {
         width:9em
 }
@@ -1801,7 +1848,12 @@ ul.tabs li a:focus
 {
         padding:15px 10px;
         margin-top:-1px;
-                position:relative
+                
+}
+
+.tabcontent:focus
+{
+	outline:none
 }
 
 .tabopen
@@ -1908,43 +1960,55 @@ a.mod-articles-category-title
 /* ###########  Categories list ############ */
 #main .categories-listalphabet ul
 {
-padding:0;
-margin:20px 10px 10px 0;
-list-style-type:none;
-list-style-position:inside
+	padding:0;
+	margin:20px 10px 10px 0;
+	list-style-type:none;
+	list-style-position:inside
  }
 #main .categories-listalphabet ul li
 {
-display :inline;
-padding:5px;
-border-right:solid 1px #ddd
+	display :inline;
+	padding:5px;
+	border-right:solid 1px #ddd
 }
 
 
 #main .categories-list ul
-{list-style-type:none;
-margin:0}
+{
+	list-style-type:none;
+	margin:0
+}
 
 #main .cat-children
-{ padding-left:5px
+{ 
+	padding-left:5px
 }
 #main .cat-children ul dl dt,
-#main .cat-children ul dl dd
+#main .cat-children ul dl dd,
+#main dl.article-count dt,
+#main dl.article-count dd
 
 { display:inline}
 
 #main .cat-children ul
-{list-style-type:none;
- margin:0;
- padding:0;
+{
+	list-style-type:none;
+	margin:0;
+	padding:0;
 }
  #main .cat-children ul
- {margin:20px 20px 20px 0;}
-  #main .cat-children ul ul
-  {margin:20px}
+{
+	margin:20px 20px 20px 0;
+}
+#main .cat-children ul ul
+{
+	margin:20px
+}
 
-  #main .cat-children ul li
-  {margin:10px 0 10px 0}
+#main .cat-children ul li
+{
+	margin:10px 0 10px 0
+}
 
 
 
@@ -1952,15 +2016,21 @@ margin:0}
   /* mod stats  */
 
 
-    .stats-module dl
-    {margin:10px 0 10px 0}
-    .stats-module dt
-    {float:left;
-    margin:0 10px 0 0;
-    font-weight: bold;
-    }
-      .stats-module dt,   .stats-module dd
-      {padding:2px 0 2px 0 }
+.stats-module dl
+{
+	margin:10px 0 10px 0
+}
+.stats-module dt
+{
+	float:left;
+	margin:0 10px 0 0;
+	font-weight: bold;
+}
+.stats-module dt,
+.stats-module dd
+{
+	padding:2px 0 2px 0 
+}
 /* syndicate */
 
 a.feed-link
@@ -1972,3 +2042,156 @@ text-decoration:none
 
 .feed-link img
 {border:0}
+/* pagenav */
+#main ul.pagenav {
+	list-style-type:none;
+	padding:0;
+	overflow:hidden
+}
+ul.pagenav li
+{
+	display:inline-block;
+	padding:1px;
+	margin:0;
+	border:solid 0px #cc0000;
+	position:relative;
+	
+}
+
+#main ul.pagenav li 
+{
+	line-height:2em
+}
+
+ul.pagenav li a
+{
+	border:solid 1px #ccc; 
+	display:inline; 
+	background:#eee; 
+	padding:2px; 
+	text-decoration:none;
+	
+}
+ul.pagenav li.pagenav-prev 
+{float:left}
+ul.pagenav li.pagenav-next 
+{float:right}
+
+/* pagebreak */
+
+#article-index
+{
+	width:25%;
+	float:right; 
+	border:solid 1px #eee;
+	padding:10px;
+	margin: 10px 0px 20px 30px;
+	background:#f9faf9
+}
+#article-index h3
+{
+	margin:0;
+	font-size:1em;
+
+
+}
+
+#article-index ul
+{
+	list-style-type:disc;
+	color:#666
+}
+
+
+/* mailto window */
+
+
+#mailto-window 
+{
+	background:#f5f5f5;
+	padding:15px;
+	border:solid 1px #ddd;
+	position:relative
+}
+#mailto-window label
+{
+	width:10em
+}
+
+.mailto-close
+{
+	position:absolute; 
+	right:0; 
+	top:5px; 
+	background:none;
+
+
+	
+	
+}
+
+
+.mailto-close a 
+{
+background:#f5f5f5 url(../images/close.png) no-repeat !important;
+min-width:25px; 
+display:block;
+min-height:25px;
+overflow:visible
+}
+
+.mailto-close a  span
+{
+	position:absolute;
+	left:-3000px;
+	top:-3000px;
+	display:inline
+
+}
+#mailto-window  .inputbox
+{
+	background:url("../images/content_bg.gif") repeat-x scroll 0 0 #FFFFFF;
+	border:1px solid #ccc;
+	padding:3px;
+}
+
+#mailto-window p
+{
+	margin-top:20px
+}
+
+#mailto-window button
+{
+	margin:0 5px 0 0
+}
+
+.clr{
+	clear:both;
+}
+
+/* for the spacer field*/
+span.spacer > span.text label {
+	white-space: nowrap;
+	font-weight: bold;
+	color: #666;
+}
+.red {
+	font-weight: bold;
+	color: #c00;
+}
+
+.star {
+	color:#cc0000;
+}
+
+/* ++++++++++++++  news feeds direction ++++++++++++++ */
+
+.redirect-ltr {
+	direction: ltr;
+	text-align: left;
+}
+
+.redirect-rtl {
+	direction:rtl;
+	text-align: right;
+}

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_articles_latest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,6 +11,9 @@
 defined('_JEXEC') or die;
 
 require_once JPATH_SITE.'/components/com_content/helpers/route.php';
+
+jimport('joomla.application.component.model');
+
 JModel::addIncludePath(JPATH_SITE.'/components/com_content/models');
 
 abstract class modArticlesNewsHelper
@@ -45,19 +48,19 @@ abstract class modArticlesNewsHelper
 		// Category filter
 		$model->setState('filter.category_id', $params->get('catid', array()));
 
+		// Filter by language
+		$model->setState('filter.language',$app->getLanguageFilter());
+
 		// Set ordering
-		$order_map = array(
-			'm_dsc' => 'a.modified DESC, a.created',
-			'mc_dsc' => 'CASE WHEN (a.modified = '.$db->quote($db->getNullDate()).') THEN a.created ELSE a.modified END',
-			'c_dsc' => 'a.created'
-		);
-
-		$ordering = JArrayHelper::getValue($order_map, $params->get('ordering'), 'a.created');
-		$dir = 'DESC';
-
+		$ordering = $params->get('ordering', 'a.publish_up');
 		$model->setState('list.ordering', $ordering);
-		$model->setState('list.direction', $dir);
+		if (trim($ordering) == 'rand()') {
+			$model->setState('list.direction', '');			
+		} else {
+			$model->setState('list.direction', 'DESC');
+		}
 
+		//	Retrieve Content
 		$items = $model->getItems();
 
 		foreach ($items as &$item) {
@@ -77,7 +80,6 @@ abstract class modArticlesNewsHelper
 			}
 
 			$item->introtext = JHtml::_('content.prepare', $item->introtext);
-
 
 			//new
 			if (!$params->get('image')) {

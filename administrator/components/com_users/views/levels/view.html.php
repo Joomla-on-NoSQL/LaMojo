@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,20 +57,16 @@ class UsersViewLevels extends JView
 		}
 		if ($canDo->get('core.edit')) {
 			JToolBarHelper::custom('level.edit', 'edit.png', 'edit_f2.png','JTOOLBAR_EDIT', true);
+			JToolBarHelper::divider();
 		}
-
 		if ($canDo->get('core.delete')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::deleteList('', 'level.delete','JTOOLBAR_DELETE');
-		}
-
-
-		if ($canDo->get('core.admin')) {
 			JToolBarHelper::divider();
-			JToolBarHelper::preferences('com_users');
 		}
-
-		JToolBarHelper::divider();
+		if ($canDo->get('core.admin')) {
+			JToolBarHelper::preferences('com_users');
+			JToolBarHelper::divider();			
+		}
 		JToolBarHelper::help('JHELP_USERS_ACCESS_LEVELS');
 	}
 }

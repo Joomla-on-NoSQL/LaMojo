@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -60,12 +60,13 @@ class UsersViewUser extends JView
 		
 		
 		$isNew	= ($this->item->id == 0);
-		JToolBarHelper::title(JText::_($isNew ? 'COM_USERS_VIEW_NEW_USER_TITLE' : 'COM_USERS_VIEW_EDIT_USER_TITLE'), 'user-add');
-		if ($canDo->get('core.edit')||$canDo->get('core.create')) {
+		$isProfile = $this->item->id == $user->id;
+		JToolBarHelper::title(JText::_($isNew ? 'COM_USERS_VIEW_NEW_USER_TITLE' : ($isProfile ? 'COM_USERS_VIEW_EDIT_PROFILE_TITLE' : 'COM_USERS_VIEW_EDIT_USER_TITLE')), $isNew ? 'user-add' : ($isProfile ? 'user-profile' : 'user-edit'));
+		if ($canDo->get('core.edit')||$canDo->get('core.edit.own')||$canDo->get('core.create')) {
 			JToolBarHelper::apply('user.apply','JTOOLBAR_APPLY');
 			JToolBarHelper::save('user.save','JTOOLBAR_SAVE');
 		}
-		if ($canDo->get('core.create')) {			
+		if ($canDo->get('core.create')&&$canDo->get('core.manage')) {			
 			JToolBarHelper::custom('user.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 		if (empty($this->item->id))  {

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,8 +33,22 @@ class PluginsController extends JController
 		require_once JPATH_COMPONENT.'/helpers/plugins.php';
 
 		// Load the submenu.
-		PluginsHelper::addSubmenu(JRequest::getWord('view', 'plugins'));
-		
+		PluginsHelper::addSubmenu(JRequest::getCmd('view', 'plugins'));
+
+		$view		= JRequest::getCmd('view', 'plugins');
+		$layout 	= JRequest::getCmd('layout', 'default');
+		$id			= JRequest::getInt('extension_id');
+
+		// Check for edit form.
+		if ($view == 'plugin' && $layout == 'edit' && !$this->checkEditId('com_plugins.edit.plugin', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_plugins&view=plugins', false));
+
+			return false;
+		}
+
 		parent::display();
 	}
 }

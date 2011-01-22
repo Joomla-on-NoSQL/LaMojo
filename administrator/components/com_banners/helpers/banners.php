@@ -1,11 +1,13 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
+ * Banners component helper.
+ *
  * @package		Joomla.Administrator
  * @subpackage	com_banners
  * @since		1.6
@@ -27,11 +29,6 @@ class BannersHelper
 			'index.php?option=com_banners&view=banners',
 			$vName == 'banners'
 		);
-		JSubMenuHelper::addEntry(
-			JText::_('COM_BANNERS_SUBMENU_CLIENTS'),
-			'index.php?option=com_banners&view=clients',
-			$vName == 'clients'
-		);
 
 		JSubMenuHelper::addEntry(
 			JText::_('COM_BANNERS_SUBMENU_CATEGORIES'),
@@ -43,6 +40,13 @@ class BannersHelper
 				JText::sprintf('COM_CATEGORIES_CATEGORIES_TITLE',JText::_('com_banners')),
 				'banners-categories');
 		}
+
+		JSubMenuHelper::addEntry(
+			JText::_('COM_BANNERS_SUBMENU_CLIENTS'),
+			'index.php?option=com_banners&view=clients',
+			$vName == 'clients'
+		);
+
 		JSubMenuHelper::addEntry(
 			JText::_('COM_BANNERS_SUBMENU_TRACKS'),
 			'index.php?option=com_banners&view=tracks',
@@ -103,7 +107,7 @@ class BannersHelper
 			return false;
 		}
 
-		JTable::addIncludePath(JPATH_ROOT.'/administrator/components/com_banners/tables');
+		JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . DS . 'tables');
 
 		foreach ($rows as $row) {
 			$purchase_type = $row->purchase_type;

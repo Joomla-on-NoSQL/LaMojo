@@ -1,7 +1,9 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Administrator
+ * @subpackage	com_content
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,41 +21,74 @@ jimport('joomla.application.component.modellist');
 class ContentModelArticles extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'title', 'a.title',
+				'alias', 'a.alias',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'catid', 'a.catid', 'category_title',
+				'state', 'a.state',
+				'access', 'a.access', 'access_level',
+				'created', 'a.created',
+				'created_by', 'a.created_by',
+				'ordering', 'a.ordering',
+				'featured', 'a.featured',
+				'language', 'a.language',
+				'hits', 'a.hits',
+				'publish_up', 'a.publish_up',
+				'publish_down', 'a.publish_down',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
+	 * @return	void
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		$session = JFactory::getSession();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = JRequest::getVar('layout', 'default')) {
+		if ($layout = JRequest::getVar('layout')) {
 			$this->context .= '.'.$layout;
 		}
 
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$access = $app->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
+		$access = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access', 0, 'int');
 		$this->setState('filter.access', $access);
 
-		$published = $app->getUserStateFromRequest($this->context.'.filter.published', 'filter_published', '');
+		$authorId = $app->getUserStateFromRequest($this->context.'.filter.author_id', 'filter_author_id');
+		$this->setState('filter.author_id', $authorId);
+
+		$published = $this->getUserStateFromRequest($this->context.'.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
 
-		$categoryId = $app->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id');
+		$categoryId = $this->getUserStateFromRequest($this->context.'.filter.category_id', 'filter_category_id');
 		$this->setState('filter.category_id', $categoryId);
 
-		// set the value of the category filter for the single record edit view
-		$session->set('com_content.article.filter.category_id',$categoryId);
-
-		$language = $app->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
+		$language = $this->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
-
 
 		// List state information.
 		parent::populateState('a.title', 'asc');
@@ -75,9 +110,10 @@ class ContentModelArticles extends JModelList
 	{
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.search');
-		$id .= ':'.$this->getState('filter.access');
+		$id	.= ':'.$this->getState('filter.access');
 		$id	.= ':'.$this->getState('filter.published');
 		$id	.= ':'.$this->getState('filter.category_id');
+		$id	.= ':'.$this->getState('filter.author_id');
 		$id	.= ':'.$this->getState('filter.language');
 
 		return parent::getStoreId($id);
@@ -87,6 +123,7 @@ class ContentModelArticles extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return	JDatabaseQuery
+	 * @since	1.6
 	 */
 	protected function getListQuery()
 	{
@@ -98,8 +135,10 @@ class ContentModelArticles extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid,' .
-				'a.state, a.access, a.created, a.hits, a.ordering, a.featured, a.language')
+				'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid' .
+				', a.state, a.access, a.created, a.created_by, a.ordering, a.featured, a.language, a.hits' .
+				', a.publish_up, a.publish_down'
+			)
 		);
 		$query->from('#__content AS a');
 
@@ -132,7 +171,8 @@ class ContentModelArticles extends JModelList
 		$published = $this->getState('filter.published');
 		if (is_numeric($published)) {
 			$query->where('a.state = ' . (int) $published);
-		} else if ($published === '') {
+		}
+		else if ($published === '') {
 			$query->where('(a.state = 0 OR a.state = 1)');
 		}
 
@@ -140,7 +180,8 @@ class ContentModelArticles extends JModelList
 		$categoryId = $this->getState('filter.category_id');
 		if (is_numeric($categoryId)) {
 			$query->where('a.catid = '.(int) $categoryId);
-		} else if (is_array($categoryId)) {
+		}
+		else if (is_array($categoryId)) {
 			JArrayHelper::toInteger($categoryId);
 			$categoryId = implode(',', $categoryId);
 			$query->where('a.catid IN ('.$categoryId.')');
@@ -153,15 +194,17 @@ class ContentModelArticles extends JModelList
 			$query->where('a.created_by '.$type.(int) $authorId);
 		}
 
-		// Filter by search in title
+		// Filter by search in title.
 		$search = $this->getState('filter.search');
 		if (!empty($search)) {
 			if (stripos($search, 'id:') === 0) {
 				$query->where('a.id = '.(int) substr($search, 3));
-			} else if (stripos($search, 'author:') === 0) {
+			}
+			else if (stripos($search, 'author:') === 0) {
 				$search = $db->Quote('%'.$db->getEscaped(substr($search, 7), true).'%');
 				$query->where('(ua.name LIKE '.$search.' OR ua.username LIKE '.$search.')');
-			} else {
+			}
+			else {
 				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
 				$query->where('(a.title LIKE '.$search.' OR a.alias LIKE '.$search.')');
 			}
@@ -180,7 +223,32 @@ class ContentModelArticles extends JModelList
 		}
 		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
 
-		//echo nl2br(str_replace('#__','jos_',$query));
+		// echo nl2br(str_replace('#__','jos_',$query));
 		return $query;
+	}
+
+	/**
+	 * Build a list of authors
+	 *
+	 * @return	JDatabaseQuery
+	 * @since	1.6
+	 */
+	public function getAuthors() {
+		// Create a new query object.
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
+
+		// Construct the query
+		$query->select('u.id AS value, u.name AS text');
+		$query->from('#__users AS u');
+		$query->join('INNER', '#__content AS c ON c.created_by = u.id');
+		$query->group('u.id');
+		$query->order('u.name');
+
+		// Setup the query
+		$db->setQuery($query->__toString());
+
+		// Return the result
+		return $db->loadObjectList();
 	}
 }

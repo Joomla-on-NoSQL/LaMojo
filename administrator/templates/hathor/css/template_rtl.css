@@ -4,7 +4,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  *
@@ -41,7 +41,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
  * Overall Styles
  */
 #header {
-	background: #ffffff url(../images/j_logo.png) no-repeat top right;
 }
 
 #header h1.title {
@@ -57,8 +56,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 
 #element-box {
-	border-left: 1px solid #c7c8b2;
-	border-right: 1px solid #c7c8b2;
 }
 
 #element-box.cpanel {
@@ -78,44 +75,19 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	padding: 4px 22px 0 20px;
 }
 
-#module-status { /* @TODO check the x position */
-	background: url(../images/mini_icon.png) 3px 5px no-repeat;
-}
-
-#module-status .preview {
-	background: url(../images/menu/icon-16-media.png) 3px 3px no-repeat;
-}
-
-#module-status .viewsite {
-	background: url(../images/menu/icon-16-viewsite.png) 3px 3px no-repeat;
-}
-
-#module-status .unread-messages,#module-status .no-unread-messages {
-	background: url(../images/menu/icon-16-messages.png) 3px 3px no-repeat;
-}
-
-#module-status .loggedin-users {
-	background: url(../images/menu/icon-16-user.png) 3px 3px no-repeat;
-}
-
-#module-status .logout {
-	background: url(../images/menu/icon-16-logout.png) 3px 3px no-repeat;
-}
+/* background images moved to color css file */
 
 /**
  * Various Styles
  */
 
-div.checkin-tick { /* @TODO check the x position */
-	background: url(../images/admin/tick.png) 20px 50% no-repeat;
+div.checkin-tick {
 	text-indent: -9999px; 
 }
 
 /**
  * Overlib
  */
-
-
 
 /**
  * Subheader, toolbar, page title
@@ -137,8 +109,6 @@ div.configuration {
 }
 
 div.toolbar-box {
-	border-left: 1px solid #c7c8b2;
-	border-right: 1px solid #c7c8b2;
 }
 
 div.toolbar-list {
@@ -152,8 +122,6 @@ div.toolbar-list li {
 }
 
 div.toolbar-list li.divider {
-	border-left:1px dotted #e3e4ca;
-	border-right:none;
 	margin-left: 10px;
 	margin-right: 0;
 }
@@ -168,8 +136,6 @@ div.toolbar-list a {
 }
 
 div.toolbar-list a:hover {
-	border-right: 1px solid #e3e4ca;
-	border-left: 1px solid #c7c8b2;
 }
 
 /**
@@ -178,21 +144,20 @@ div.toolbar-list a:hover {
 
 
 /**
- * Pane Slider Jpane Toggler styles
+ * Pane Slider pane Toggler styles
  */
 div.pane-sliders {
 	margin-left: 10px;
 }
 
-.jpane-toggler  span { /* @TODO check the x position */
-	background: transparent url(../images/j_arrow_left.png) 5px 50% no-repeat;
+.pane-toggler  span {
+	padding-left: 0;
 	padding-right: 20px;
 }
 
-.jpane-toggler-down span { /* @TODO check the x position */
-	background: transparent url(../images/j_arrow_down.png) 5px 50%
-		no-repeat;
+.pane-toggler-down span {
 	padding-right: 20px;
+	padding-left: 0;
 }
 
 /**
@@ -238,6 +203,22 @@ div.current fieldset.radio label {
 	margin: 3px 2px 0 0;
 }
 
+div.current fieldset.checkboxes {
+	float:right;
+	clear:left;
+}
+
+div.current fieldset.checkboxes input {
+	float:right;
+	clear:right;
+	margin: 3px 2px 0 0;
+}
+
+div.current fieldset.checkboxes label {
+	clear:left;
+	margin: 3px 2px 0 0;
+}
+
 div.current input,
 div.current span.faux-input,
 div.current textarea,
@@ -250,8 +231,17 @@ div.current table#acl-config th.acl-groups {
 	text-align: right;
 }
 
+div.current table#filter-config th.acl-groups {
+	text-align: right;
+}
+
+/* -------- Menu Assigments ---------- */
 div#menu-assignment {
 	clear:right;
+}
+
+div#menu-assignment ul.menu-links {
+	float:right;
 }
 
 div#menu-assignment h3 {
@@ -340,8 +330,6 @@ p.tab-description {
 
 #cpanel div.icon a:hover,
 #cpanel div.icon a:focus {
-	border-right: 1px solid #e3e4ca;
-	border-left: 1px solid #c7c8b2;
 }
 
 #cpanel img {
@@ -366,6 +354,10 @@ div.col {
 	float: right;
 }
 
+div.options-section.col {
+	float: left;
+}
+
 div.col1 {
 	float: right;
 }
@@ -387,11 +379,16 @@ div.col2 {
 
 	/* Layout Divs */
 div.main-section {
-	width: 60%;
+
 }
 
 div.options-section {
-	width: 40%;
+	margin: 10px 0 10px 10px;
+}
+
+/* for bluestork style html */
+div.width-40.fltrt {
+	margin: 10px 0 10px 10px;
 }
 
 /**
@@ -441,11 +438,7 @@ fieldset ul.checklist {
 	margin-left: 0px;
 }
 
-/* end new form fields */
-
 fieldset#filter-bar {
-	border-left: none;
-	border-right: none;
 	margin: 0;
 	padding: 5px 10px 5px 10px;
 }
@@ -511,14 +504,10 @@ span.gi {
 
 table.admintable td.key,table.admintable td.paramlist_key {
 	text-align: left;
-	border-left: 1px solid #e9e9e9;
-	border-right: none;
 }
 
 table.paramlist td.paramlist_description {
 	text-align: right;
-	border-left: 1px solid #e9e9e9;
-	border-right: none;
 }
 
 /**
@@ -582,8 +571,6 @@ th.ordering-col a img {
  */
 
 table.adminlist.modal {
-	border-right: 1px solid #c7c8b2;
-	border-left: 1px solid #c7c8b2;
 }
 
 
@@ -599,12 +586,9 @@ table.adminlist tbody tr {
 
 table.adminlist tbody tr td,
 table.adminlist tbody tr th {
-	border-left: 1px solid #c7c8b2;
-	border-right: none;
 }
 
 table.adminlist tbody tr td:last-child {
-	border-left: none;
 }
 
 	/* Table td/th styles */
@@ -662,13 +646,11 @@ table.noshow fieldset {
  * Saving order icon styling in admin tables
  */
 a.saveorder {
-	background: url(../images/admin/filesave.png) no-repeat;
 	float:left;
 	margin-left: 8px; 
 }
 
-a.saveorder.inactive { /* @TODO check the x position */
-	background-position: 0px -16px;
+a.saveorder.inactive {
 }
 
 /**
@@ -688,8 +670,6 @@ a.saveorder.inactive { /* @TODO check the x position */
 .button1 a {
 	float: right;
 	padding: 0 6px 0 6px;
-	/* add padding if you are using the directional images */
-	/* padding: 0 6px 0 30px; */
 }
 
 	/* Button 2 Type */
@@ -730,50 +710,7 @@ a.saveorder.inactive { /* @TODO check the x position */
 	margin-right: 5px;
 }
 
-.button2-right .prev {
-	background-image: url(../images/j_button2_prev.png);
-	background-position: right center;
-}
-
-.button2-right.off .prev {
-	background: url(../images/j_button2_prev_off.png) no-repeat;
-}
-
-.button2-right .start {
-	background-image: url(../images/j_button2_first.png);
-	background-position: right center;
-}
-
-.button2-left .next {
-	background-image: url(../images/j_button2_next.png);
-	background-position: left center;
-}
-
-.button2-left.off .next { /* @TODO check the x position */
-	background: url(../images/j_button2_next_off.png) 100% 0 no-repeat;
-}
-
-.button2-left .end {
-	background-image: url(../images/j_arrow_left.png);
-	background-position: left center;
-}
-
-.button2-left.off .end { /* @TODO check the x position */
-	background: url(../images/j_button2_last_off.png) 100% 0 no-repeat;
-}
-
-.button2-left .image {
-	background: url(../images/j_button2_image.png) 100% 0 no-repeat;
-}
-
-.button2-left .readmore {
-	background: url(../images/j_button2_readmore.png) 100% 0 no-repeat;
-}
-
-.button2-left .pagebreak {
-	background: url(../images/j_button2_pagebreak.png) 100% 0 no-repeat;
-}
-
+/* background images moved to the color rtl css file */
 
 /**
  * Pagination styles
@@ -861,8 +798,7 @@ div.toggle-editor {
 	float: right;
 }
 
-.tip-title { /* @TODO is there a different image */
-	background: url(../images/selector-arrow-rtl.png) no-repeat right top;
+.tip-title {
 }
 
 
@@ -874,48 +810,16 @@ a img.calendar {
 }
 
 /**
- * System Standard Messages
+ * System Messages
+ * background images moved the the color rtl css file
  */
-#system-message dd.message ul { /* @TODO check the x position */
-	background: #C3D2E5 url(../images/notice-info.png) 99.5% center no-repeat;
-}
-
-/**
- * System Error Messages
- */
-#system-message dd.error ul {
-	background: #E6C0C0 url(../images/notice-alert.png) 99.5% top no-repeat;
-}
-
-/**
- * System Notice Messages
- */
-#system-message dd.notice ul {
-	background: #EFE7B8 url(../images/notice-note.png) 99%.5 top no-repeat;
-}
 
 /**
  * JGrid styles
  */
 
 /**
- * Menu Icons
- * These icons are used on the Administrator menu
- * The classes are constructed dynamically when the menu is generated
- */
-
-
-/**
- * Toolbar icons
- * These icons are used for the toolbar buttons
- * The classes are constructed dynamically when the toolbar is created
- */
-
-/**
- * Quick Icons
- * Also knows as Header Icons
- * These are used for the Quick Icons on the Control Panel
- * The same classes are also assigned the Component Title
+ * Menu, Toolbar, Quickicon background images moved to color rtl css file
  */
 
 /**
@@ -923,9 +827,6 @@ a img.calendar {
  */
 
 .helpFrame {
-	border-right: 0px solid #222;
-	border-left: none;
-	border-top: none;
 	padding: 0px 10px 0px 5px;
 }
 
@@ -967,6 +868,7 @@ dl.menu_type dd {
 
 	/* Skip to Content Structural Styling */
 #skiplinkholder a,#skiplinkholder a:link,#skiplinkholder a:visited {
+	left: 0;
 	right: -200%;
 }
 
@@ -980,6 +882,7 @@ dl.menu_type dd {
 }
 
 #skiptargetholder {
+	left: 0;
 	right: -200%;
 }
 
@@ -1010,6 +913,7 @@ fieldset.panelform span.faux-label {
 	clear:right;
 	float:right;
 	margin-right: 10px;
+	margin-left: 5px;
 }
 
 fieldset.adminform fieldset.radio label,
@@ -1019,26 +923,60 @@ fieldset.panelform fieldset.radio span.faux-label {
 	margin-right: 0;
 }
 
+/* checkboxes */
+fieldset.adminform fieldset.checkboxes,
+fieldset.panelform fieldset.checkboxes,
+fieldset.adminform-legacy fieldset.checkboxes  {
+	float:right;
+	margin: 0 0 5px 0;
+	clear:left;
+}
 
-fieldset.adminform input, fieldset.adminform span.faux-input, fieldset.adminform textarea, fieldset.adminform select, fieldset.adminform img,
-fieldset.panelform input, fieldset.panelform span.faux-input, fieldset.panelform textarea, fieldset.panelform select, fieldset.panelform img {
+fieldset.adminform fieldset.checkboxes input[type="checkbox"],
+fieldset.panelform fieldset.checkboxes input[type="checkbox"] {
+	float: right;
+	clear: right;
+}
+
+fieldset.adminform fieldset.checkboxes label,
+fieldset.panelform fieldset.checkboxes label,
+fieldset.adminform fieldset.checkboxes span.faux-label,
+fieldset.panelform fieldset.checkboxes span.faux-label {
+	clear: left;
+}
+/* end checkboxes */
+
+fieldset.adminform input, fieldset.adminform span.faux-input, fieldset.adminform textarea, fieldset.adminform select, fieldset.adminform img, fieldset.adminform button,
+fieldset.panelform input, fieldset.panelform span.faux-input, fieldset.panelform textarea, fieldset.panelform select, fieldset.panelform img, fieldset.panelform button {
 	float:right;
 	margin:5px 0 5px 5px;
 }
 
+/* -------- Batch Section ---------- */
+fieldset#batch-choose-action {
+	clear:none;
+	clear: right;
+}
 fieldset.batch label {
-	float:right;
-	margin-left: 10px;
+	float: right;
+	clear: none;
+}
+fieldset label#batch-choose-action-lbl {
+	clear: none;
+	clear: right;
+}
+
+fieldset.batch select, fieldset.batch input, fieldset.batch img, fieldset.batch button {
+	float: right;
+}
+
+select#batch-menu-id {
 	margin-right: 0;
+	margin-left: 30px;
 }
-
-fieldset.batch input, fieldset.batch textarea, fieldset.batch select, fieldset.batch img {
-	float:right;
-	margin:5px 0 5px 25px;
-}
-
-fieldset.batch input[type="radio"] {
-	margin-left: 5px;
+label#batch-access-lbl {
+	margin-right: 0;
+	margin-left: 10px;
 }
 
 /* Banner edit */
@@ -1066,8 +1004,6 @@ table.aclsummary-table td.col5,
 table.aclsummary-table th.col5,
 table.aclmodify-table td.col2,
 table.aclmodify-table th.col2 {
-	border-right: 1px solid #cbcbcb;
-	border-left: none;
 }
 
 /* Icons */
@@ -1094,12 +1030,10 @@ ul.acllegend li {
 ul.acllegend li.acl-allowed {
 	padding-right: 20px;
 	padding-left: 10px;
-	background:url(../images/admin/icon-16-allow.png) no-repeat right;
 }
 ul.acllegend li.acl-denied {
 	padding-right: 20px;
 	padding-left: 20px;
-	background:url(../images/admin/icon-16-deny.png) no-repeat right;
 }
 ul.acllegend li.acl-editgroups {
 	padding-left: 10px;
@@ -1115,7 +1049,6 @@ li.acl-resetbtn {
 
 table#acl-config th.acl-groups {
 	padding-right: 8px;
-	border-left: 1px solid #c7c8b2;
 }
 
 table#acl-config th.acl-groups {
@@ -1126,18 +1059,227 @@ table#acl-config th.acl-groups {
 	margin: auto 0;
 }
 
+/* Icons */
+span.icon-16-unset,
+span.icon-16-allowed,
+span.icon-16-denied,
+span.icon-16-locked {
+	padding-left: 0px;
+	padding-right: 18px;
+}
+/* background images moved to the color rtl css file */
+
 /**
 * Mod_rewrite Warning
 */
 #jform_sef_rewrite-lbl {
-	background: url(../images/admin/icon-16-notice-note.png) left top no-repeat;
+}
+
+/* *
+* Permission Rules
+*/
+
+#permissions-sliders ul#rules,
+#permissions-sliders ul#rules ul
+{  
+    margin:0 0 0 0px !important;
+    padding:0 0 0 0px !important;
+}
+
+#permissions-sliders ul#rules li
+{
+	margin:0px 0 0 0%;
+	padding:0;
+}
+
+#permissions-sliders ul#rules .pane-slider
+{
+}
+
+#permissions-sliders ul#rules li h3
+{
+}
+
+#permissions-sliders ul#rules li h3.pane-toggler-down a
+{	
+}
+
+#permissions-sliders ul#rules table.group-rules caption
+{
+}
+
+#permissions-sliders ul#rules table.group-rules td
+{
+    padding:4px;
+    vertical-align:middle; 
+    text-align:right;
+}
+
+#permissions-sliders .panel 
+{
+    margin-bottom: 3px;
+    margin-right:0; 
+}
+
+ul#rules table.group-rules td label
+{
+	margin:0 !important;
+}
+
+table.group-rules td select
+{
+	margin:0 !important;
+}
+	
+#permissions-sliders ul#rules .mypanel
+{
+	padding:0px;
+}
+
+#permissions-sliders ul#rules 
+{	
+	padding:5px;
+}
+
+#permissions-sliders  ul#rules  table.group-rules th
+{
+    text-align:right;
+    padding:4px;
+}
+
+#permissions-sliders .pane-toggler  span
+{
+	padding-left: 0;
+	padding-right: 20px;
+}
+
+#permissions-sliders .pane-toggler-down span
+{
+	padding-left: 0;
+	padding-right: 20px;
+}
+
+#permissions-sliders ul#rules .panel h3
+{
 }
 
 /**
-* Modal S-Box overrides
-*/
-
-#sbox-window {
-	text-align:right;
+ * Helpmenus
+ */
+ul.helpmenu li {
+	float: left;
 }
 
+/**
+ * Menu Styling
+ */
+
+#menu ul li.node {
+}
+
+#menu a {
+	padding: 0.35em 2em 0.35em 2.5em;
+}
+
+#menu li {
+	float: right;
+}
+
+#menu li a:hover,#menu li a:focus {
+}
+
+#menu li.disabled a:hover,#menu li.disabled a:focus,#menu li.disabled a
+	{
+}
+
+#menu li ul { /* second-level lists */
+	margin-right: -1000em;
+	/* using right instead of display to hide menus because display: none isn't read by screen readers */
+}
+
+#menu li ul ul { /* third-and-above-level lists */
+	margin: -2.3em -1000em 0 0;
+	/* top margin is equal to parent line height+bottom padding */
+}
+
+#menu li:hover ul ul,#menu li.sfhover ul ul {
+	margin-right: -1000em;
+}
+
+#menu li:hover ul,#menu li.sfhover ul {
+	/* lists nested under hovered list items */
+	margin-right: 0;
+}
+
+#menu li li:hover ul,#menu li li.sfhover ul {
+	margin-right: 16em;
+}
+
+/**
+ * Styling parents
+ */
+
+ 	/* 1 level - sfhover */
+#menu li.sfhover a {
+}
+
+	/* 2 level - normal */
+
+	/* 2 level - hover */
+#menu li.sfhover li.sfhover a,#menu li li a:focus {
+}
+
+	/* 3 level - normal */
+
+	/* 3 level - hover */
+#menu li.sfhover li.sfhover li.sfhover a,#menu li li li a:focus {
+}
+
+/**
+ * Extra positioning rules for limited noscript keyboard accessibility
+ * need the backgrounds here to keep the background as the nav background
+ * since it is overlaying other content.
+ * Using margin-left instead of left so that can move back without javascript
+ * display downlevel ul
+ */
+#menu li a:focus+ul {
+	margin-right: 0;
+}
+
+#menu li li a:focus+ul {
+	margin-right: 1016em;
+}
+
+/* bring back the focus elements into view */
+#menu li li a:focus {
+	margin-right: 1000em;
+}
+
+#menu li li li a:focus {
+	margin-right: 2016em;
+}
+
+#menu li:hover a:focus,#menu li.sfhover a.sffocus {
+	margin-right: 0;
+}
+
+#menu li li:hover a:focus+ul,#menu li li.sfhover a.sffocus+ul {
+	margin-right: 16em;
+}
+
+/**
+ * Submenu styling
+ */
+
+
+#submenu a, #submenu span.nolink {
+	float: right;
+	margin-left: 8px;
+	padding: 2px 10px 2px 10px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}

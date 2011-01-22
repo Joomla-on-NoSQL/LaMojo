@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,11 @@ body {
 	text-align: center;
 }
 
-img  { border: 0 none; }
+img  { 
+	border: 0 none;
+	margin-left: auto;
+	margin-right: auto;
+}
 
 /* -- id styles ------------------------------------- */
 

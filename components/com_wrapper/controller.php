@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_wrapper
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,7 +35,7 @@ class WrapperController extends JController
 		$cachable = true;
 
 		// Set the default view name and format from the Request.
-		$vName		= JRequest::getWord('view', 'wrapper');
+		$vName		= JRequest::getCmd('view', 'wrapper');
 		JRequest::setVar('view', $vName);
 
 		return parent::display($cachable, array('Itemid'=>'INT'));

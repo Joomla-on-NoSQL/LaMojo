@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -36,6 +36,14 @@ class JModelList extends JModel
 	protected $context = null;
 
 	/**
+	 * Valid filter fields or ordering.
+	 *
+	 * @var		array
+	 * @since	1.6
+	 */
+	protected $filter_fields = array();
+
+	/**
 	 * An internal cache for the last query used.
 	 *
 	 * @var		JDatabaseQuery
@@ -52,6 +60,11 @@ class JModelList extends JModel
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
+
+		// Add the ordering filtering fields white list.
+		if (isset($config['filter_fields'])) {
+			$this->filter_fields = $config['filter_fields'];
+		}
 
 		// Guess the context as Option.ModelName.
 		if (empty($this->context)) {
@@ -102,7 +115,7 @@ class JModelList extends JModel
 
 		// Load the list items.
 		$query	= $this->_getListQuery();
-		$items	= $this->_getList($query, $this->getState('list.start'), $this->getState('list.limit'));
+		$items	= $this->_getList($query, $this->getStart(), $this->getState('list.limit'));
 
 		// Check for a database error.
 		if ($this->_db->getErrorNum()) {
@@ -149,7 +162,7 @@ class JModelList extends JModel
 		// Create the pagination object.
 		jimport('joomla.html.pagination');
 		$limit = (int) $this->getState('list.limit') - (int) $this->getState('list.links');
-		$page = new JPagination($this->getTotal(), (int) $this->getState('list.start'), $limit);
+		$page = new JPagination($this->getTotal(), $this->getStart(), $limit);
 
 		// Add the object to the internal cache.
 		$this->cache[$store] = $page;
@@ -212,6 +225,34 @@ class JModelList extends JModel
 	}
 
 	/**
+	 * Method to get the starting number of items for the data set.
+	 *
+	 * @return	integer	The starting number of items available in the data set.
+	 * @since	1.6
+	 */
+	public function getstart()
+	{
+		$store = $this->getStoreId('getstart');
+
+		// Try to load the data from internal storage.
+		if (!empty($this->cache[$store])) {
+			return $this->cache[$store];
+		}
+
+		$start = $this->getState('list.start');
+		$limit = $this->getState('list.limit');
+		$total = $this->getTotal();
+		if ($start > $total - $limit) {
+			$start = max(0, (int)(ceil($total / $limit) - 1) * $limit);
+		}
+
+		// Add the total to the internal cache.
+		$this->cache[$store] = $start;
+
+		return $this->cache[$store];
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * This method should only be called once per instantiation and is designed
@@ -238,14 +279,60 @@ class JModelList extends JModel
 			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
 			$this->setState('list.start', $limitstart);
 
+			// Check if the ordering field is in the white list, otherwise use the incoming value.
 			$value = $app->getUserStateFromRequest($this->context.'.ordercol', 'filter_order', $ordering);
+			if (!in_array($value, $this->filter_fields)) {
+				$value = $ordering;
+				$app->setUserState($this->context.'.ordercol', $value);
+			}
 			$this->setState('list.ordering', $value);
 
+			// Check if the ordering direction is valid, otherwise use the incoming value.
 			$value = $app->getUserStateFromRequest($this->context.'.orderdirn', 'filter_order_Dir', $direction);
+			if (!in_array(strtoupper($value), array('ASC', 'DESC', ''))) {
+				$value = $direction;
+				$app->setUserState($this->context.'.orderdirn', $value);
+			}
 			$this->setState('list.direction', $value);
-		} else {
+		}
+		else {
 			$this->setState('list.start', 0);
 			$this->state->set('list.limit', 0);
 		}
+	}
+
+	/**
+	 * Gets the value of a user state variable and sets it in the session
+	 * This is the same as the method in JApplication except that this also can optionally
+	 *    force you back to the first page when a filter has changed
+	 *
+	 * @param	string	The key of the user state variable.
+	 * @param	string	The name of the variable passed in a request.
+	 * @param	string	The default value for the variable if not found. Optional.
+	 * @param	string	Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
+	 * @param	boolean	If true, the limitstart in request is set to zero
+	 * @return	The request user state.
+	 * @since	1.5
+	 */
+	public function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $resetPage = true)
+	{
+		$app = JFactory::getApplication();
+		$old_state = $app->getUserState($key);
+		$cur_state = (!is_null($old_state)) ? $old_state : $default;
+		$new_state = JRequest::getVar($request, null, 'default', $type);
+
+		if (($cur_state != $new_state) && ($resetPage)){
+			JRequest::setVar('limitstart', 0);
+		}
+
+		// Save the new value only if it was set in this request.
+		if ($new_state !== null) {
+			$app->setUserState($key, $new_state);
+		}
+		else {
+			$new_state = $cur_state;
+		}
+
+		return $new_state;
 	}
 }

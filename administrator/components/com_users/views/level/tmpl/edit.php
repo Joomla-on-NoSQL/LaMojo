@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,14 +15,14 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 // Load the tooltip behavior.
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-
+$canDo = UsersHelper::getActions();
 ?>
 
 <script type="text/javascript">
-function submitbutton(task)
+Joomla.submitbutton = function(task)
 {
 	if (task == 'level.cancel' || document.formvalidator.isValid(document.id('level-form'))) {
-		submitform(task);
+		Joomla.submitform(task, document.getElementById('level-form'));
 	}
 }
 /*
@@ -87,7 +87,7 @@ window.addEvent('domready', function(){
 </script>
 
 
-<form action="<?php echo JRoute::_('index.php?option=com_users'); ?>" method="post" name="adminForm" id="level-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_users&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="level-form" class="form-validate">
 	<div class="width-100">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_USERS_LEVEL_DETAILS');?></legend>

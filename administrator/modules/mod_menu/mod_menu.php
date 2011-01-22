@@ -3,7 +3,7 @@
  * @version		$Id:mod_menu.php 2463 2006-02-18 06:05:38Z webImagery $
  * @package		Joomla.Administrator
  * @subpackage	mod_menu
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
 
 // Include the module helper classes.
 if (!class_exists('ModMenuHelper')) {
-	require JPATH::dirname(__FILE__).'/helper.php';
+	require dirname(__FILE__).'/helper.php';
 }
 
 if (!class_exists('JAdminCssMenu')) {
-	require JPATH::dirname(__FILE__).'/menu.php';
+	require dirname(__FILE__).'/menu.php';
 }
 
 // Initialise variables.

@@ -3,7 +3,7 @@
  * @version		$Id:confirm.php 6961 2007-03-15 16:06:53Z tcp $
  * @package		Joomla.Framework
  * @subpackage	HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -69,9 +69,9 @@ class JButtonConfirm extends JButton
 		$message	= addslashes($message);
 
 		if ($list) {
-			$cmd = "javascript:if (document.adminForm.boxchecked.value==0){alert('$message');}else{if (confirm('$msg')){submitbutton('$task');}}";
+			$cmd = "javascript:if (document.adminForm.boxchecked.value==0){alert('$message');}else{if (confirm('$msg')){Joomla.submitbutton('$task');}}";
 		} else {
-			$cmd = "javascript:if (confirm('$msg')){submitbutton('$task');}";
+			$cmd = "javascript:if (confirm('$msg')){Joomla.submitbutton('$task');}";
 		}
 
 		return $cmd;

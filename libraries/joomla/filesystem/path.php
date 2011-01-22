@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	FileSystem
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -17,13 +17,13 @@ define('JPATH_ISWIN', (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'));
 define('JPATH_ISMAC', (strtoupper(substr(PHP_OS, 0, 3)) === 'MAC'));
 
 if (!defined('DS')) {
-	/** string Shortcut for the DS define */
-	define('DS', '/');
+	/** string Shortcut for the DIRECTORY_SEPARATOR define */
+	define('DS', DIRECTORY_SEPARATOR);
 }
 
 if (!defined('JPATH_ROOT')) {
 	/** string The root directory of the file system in native format */
-	define('JPATH_ROOT', JPATH_SITE);
+	define('JPATH_ROOT', JPath::clean(JPATH_SITE));
 }
 
 /**
@@ -137,7 +137,7 @@ class JPath
 	 * @return	string	A cleaned version of the path
 	 * @since	1.5
 	 */
-	public static function check($path, $ds = DS)
+	public static function check($path, $ds = DIRECTORY_SEPARATOR)
 	{
 		if (strpos($path, '..') !== false) {
 			JError::raiseError(20, 'JPath::check Use of relative paths not permitted'); // don't translate
@@ -161,7 +161,7 @@ class JPath
 	 * @return	string	The cleaned path
 	 * @since	1.5
 	 */
-	public static function clean($path, $ds = DS)
+	public static function clean($path, $ds = DIRECTORY_SEPARATOR)
 	{
 		$path = trim($path);
 
@@ -176,18 +176,6 @@ class JPath
 	}
 
 	/**
-	 * Function to ensure uniform dirname DS in a path name
-	 *
-	 * @param	string	The path to clean
-	 * @param	string	Number of dirname simulations (optional)
-	 * @return	string	The cleaned path
-	 * @since	1.6
-	 */
-	public static function dirname($path, $trim = 0)
-	{
-		return implode('/', explode('/', strtr($path, '\\', '/'), -($trim + 1)));
-	}
-	/**
 	 * Method to determine if script owns the path
 	 *
 	 * @param	string	Path to check ownership
@@ -201,7 +189,7 @@ class JPath
 
 		$tmp = md5(JUserHelper::genRandomPassword(16));
 		$ssp = ini_get('session.save_path');
-		$jtp = JPATH_SITE.'/tmp';
+		$jtp = JPATH_SITE.DS.'tmp';
 
 		// Try to find a writable directory
 		$dir = is_writable('/tmp') ? '/tmp' : false;
@@ -209,7 +197,7 @@ class JPath
 		$dir = (!$dir && is_writable($jtp)) ? $jtp : false;
 
 		if ($dir) {
-			$test = $dir.'/'.$tmp;
+			$test = $dir.DS.$tmp;
 
 			// Create the test file
 			$blank = '';

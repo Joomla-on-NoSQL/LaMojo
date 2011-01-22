@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Error
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -76,7 +76,7 @@ class JLog extends JObject
 		}
 
 		jimport('joomla.filesystem.path');
-		$path = JPath :: clean($path . '/' . $file);
+		$path = JPath :: clean($path . DS . $file);
 		$sig = md5($path);
 
 		if (!isset ($instances)) {
@@ -166,7 +166,7 @@ class JLog extends JObject
 		if (!file_exists($this->_path))
 		{
 			jimport("joomla.filesystem.folder");
-			if (!JFolder :: create(JPATH::dirname($this->_path))) {
+			if (!JFolder :: create(dirname($this->_path))) {
 				return false;
 			}
 			$header[] = "#<?php die('Direct Access To Log Files Not Permitted'); ?>";

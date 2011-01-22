@@ -7,7 +7,6 @@
 			description="JGLOBAL_FIELD_ID_DESC"
 			default="0"
 			readonly="true"
-			required="true"
 		/>
 
 		<field name="title" type="text"
@@ -57,7 +56,7 @@
 			filter="user_utc"
 			format="%Y-%m-%d %H:%M:%S"
 			label="COM_MODULES_FIELD_PUBLISH_UP_LABEL"
-			size="20"
+			size="22"
 		/>
 
 		<field name="publish_down" type="calendar"
@@ -65,7 +64,7 @@
 			filter="user_utc"
 			format="%Y-%m-%d %H:%M:%S"
 			label="COM_MODULES_FIELD_PUBLISH_DOWN_LABEL"
-			size="20"
+			size="22"
 		/>
 
 		<field name="client_id" type="hidden"
@@ -73,21 +72,14 @@
 			label="COM_MODULES_FIELD_CLIENT_ID_LABEL"
 			readonly="true"
 			size="1"
-		>
-
-		</field>
+		/>
 
 		<field name="position" type="moduleposition"
 			default=""
 			description="COM_MODULES_FIELD_POSITION_DESC"
 			label="COM_MODULES_FIELD_POSITION_LABEL"
 			maxlength="50"
-			onchange="setModulePosition(this);"
-		/>
-
-		<field name="custom_position" type="text"
-			maxlength="50"
-			size="35"
+			required="true"
 		/>
 
 		<field name="access" type="accesslevel"
@@ -104,7 +96,7 @@
 		<field name="content" type="editor"
 			buttons="true"
 			description="COM_MODULES_FIELD_CONTENT_DESC"
-			filter="safehtml"
+			filter="ContentHelper::filterText"
 			label="COM_MODULES_FIELD_CONTENT_LABEL"
 		/>
 
@@ -114,8 +106,6 @@
 		>
 			<option value="*">JALL</option>
 		</field>
-
-		<field name="params" type="hidden" />
 
 		<field name="assignment" type="hidden" />
 

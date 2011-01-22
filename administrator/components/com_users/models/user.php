@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -112,18 +112,18 @@ class UsersModelUser extends JModelAdmin
 	}
 
 	/**
-	 * Override preprocessForm to load the user plugin group instead of content.
+	 * Override JModelAdmin::preprocessForm to ensure the correct plugin group is loaded.
 	 *
-	 * @param	object	A form object.
-	 * @param	mixed	The data expected for the form.
+	 * @param	object	$form	A form object.
+	 * @param	mixed	$data	The data expected for the form.
+	 * @param	string	$group	The name of the plugin group to import (defaults to "content").
 	 *
-	 * @return	void
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = 'user')
 	{
-		parent::preprocessForm($form, $data, 'user');
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
@@ -140,15 +140,33 @@ class UsersModelUser extends JModelAdmin
 		$pk			= (!empty($data['id'])) ? $data['id'] : (int) $this->getState('user.id');
 		$user		= JUser::getInstance($pk);
 
+		$my = JFactory::getUser();
+
+		if ($data['block'] && $pk == $my->id && !$my->block) {
+			$this->setError(JText::_('COM_USERS_USERS_ERROR_CANNOT_BLOCK_SELF'));
+			return false;
+		}
+
+		// Make sure that we are not removing ourself from Super Admin group
+		$iAmSuperAdmin = $my->authorise('core.admin');
+		if ($iAmSuperAdmin && $my->get('id') == $pk) {
+			// Check that at least one of our new groups is Super Admin
+			$stillSuperAdmin = false;
+			$myNewGroups = $data['groups'];
+			foreach ($myNewGroups as $group) {
+				$stillSuperAdmin = ($stillSuperAdmin) ? ($stillSuperAdmin) : JAccess::checkGroup($group, 'core.admin');
+			}
+			if (!$stillSuperAdmin) {
+				$this->setError(JText::_('COM_USERS_USERS_ERROR_CANNOT_DEMOTE_SELF'));
+				return false;
+			}
+		}
+
 		// Bind the data.
 		if (!$user->bind($data)) {
 			$this->setError($user->getError());
 			return false;
 		}
-
-		// Bind the groups
-		// Note, we need to flip the array because the JUser object expects a groupdId => groupName format.
-		$user->groups = array_flip($data['groups']);
 
 		// Store the data.
 		if (!$user->save()) {
@@ -176,6 +194,9 @@ class UsersModelUser extends JModelAdmin
 		$table	= $this->getTable();
 		$pks	= (array) $pks;
 
+        // Check if I am a Super Admin
+		$iAmSuperAdmin	= $user->authorise('core.admin');
+
 		// Trigger the onUserBeforeSave event.
 		JPluginHelper::importPlugin('user');
 		$dispatcher = JDispatcher::getInstance();
@@ -190,11 +211,13 @@ class UsersModelUser extends JModelAdmin
 		{
 			if ($table->load($pk)) {
 				// Access checks.
-				$allow = $user->authorise('core.edit.state', 'com_users');
+				$allow = $user->authorise('core.delete', 'com_users');
+				// Don't allow non-super-admin to delete a super admin
+				$allow = (!$iAmSuperAdmin && JAccess::check($pk, 'core.admin')) ? false : $allow;
 
 				if ($allow) {
-					// Get user data for the user to delete.
-					$user = JFactory::getUser($pk);
+					// Get users data for the users to delete.
+					$user_to_delete = JFactory::getUser($pk);
 
 					// Fire the onUserBeforeDelete event.
 					$dispatcher->trigger('onUserBeforeDelete', array($table->getProperties()));
@@ -204,7 +227,7 @@ class UsersModelUser extends JModelAdmin
 						return false;
 					} else {
 						// Trigger the onUserAfterDelete event.
-						$dispatcher->trigger('onUserAfterDelete', array($user->getProperties(), true, $this->getError()));
+						$dispatcher->trigger('onUserAfterDelete', array($user_to_delete->getProperties(), true, $this->getError()));
 					}
 				}
 				else {
@@ -237,6 +260,8 @@ class UsersModelUser extends JModelAdmin
 		$app		= JFactory::getApplication();
 		$dispatcher	= JDispatcher::getInstance();
 		$user		= JFactory::getUser();
+        // Check if I am a Super Admin
+		$iAmSuperAdmin	= $user->authorise('core.admin');
 		$table		= $this->getTable();
 		$pks		= (array) $pks;
 
@@ -254,6 +279,8 @@ class UsersModelUser extends JModelAdmin
 			else if ($table->load($pk)) {
 				$old	= $table->getProperties();
 				$allow	= $user->authorise('core.edit.state', 'com_users');
+				// Don't allow non-super-admin to delete a super admin
+				$allow = (!$iAmSuperAdmin && JAccess::check($pk, 'core.admin')) ? false : $allow;
 
 				// Prepare the logout options.
 				$options = array(
@@ -261,24 +288,44 @@ class UsersModelUser extends JModelAdmin
 				);
 
 				if ($allow) {
+					// Skip changing of same state
+					if ($table->block == $value) {
+						unset($pks[$i]);
+						continue;
+					}
+
 					$table->block = (int) $value;
 
-					if (!$table->check()) {
-						$this->setError($table->getError());
+					// Allow an exception to be thrown.
+					try
+					{
+						if (!$table->check()) {
+							$this->setError($table->getError());
+							return false;
+						}
+
+						// Trigger the onUserBeforeSave event.
+						$result = $dispatcher->trigger('onUserBeforeSave', array($old, false));
+						if (in_array(false, $result, true)) {
+							// Plugin will have to raise it's own error or throw an exception.
+							return false;
+						}
+
+						// Store the table.
+						if (!$table->store()) {
+							$this->setError($table->getError());
+							return false;
+						}
+
+						// Trigger the onAftereStoreUser event
+						$dispatcher->trigger('onUserAfterSave', array($table->getProperties(), false, true, null));
+					}
+					catch (Exception $e)
+					{
+						$this->setError($e->getMessage());
+
 						return false;
 					}
-
-					// Trigger the onUserBeforeSave event.
-					$dispatcher->trigger('onUserBeforeSave', array($old, false));
-
-					// Store the table.
-					if (!$table->store()) {
-						$this->setError($table->getError());
-						return false;
-					}
-
-					// Trigger the onAftereStoreUser event
-					$dispatcher->trigger('onUserAfterSave', array($table->getProperties(), false, true, null));
 
 					// Log the user out.
 					if ($value) {
@@ -288,7 +335,7 @@ class UsersModelUser extends JModelAdmin
 				else {
 					// Prune items that you can't change.
 					unset($pks[$i]);
-					JError::raiseWarning(403, JText::_('JERROR_CORE_EDIT_STATE_NOT_PERMITTED'));
+					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 				}
 			}
 		}
@@ -309,6 +356,8 @@ class UsersModelUser extends JModelAdmin
 		// Initialise variables.
 		$dispatcher	= JDispatcher::getInstance();
 		$user		= JFactory::getUser();
+        // Check if I am a Super Admin
+		$iAmSuperAdmin	= $user->authorise('core.admin');
 		$table		= $this->getTable();
 		$pks		= (array) $pks;
 
@@ -318,6 +367,8 @@ class UsersModelUser extends JModelAdmin
 			if ($table->load($pk)) {
 				$old	= $table->getProperties();
 				$allow	= $user->authorise('core.edit.state', 'com_users');
+				// Don't allow non-super-admin to delete a super admin
+				$allow = (!$iAmSuperAdmin && JAccess::check($pk, 'core.admin')) ? false : $allow;
 
 				if (empty($table->activation)) {
 					// Ignore activated accounts.
@@ -327,27 +378,41 @@ class UsersModelUser extends JModelAdmin
 					$table->block		= 0;
 					$table->activation	= '';
 
-					if (!$table->check()) {
-						$this->setError($table->getError());
+					// Allow an exception to be thrown.
+					try
+					{
+						if (!$table->check()) {
+							$this->setError($table->getError());
+							return false;
+						}
+
+						// Trigger the onUserBeforeSave event.
+						$result = $dispatcher->trigger('onUserBeforeSave', array($old, false));
+						if (in_array(false, $result, true)) {
+							// Plugin will have to raise it's own error or throw an exception.
+							return false;
+						}
+
+						// Store the table.
+						if (!$table->store()) {
+							$this->setError($table->getError());
+							return false;
+						}
+
+						// Fire the onAftereStoreUser event
+						$dispatcher->trigger('onUserAfterSave', array($table->getProperties(), false, true, null));
+					}
+					catch (Exception $e)
+					{
+						$this->setError($e->getMessage());
+
 						return false;
 					}
-
-					// Trigger the onUserBeforeSave event.
-					$dispatcher->trigger('onUserBeforeSave', array($old, false));
-
-					// Store the table.
-					if (!$table->store()) {
-						$this->setError($table->getError());
-						return false;
-					}
-
-					// Fire the onAftereStoreUser event
-					$dispatcher->trigger('onUserAfterSave', array($table->getProperties(), false, true, null));
 				}
 				else {
 					// Prune items that you can't change.
 					unset($pks[$i]);
-					JError::raiseWarning(403, JText::_('JERROR_CORE_EDIT_STATE_NOT_PERMITTED'));
+					JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 				}
 			}
 		}
@@ -374,6 +439,7 @@ class UsersModelUser extends JModelAdmin
 			// Only run operations if a config array is present.
 			// Ensure there is a valid group.
 			$group_id = JArrayHelper::getValue($config, 'group_id', 0, 'int');
+			JArrayHelper::toInteger($user_ids);
 
 			if ($group_id < 1) {
 				$this->setError(JText::_('COM_USERS_ERROR_INVALID_GROUP'));
@@ -467,9 +533,16 @@ class UsersModelUser extends JModelAdmin
 	 */
 	public function getGroups()
 	{
-		$model = JModel::getInstance('Groups', 'UsersModel', array('ignore_request' => true));
-
-		return $model->getItems();
+		$user = JFactory::getUser();
+		if ($user->authorise('core.edit', 'com_users') && $user->authorise('core.manage', 'com_users'))
+		{
+			$model = JModel::getInstance('Groups', 'UsersModel', array('ignore_request' => true));
+			return $model->getItems();
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	/**

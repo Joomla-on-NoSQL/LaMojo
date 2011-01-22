@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -211,38 +211,40 @@ abstract class JHtmlSelect
 		{
 			$label = $dataKey;
 			$id = '';
+			$noGroup = is_int($dataKey);
 			if ($options['group.items'] == null)
 			{
 				// Sub-list is an associative array
 				$subList = $group;
-				$noGroup = is_int($dataKey);
 			}
 			elseif (is_array($group))
 			{
 				// Sub-list is in an element of an array.
 				$subList = $group[$options['group.items']];
-				$noGroup = false;
 				if (isset($group[$options['group.label']]))
 				{
 					$label = $group[$options['group.label']];
+					$noGroup = false;
 				}
 				if (isset($options['group.id']) && isset($group[$options['group.id']]))
 				{
 					$id = $group[$options['group.id']];
+					$noGroup = false;
 				}
 			}
 			elseif (is_object($group))
 			{
 				// Sub-list is in a property of an object
 				$subList = $group->$options['group.items'];
-				$noGroup = false;
 				if (isset($group->$options['group.label']))
 				{
 					$label = $group->$options['group.label'];
+					$noGroup = false;
 				}
 				if (isset($options['group.id']) && isset($group->$options['group.id']))
 				{
 					$id = $group->$options['group.id'];
+					$noGroup = false;
 				}
 			}
 			else
@@ -670,7 +672,7 @@ abstract class JHtmlSelect
 			$html .= "\n\t" .'<input type="radio" name="' . $name . '"'
 				. ' id="' . $id_text . $k . '" value="' . $k .'"'
 				. ' ' . $extra . ' ' . $attribs . '/>'
-				. "\n\t" . '<label for="' . $id_text . $k . '" id="' . $id_text . $k . '-lbl" class="radiobtn_'.strtolower($obj->$optText).'">'. $t .'</label>';
+				. "\n\t" . '<label for="' . $id_text . $k . '" id="' . $id_text . $k . '-lbl" class="radiobtn-'.strtolower($obj->$optText).'">'. $t .'</label>';
 		}
 		$html .= "\n";
 		return $html;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.6" type="plugin" group="system">
+<extension version="1.6" type="plugin" group="system">
 	<name>plg_system_debug</name>
 	<author>Joomla! Project</author>
 	<creationDate>December 2006</creationDate>
-	<copyright>Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
@@ -38,6 +38,15 @@
 					default="1"
 					description="PLG_DEBUG_FIELD_QUERIES_DESC"
 					label="PLG_DEBUG_FIELD_QUERIES_LABEL"
+				>
+					<option value="1">JYes</option>
+					<option value="0">JNo</option>
+				</field>
+
+				<field name="query_types" type="radio"
+					default="1"
+					description="PLG_DEBUG_FIELD_QUERY_TYPES_DESC"
+					label="PLG_DEBUG_FIELD_QUERY_TYPES_LABEL"
 				>
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
@@ -109,4 +118,4 @@
 
 		</fields>
 	</config>
-</install>
+</extension>

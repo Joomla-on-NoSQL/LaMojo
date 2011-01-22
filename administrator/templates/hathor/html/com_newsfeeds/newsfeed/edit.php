@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -19,10 +19,10 @@ JHtml::_('behavior.keepalive');
 
 ?>
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'newsfeed.cancel' || document.formvalidator.isValid(document.id('newsfeed-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('newsfeed-form'));
 		}
 		else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
@@ -30,7 +30,7 @@ JHtml::_('behavior.keepalive');
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_newsfeeds'); ?>" method="post" name="adminForm" id="newsfeed-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_newsfeeds&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="newsfeed-form" class="form-validate">
 <div class="col main-section">
 	<fieldset class="adminform">
 		<legend><?php echo empty($this->item->id) ? JText::_('COM_NEWSFEEDS_NEW_NEWSFEED') : JText::sprintf('COM_NEWSFEEDS_EDIT_NEWSFEED', $this->item->id); ?></legend>
@@ -43,13 +43,13 @@ JHtml::_('behavior.keepalive');
 
 			<li><?php echo $this->form->getLabel('catid'); ?>
 			<?php echo $this->form->getInput('catid'); ?></li>
-
+				
 			<li><?php echo $this->form->getLabel('alias'); ?>
 			<?php echo $this->form->getInput('alias'); ?></li>
 
 			<li><?php echo $this->form->getLabel('published'); ?>
 			<?php echo $this->form->getInput('published'); ?></li>
-
+		
 			<li><?php echo $this->form->getLabel('access'); ?>
 			<?php echo $this->form->getInput('access'); ?></li>
 
@@ -97,14 +97,25 @@ JHtml::_('behavior.keepalive');
 			<li><?php echo $this->form->getLabel('publish_down'); ?>
 			<?php echo $this->form->getInput('publish_down'); ?></li>
 
-			<li><?php echo $this->form->getLabel('modified'); ?>
-			<?php echo $this->form->getInput('modified'); ?></li>
+			<?php if ($this->item->modified_by) : ?>
+				<li><?php echo $this->form->getLabel('modified_by'); ?>
+				<?php echo $this->form->getInput('modified_by'); ?></li>
 
-			<li><?php echo $this->form->getLabel('version'); ?>
-			<?php echo $this->form->getInput('version'); ?></li>
+				<li><?php echo $this->form->getLabel('modified'); ?>
+				<?php echo $this->form->getInput('modified'); ?></li>
+			<?php endif; ?>
 
-			<li><?php echo $this->form->getLabel('xreference');?>
-			<?php echo $this->form->getInput('xreference'); ?></li>
+			<li><?php echo $this->form->getLabel('numarticles'); ?>
+			<?php echo $this->form->getInput('numarticles'); ?></li>
+
+			<li><?php echo $this->form->getLabel('cache_time'); ?>
+			<?php echo $this->form->getInput('cache_time'); ?></li>
+
+			<li><?php echo $this->form->getLabel('rtl'); ?>
+			<?php echo $this->form->getInput('rtl'); ?></li>
+
+			<li><?php //echo $this->form->getLabel('xreference'); // Missing from schema! ?>
+			<?php //echo $this->form->getInput('xreference'); ?></li>
 		</ul>
 		</fieldset>
 

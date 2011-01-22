@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -82,8 +82,7 @@ class UsersModelLogin extends JModelForm
 	protected function populateState()
 	{
 		// Get the application object.
-		$app	= JFactory::getApplication();
-		$params	= $app->getParams('com_users');
+		$params	= JFactory::getApplication()->getParams('com_users');
 
 		// Load the parameters.
 		$this->setState('params', $params);

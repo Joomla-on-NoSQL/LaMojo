@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -158,37 +158,29 @@ class plgContentPagenavigation extends JPlugin
 			// Output.
 			if ($row->prev || $row->next) {
 				$html = '
-				<table align="center" class="pagenav">
-				<tr>'
+				<ul class="pagenav">'
 				;
 				if ($row->prev) {
 					$html .= '
-					<th class="pagenav_prev">
-						<a href="'. $row->prev .'">'
+					<li class="pagenav-prev">
+						<a href="'. $row->prev .'" rel="next">'
 							. JText::_('JGLOBAL_LT') . $pnSpace . JText::_('JPREV') . '</a>
-					</th>'
+					</li>'
 					;
 				}
 
-				if ($row->prev && $row->next) {
-					$html .= '
-					<td width="50">
-						&#160;
-					</td>'
-					;
-				}
+				
 
 				if ($row->next) {
 					$html .= '
-					<th class="pagenav_next">
-						<a href="'. $row->next .'">'
+					<li class="pagenav-next">
+						<a href="'. $row->next .'" rel="prev">'
 							. JText::_('JNEXT') . $pnSpace . JText::_('JGLOBAL_GT') .'</a>
-					</th>'
+					</li>'
 					;
 				}
 				$html .= '
-				</tr>
-				</table>'
+				</ul>'
 				;
 
 				$position	= $this->params->get('position', 1);

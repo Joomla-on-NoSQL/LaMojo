@@ -54,7 +54,7 @@ class JCacheControllerCallback extends JCacheController
 	 * @return	mixed	Result of the callback
 	 * @since	1.6
 	 */
-	public function get($callback, $args, $id=false, $wrkarounds=false, $woptions=array())
+	public function get($callback, $args=array(), $id=false, $wrkarounds=false, $woptions=array())
 	{
 
 		// Normalize callback
@@ -97,32 +97,36 @@ class JCacheControllerCallback extends JCacheController
 				$data = $this->cache->get($id);
 			}
 		}
-
+		
+		$coptions= array();
+		
 		if ($data !== false) {
 
 			$cached = unserialize(trim($data));
 			$coptions['mergehead'] = isset($woptions['mergehead']) ? $woptions['mergehead'] : 0;
-			$output = ($wrkarounds == false) ? $cached['output'] : JCache::getWorkarounds($cached['output'], $woptions['mergehead']);
+			$output = ($wrkarounds == false) ? $cached['output'] : JCache::getWorkarounds($cached['output'], $coptions);
 			$result = $cached['result'];
 			if ($locktest->locked == true) $this->cache->unlock($id);
 
 		} else {
 
 			if (!is_array($args)) {
-				$args = (array) $args;
+				$Args = !empty($args) ? array( &$args) : array();
+			} else {
+				 $Args = &$args;				
 			}
+			
 			if ($locktest->locked == false) $locktest = $this->cache->lock($id);
 			ob_start();
 			ob_implicit_flush(false);
 
-			$result = call_user_func_array($callback, $args);
+			$result = call_user_func_array($callback, $Args);
 			$output = ob_get_contents();
 
 			ob_end_clean();
 
 			$cached = array();
 
-			$coptions= array();
 			$coptions['nopathway'] = isset($woptions['nopathway']) ? $woptions['nopathway'] : 1;
 			$coptions['nohead'] = isset($woptions['nohead']) ? $woptions['nohead'] : 1;
 			$coptions['nomodules'] = isset($woptions['nomodules']) ? $woptions['nomodules'] : 1;

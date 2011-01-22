@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,25 +20,47 @@ jimport('joomla.application.component.modellist');
 class TemplatesModelStyles extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'title', 'a.title',
+				'client_id', 'a.client_id',
+				'template', 'a.template',
+				'home', 'a.home',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$template = $app->getUserStateFromRequest($this->context.'.filter.template', 'filter_template', '0', 'cmd');
+		$template = $this->getUserStateFromRequest($this->context.'.filter.template', 'filter_template', '0', 'cmd');
 		$this->setState('filter.template', $template);
 
-		$clientId = $app->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', null);
+		$clientId = $this->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', null);
 		$this->setState('filter.client_id', $clientId);
 
 		// Load the parameters.
@@ -85,7 +107,7 @@ class TemplatesModelStyles extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.template, a.title, a.home, a.client_id'
+				'a.id, a.template, a.title, a.home, a.client_id, l.title AS language_title, l.image as image'
 			)
 		);
 		$query->from('`#__template_styles` AS a');
@@ -94,6 +116,9 @@ class TemplatesModelStyles extends JModelList
 		$query->select('COUNT(m.template_style_id) AS assigned');
 		$query->leftjoin('#__menu AS m ON m.template_style_id = a.id');
 		$query->group('a.id');
+
+		// Join over the language
+		$query->join('LEFT', '`#__languages` AS l ON l.lang_code = a.home');
 
 		// Filter by template.
 		if ($template = $this->getState('filter.template')) {

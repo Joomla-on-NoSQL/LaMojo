@@ -5,7 +5,7 @@
 	<name>mod_articles_category</name>
 	<author>Joomla! Project</author>
 	<creationDate>February 2010</creationDate>
-	<copyright>Copyright (C) 2005 - 2010 Open Source Matters.
+	<copyright>Copyright (C) 2005 - 2011 Open Source Matters.
 		All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see
 		LICENSE.txt</license>
@@ -180,8 +180,8 @@
 				</field>
 
 				<field name="date_field" type="list" default="a.created"
-					label="MOD_ARTICLES_CATEGORY_FIELD_DATEFIELD_LABEL"
-					description="MOD_ARTICLES_CATEGORY_FIELD_DATEFIELD_DESC"
+					label="MOD_ARTICLES_CATEGORY_FIELD_DATERANGEFIELD_LABEL"
+					description="MOD_ARTICLES_CATEGORY_FIELD_DATERANGEFIELD_DESC"
 				>
 					<option value="a.created">MOD_ARTICLES_CATEGORY_OPTION_CREATED_VALUE
 					</option>
@@ -195,14 +195,14 @@
 					format="%Y-%m-%d %H:%M:%S"
 					label="MOD_ARTICLES_CATEGORY_FIELD_STARTDATE_LABEL"
 					description="MOD_ARTICLES_CATEGORY_FIELD_STARTDATE_DESC"
-					size="20"
+					size="22"
 					filter="user_utc" />
 
 				<field name="end_date_range" type="calendar"
 					format="%Y-%m-%d %H:%M:%S"
 					label="MOD_ARTICLES_CATEGORY_FIELD_ENDDATE_LABEL"
 					description="MOD_ARTICLES_CATEGORY_FIELD_ENDDATE_DESC"
-					size="20"
+					size="22"
 					filter="user_utc" />
 
 				<field name="relative_date" type="text" default="30"
@@ -227,6 +227,14 @@
 					<option value="a.id">MOD_ARTICLES_CATEGORY_OPTION_ID_VALUE
 					</option>
 					<option value="a.alias">JFIELD_ALIAS_LABEL
+					</option>
+					<option value="a.created">MOD_ARTICLES_CATEGORY_OPTION_CREATED_VALUE
+					</option>
+					<option value="modified">MOD_ARTICLES_CATEGORY_OPTION_MODIFIED_VALUE
+					</option>
+					<option value="publish_up">MOD_ARTICLES_CATEGORY_OPTION_STARTPUBLISHING_VALUE
+					</option>
+					<option value="a.publish_down">MOD_ARTICLES_CATEGORY_OPTION_FINISHPUBLISHING_VALUE
 					</option>
 				</field>
 
@@ -286,12 +294,22 @@
 					label="MOD_ARTICLES_CATEGORY_TITLE_HEADING"
 					description="MOD_ARTICLES_CATEGORY_TITLE_HEADING_DESCRIPTION"
 				>
-					<option value="1">MOD_ARTICLES_CATEGORY_H1</option>
-					<option value="2">MOD_ARTICLES_CATEGORY_H2</option>
-					<option value="3">MOD_ARTICLES_CATEGORY_H3</option>
-					<option value="4">MOD_ARTICLES_CATEGORY_H4</option>
-					<option value="5">MOD_ARTICLES_CATEGORY_H5</option>
-					<option value="6">MOD_ARTICLES_CATEGORY_H6</option>
+					<option value="1">JH1</option>
+					<option value="2">JH2</option>
+					<option value="3">JH3</option>
+					<option value="4">JH4</option>
+					<option value="5">JH5</option>
+					<option value="6">JH6</option>
+				</field>
+
+				<field name="link_titles" type="radio" default="1"
+					label="MOD_ARTICLES_CATEGORY_FIELD_LINKTITLES_LABEL"
+					description="MOD_ARTICLES_CATEGORY_FIELD_LINKTITLES_DESC"
+				>
+					<option value="1">JYES
+					</option>
+					<option value="0">JNO
+					</option>
 				</field>
 
 				<field name="show_date" type="radio" default="0"
@@ -364,6 +382,39 @@
 				<field name="introtext_limit" type="text" default="100"
 					label="MOD_ARTICLES_CATEGORY_FIELD_INTROTEXTLIMIT_LABEL"
 					description="MOD_ARTICLES_CATEGORY_FIELD_INTROTEXTLIMIT_DESC" />
+
+				<field
+					name="show_readmore"
+					label="JGLOBAL_SHOW_READMORE_LABEL"
+					description="JGLOBAL_SHOW_READMORE_DESC"
+					type="radio"
+					default="0"
+				>
+					<option value="1">JSHOW
+					</option>
+					<option value="0">JHIDE
+					</option>
+				</field>
+
+				<field
+					name="show_readmore_title"
+					label="JGLOBAL_SHOW_READMORE_TITLE_LABEL"
+					description="JGLOBAL_SHOW_READMORE_TITLE_DESC"
+					type="radio"
+					default="1"
+				>
+					<option value="1">JSHOW</option>
+					<option value="0">JHIDE</option>
+				</field>
+
+				<field
+					name="readmore_limit"
+					type="text"
+					default="15"
+					label="JGLOBAL_SHOW_READMORE_LIMIT_LABEL"
+					description="JGLOBAL_SHOW_READMORE_LIMIT_DESC"
+				/>
+
 			</fieldset>
 
 			<fieldset name="advanced">

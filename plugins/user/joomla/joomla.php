@@ -160,8 +160,13 @@ class plgUserJoomla extends JPlugin
 		$session = JFactory::getSession();
 		$session->set('user', $instance);
 
-		// Update the user related fields for the Joomla sessions table.
 		$db = JFactory::getDBO();
+		
+		// Check to see the the session already exists.
+		$app = JFactory::getApplication();
+		$app->checkSession();
+
+		// Update the user related fields for the Joomla sessions table.
 		$db->setQuery(
 			'UPDATE `#__session`' .
 			' SET `guest` = '.$db->quote($instance->get('guest')).',' .
@@ -205,16 +210,15 @@ class plgUserJoomla extends JPlugin
 			// Destroy the php session for this user
 			$session->destroy();
 		}
-		else {
-			// Force logout all users with that userid
-			$db = JFactory::getDBO();
-			$db->setQuery(
-				'DELETE FROM `#__session`' .
-				' WHERE `userid` = '.(int) $user['id'] .
-				' AND `client_id` = '.(int) $options['clientid']
-			);
-			$db->query();
-		}
+		
+		// Force logout all users with that userid
+		$db = JFactory::getDBO();
+		$db->setQuery(
+			'DELETE FROM `#__session`' .
+			' WHERE `userid` = '.(int) $user['id'] .
+			' AND `client_id` = '.(int) $options['clientid']
+		);
+		$db->query();
 
 		return true;
 	}
@@ -242,7 +246,7 @@ class plgUserJoomla extends JPlugin
 		jimport('joomla.application.component.helper');
 		$config	= JComponentHelper::getParams('com_users');
 		// Default to Registered.
-		$usertype = $config->get('new_usertype', 2);
+		$defaultUserGroup = $config->get('new_usertype', 2);
 
 		$acl = JFactory::getACL();
 
@@ -251,7 +255,8 @@ class plgUserJoomla extends JPlugin
 		$instance->set('username'		, $user['username']);
 		$instance->set('password_clear'	, $user['password_clear']);
 		$instance->set('email'			, $user['email']);	// Result should contain an email (check)
-		$instance->set('usertype'		, $usertype);
+		$instance->set('usertype'		, 'deprecated');
+		$instance->set('groups'		, array($defaultUserGroup));
 
 		//If autoregister is set let's register the user
 		$autoregister = isset($options['autoregister']) ? $options['autoregister'] :  $this->params->get('autoregister', 1);

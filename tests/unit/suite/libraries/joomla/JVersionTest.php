@@ -4,7 +4,7 @@
  *
  * @version   $Id$
  * @package   Joomla.UnitTest
- * @copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license   GNU General Public License
  */
 require_once 'PHPUnit/Framework.php';
@@ -175,6 +175,31 @@ class JVersionTest extends PHPUnit_Framework_TestCase
 				JVERSION,
 				true,
 				'Should be compatible with itself',
+			),
+			'version 1.6.9' => array(
+				'1.6.9',
+				true,
+				'Should be compatible with 1.6.9',
+			),
+			'version 1.6.99' => array(
+				'1.6.99',
+				true,
+				'Should be compatible with 1.6.99',
+			),
+			'version 1.6.0-betaxx' => array(
+				'1.6.0-betaxx',
+				true,
+				'Should be compatible with 1.6.0-betaxx',
+			),
+			'version 1.5.22' => array(
+				'1.5.22',
+				false,
+				'Should not be compatible with 1.5.22',
+			),
+			'version 1.7.0' => array(
+				'1.7.0',
+				false,
+				'Should not be compatible with 1.7.0',
 			),
 		);
 
@@ -356,7 +381,7 @@ class JVersionTest extends PHPUnit_Framework_TestCase
 				'RELDATE' => '22-June-2009',
 				'RELTIME' => '23:00',
 				'RELTZ' => 'GMT',
-				'COPYRIGHT' => 'Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.',
+				'COPYRIGHT' => 'Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.',
 				'URL' => '<a href="http://www.joomla.org">Joomla!</a> is Free Software released under the GNU General Public License.'
 			);
 

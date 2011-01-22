@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Document
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -149,10 +149,10 @@ class JDocumentHTML extends JDocument
 		$this->_styleSheets	= (isset($data['styleSheets']) && !empty($data['styleSheets']) && is_array($data['styleSheets'])) ? array_merge($this->_styleSheets, $data['styleSheets']) : $this->_styleSheets;
 
 		if (isset($data['style'])) {
-			foreach ($data['style'] AS $type=>$style)
+			foreach($data['style'] AS $type=>$stdata) 
 			{
-				if (!isset($this->_style[strtolower($type)]) || !stristr($this->_style[strtolower($type)],$style)) {
-					$this->addStyleDeclaration($style, $type);
+				if (!isset($this->_style[strtolower($type)]) || !stristr($this->_style[strtolower($type)],$stdata)) {
+					$this->addStyleDeclaration($stdata, $type);
  				}
 			}
 		}
@@ -161,10 +161,10 @@ class JDocumentHTML extends JDocument
 
 
 		if (isset($data['script'])) {
-			foreach ($data['script'] AS $type=>$script)
+			foreach($data['script'] AS $type=>$sdata) 
 			{
-				if (!isset($this->_script[strtolower($type)]) || !stristr($this->_script[strtolower($type)],$script)) {
-					$this->addScriptDeclaration($script, $type);
+				if (!isset($this->_script[strtolower($type)]) || !stristr($this->_script[strtolower($type)],$sdata)) {
+					$this->addScriptDeclaration($sdata, $type);
 				}
 			}
 		}
@@ -395,21 +395,21 @@ class JDocumentHTML extends JDocument
 		$contents = '';
 
 		//Check to see if we have a valid template file
-		if (file_exists($directory.'/'.$filename))
+		if (file_exists($directory.DS.$filename))
 		{
 			//store the file path
-			$this->_file = $directory.'/'.$filename;
+			$this->_file = $directory.DS.$filename;
 
 			//get the file content
 			ob_start();
-			require_once $directory.'/'.$filename;
+			require $directory.DS.$filename;
 			$contents = ob_get_contents();
 			ob_end_clean();
 		}
 
 		// Try to find a favicon by checking the template and root folder
 		$path = $directory . DS;
-		$dirs = array($path, JPATH_BASE.'/');
+		$dirs = array($path, JPATH_BASE.DS);
 		foreach ($dirs as $dir)
 		{
 			$icon = $dir.'favicon.ico';
@@ -438,7 +438,7 @@ class JDocumentHTML extends JDocument
 		$template	= $filter->clean($params['template'], 'cmd');
 		$file		= $filter->clean($params['file'], 'cmd');
 
-		if (!file_exists($directory.'/'.$template.'/'.$file)) {
+		if (!file_exists($directory.DS.$template.DS.$file)) {
 			$template = 'system';
 		}
 
@@ -447,9 +447,9 @@ class JDocumentHTML extends JDocument
 		// 1.5 or core then
 		// 1.6
 			$lang->load('tpl_'.$template, JPATH_BASE, null, false, false)
-		||	$lang->load('tpl_'.$template, $directory.'/'.$template, null, false, false)
+		||	$lang->load('tpl_'.$template, $directory.DS.$template, null, false, false)
 		||	$lang->load('tpl_'.$template, JPATH_BASE, $lang->getDefault(), false, false)
-		||	$lang->load('tpl_'.$template, $directory.'/'.$template, $lang->getDefault(), false, false);
+		||	$lang->load('tpl_'.$template, $directory.DS.$template, $lang->getDefault(), false, false);
 
 		// Assign the variables
 		$this->template = $template;
@@ -457,7 +457,7 @@ class JDocumentHTML extends JDocument
 		$this->params	= isset($params['params']) ? $params['params'] : new JRegistry;
 
 		// load
-		$this->_template = $this->_loadTemplate($directory.'/'.$template, $file);
+		$this->_template = $this->_loadTemplate($directory.DS.$template, $file);
 	}
 
 	/**

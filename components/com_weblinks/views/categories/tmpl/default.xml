@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-	<layout title="com_weblinks_categories_view_default_title">
+	<layout title="com_weblinks_categories_view_default_title" option="com_weblinks_categories_view_default_option">
 		<help
 			key="JHELP_MENUS_MENU_ITEM_WEBLINK_CATEGORIES"
 		/>
@@ -88,7 +88,7 @@
 	</fieldset>
 	
 	<fieldset name="category" label="JGLOBAL_CATEGORY_OPTIONS">
-			<field name="subslider" type="spacer"
+			<field name="spacer1" type="spacer" class="text"
 					label="JGLOBAL_SUBSLIDER_DRILL_CATEGORIES_LABEL"
 			/>
 			
@@ -164,7 +164,7 @@
 	</fieldset>
 	
 	<fieldset name="advanced" label="JGLOBAL_LIST_LAYOUT_OPTIONS">
-			<field name="subslider" type="spacer"
+			<field name="spacer2" type="spacer" class="text"
 					label="JGLOBAL_SUBSLIDER_DRILL_CATEGORIES_LABEL"
 			/>
 			<field	name="show_pagination_limit" type="list"			

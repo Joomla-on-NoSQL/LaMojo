@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Parameter
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -36,7 +36,7 @@ class JElementHelpsites extends JElement
 		$version = new JVersion();
 		$jver = explode( '.', $version->getShortVersion() );
 
-		$helpsites = JHelp::createSiteList(JPATH_ADMINISTRATOR.'/help/helpsites-'.$jver[0].$jver[1].'.xml', $value);
+		$helpsites = JHelp::createSiteList(JPATH_ADMINISTRATOR.DS.'help'.DS.'helpsites-'.$jver[0].$jver[1].'.xml', $value);
 		array_unshift($helpsites, JHtml::_('select.option', '', JText::_('local')));
 
 		return JHtml::_('select.genericlist', $helpsites, $control_name .'['. $name .']',

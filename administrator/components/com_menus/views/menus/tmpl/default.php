@@ -3,14 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_menus
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 // Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers'.DS.'html');
 
 // Load the tooltip behavior.
 JHtml::_('behavior.tooltip');
@@ -23,9 +23,9 @@ $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
 ?>
 <script type="text/javascript">
-	function submitbutton(task) {
+	Joomla.submitbutton = function(task) {
 		if (task != 'menus.delete' || confirm('<?php echo JText::_('COM_MENUS_MENU_CONFIRM_DELETE',true);?>')) {
-			submitform(task);
+			Joomla.submitform(task);
 		}
 	}
 </script>
@@ -83,7 +83,7 @@ $listDirn	= $this->state->get('list.direction');
 						<?php echo $this->escape($item->title); ?></a>
 					<p class="smallsub">(<span><?php echo JText::_('COM_MENUS_MENU_MENUTYPE_LABEL') ?></span>
 						<?php if ($canEdit) : ?>
-							<?php echo '<a href="'. JRoute::_('index.php?option=com_menus&task=menu.edit&cid[]='.$item->id).' title='.$this->escape($item->description).'">'.
+							<?php echo '<a href="'. JRoute::_('index.php?option=com_menus&task=menu.edit&id='.$item->id).' title='.$this->escape($item->description).'">'.
 							$this->escape($item->menutype).'</a>'; ?>)
 						<?php else : ?>
 							<?php echo $this->escape($item->menutype)?>)

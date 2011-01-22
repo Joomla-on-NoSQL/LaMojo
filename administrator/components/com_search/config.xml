@@ -47,12 +47,13 @@
 			type="rules"
 			label="JCONFIG_PERMISSIONS_LABEL"
 			filter="rules"
+			validate="rules"
 			component="com_search"
 			section="component">
 			<action
 				name="core.admin"
 				title="JAction_Admin"
-				description="JACTION_MANAGE_COMPONENT_DESC" />
+				description="JACTION_ADMIN_COMPONENT_DESC" />
 			<action
 				name="core.manage"
 				title="JAction_Manage"

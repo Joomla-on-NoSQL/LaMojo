@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,7 +19,7 @@ class JHtmlInstallation
 	 */
 	static function stepbar($on = 1)
 	{
-		$html = '<h1>'.JText::_('Steps').'</h1>' .
+		$html = '<h1>'.JText::_('INSTL_STEPS_TITLE').'</h1>' .
 			'<div class="step-'.($on == 1 ? 'on' : 'off').'">'.JText::_('INSTL_STEP_1_LABEL').'</div>' .
 			'<div class="step-'.($on == 2 ? 'on' : 'off').'">'.JText::_('INSTL_STEP_2_LABEL').'</div>' .
 			'<div class="step-'.($on == 3 ? 'on' : 'off').'">'.JText::_('INSTL_STEP_3_LABEL').'</div>' .

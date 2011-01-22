@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -78,16 +78,16 @@ class ModulesViewModules extends JView
 
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'modules.delete','JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::divider();
 		} else if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('modules.trash','JTOOLBAR_TRASH');
+			JToolBarHelper::divider();			
 		}
 
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_modules');
+			JToolBarHelper::divider();
 		}
-
-		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_EXTENSIONS_MODULE_MANAGER');
 	}
 }

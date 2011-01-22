@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -64,19 +64,20 @@ class UsersViewUsers extends JView
 			JToolBarHelper::divider();
 			JToolBarHelper::custom('users.activate', 'publish.png', 'publish_f2.png', 'COM_USERS_TOOLBAR_ACTIVATE', true);
 			JToolBarHelper::custom('users.block', 'unpublish.png', 'unpublish_f2.png', 'COM_USERS_TOOLBAR_BLOCK', true);
+			JToolBarHelper::custom('users.unblock', 'unblock.png', 'unblock_f2.png', 'COM_USERS_TOOLBAR_UNBLOCK', true);
+			JToolBarHelper::divider();
 		}
 
 		if ($canDo->get('core.delete')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::deleteList('', 'users.delete','JTOOLBAR_DELETE');
+			JToolBarHelper::divider();
 		}
 
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_users');
+			JToolBarHelper::divider();
 		}
 
-		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_USERS_USER_MANAGER');
 	}
 }

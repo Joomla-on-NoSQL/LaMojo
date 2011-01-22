@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,7 @@ defined('JPATH_BASE') or die;
 jimport('joomla.registry.registry');
 
 // Register the element class with the loader.
-JLoader::register('JElement', JPATH::dirname(__FILE__).'/parameter/element.php');
+JLoader::register('JElement', dirname(__FILE__).'/parameter/element.php');
 
 /**
  * Parameter handler
@@ -66,7 +66,7 @@ class JParameter extends JRegistry
 		parent::__construct('_default');
 
 		// Set base path.
-		$this->_elementPath[] = JPATH::dirname(__FILE__).'/parameter/element';
+		$this->_elementPath[] = dirname(__FILE__).'/parameter/element';
 
 		if ($data = trim($data)) {
 			if (strpos($data, '{') === 0) {
@@ -383,9 +383,9 @@ class JParameter extends JRegistry
 			$dir = trim($dir);
 
 			// Add trailing separators as needed.
-			if (substr($dir, -1) != DS) {
+			if (substr($dir, -1) != DIRECTORY_SEPARATOR) {
 				// Directory
-				$dir .= DS;
+				$dir .= DIRECTORY_SEPARATOR;
 			}
 
 			// Add to the top of the search dirs.

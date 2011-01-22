@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Item Model for Contacts.
+ * Item Model for a Contact.
  *
  * @package		Joomla.Administrator
  * @subpackage	com_contact
@@ -53,9 +53,11 @@ class ContactModelContact extends JModelAdmin
 	{
 		$user = JFactory::getUser();
 
-		if ($record->catid) {
+		// Check against the category.
+		if (!empty($record->catid)) {
 			return $user->authorise('core.edit.state', 'com_contact.category.'.(int) $record->catid);
 		}
+		// Default to component settings if category not known.
 		else {
 			return parent::canEditState($record);
 		}
@@ -96,6 +98,20 @@ class ContactModelContact extends JModelAdmin
 			return false;
 		}
 
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data)) {
+			// Disable fields for display.
+			$form->setFieldAttribute('featured', 'disabled', 'true');
+			$form->setFieldAttribute('ordering', 'disabled', 'true');
+			$form->setFieldAttribute('published', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('featured', 'filter', 'unset');
+			$form->setFieldAttribute('ordering', 'filter', 'unset');
+			$form->setFieldAttribute('published', 'filter', 'unset');
+		}
+
 		return $form;
 	}
 
@@ -132,6 +148,12 @@ class ContactModelContact extends JModelAdmin
 
 		if (empty($data)) {
 			$data = $this->getItem();
+
+			// Prime some default values.
+			if ($this->getState('contact.id') == 0) {
+				$app = JFactory::getApplication();
+				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_contact.contacts.filter.category_id')));
+			}
 		}
 
 		return $data;
@@ -267,7 +289,7 @@ class ContactModelContact extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'catid = '.(int) $table->catid;

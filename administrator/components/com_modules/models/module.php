@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Modules
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -40,12 +40,6 @@ class ModulesModelModule extends JModelAdmin
 	protected $helpURL;
 
 	/**
-	 * @var		boolean	True to use local lookup for the help screen.
-	 * @since	1.6
-	 */
-	protected $helpLocal = false;
-
-	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -58,12 +52,9 @@ class ModulesModelModule extends JModelAdmin
 		$app = JFactory::getApplication('administrator');
 
 		// Load the User state.
-		if (!($pk = (int) $app->getUserState('com_modules.edit.module.id'))) {
+		if (!($pk = (int) JRequest::getInt('id'))) {
 			if ($extensionId = (int) $app->getUserState('com_modules.add.module.extension_id')) {
 				$this->setState('extension.id', $extensionId);
-			}
-			else {
-				$pk = (int) JRequest::getInt('id');
 			}
 		}
 		$this->setState('module.id', $pk);
@@ -258,6 +249,22 @@ class ModulesModelModule extends JModelAdmin
 
 		$form->setFieldAttribute('position', 'client', $this->getState('item.client_id') == 0 ? 'site' : 'administrator');
 
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data)) {
+			// Disable fields for display.
+			$form->setFieldAttribute('ordering', 'disabled', 'true');
+			$form->setFieldAttribute('published', 'disabled', 'true');
+			$form->setFieldAttribute('publish_up', 'disabled', 'true');
+			$form->setFieldAttribute('publish_down', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('ordering', 'filter', 'unset');
+			$form->setFieldAttribute('published', 'filter', 'unset');
+			$form->setFieldAttribute('publish_up', 'filter', 'unset');
+			$form->setFieldAttribute('publish_down', 'filter', 'unset');
+		}
+
 		return $form;
 	}
 
@@ -341,7 +348,8 @@ class ModulesModelModule extends JModelAdmin
 			}
 
 			// Convert to the JObject before adding other data.
-			$this->_cache[$pk] = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+			$properties = $table->getProperties(1);
+			$this->_cache[$pk] = JArrayHelper::toObject($properties, 'JObject');
 
 			// Convert the params field to an array.
 			$registry = new JRegistry;
@@ -402,7 +410,7 @@ class ModulesModelModule extends JModelAdmin
 	 */
 	public function getHelp()
 	{
-		return (object) array('key' => $this->helpKey, 'url' => $this->helpURL, 'local' => $this->helpLocal);
+		return (object) array('key' => $this->helpKey, 'url' => $this->helpURL);
 	}
 
 	/**
@@ -453,7 +461,7 @@ class ModulesModelModule extends JModelAdmin
 	 * @throws	Exception if there is an error loading the form.
 	 * @since	1.6
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = '')
 	{
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
@@ -488,17 +496,30 @@ class ModulesModelModule extends JModelAdmin
 			if (!empty($help)) {
 				$helpKey = trim((string) $help[0]['key']);
 				$helpURL = trim((string) $help[0]['url']);
-				$helpLoc = trim((string) $help[0]['local']);
 
 				$this->helpKey = $helpKey ? $helpKey : $this->helpKey;
 				$this->helpURL = $helpURL ? $helpURL : $this->helpURL;
-				$this->helpLocal = (($helpLoc == 'true') || ($helpLoc == '1') || ($helpLoc == 'local')) ? true : false;
 			}
 
 		}
 
 		// Trigger the default form events.
-		parent::preprocessForm($form, $data);
+		parent::preprocessForm($form, $data, $group);
+	}
+
+	/**
+	 * Loads ContentHelper for filters before validating data.
+	 *
+	 * @param	object		$form		The form to validate against.
+	 * @param	array		$data		The data to validate.
+	 * @return	mixed		Array of filtered data if valid, false otherwise.
+	 * @since	1.1
+	 */
+	function validate($form, $data)
+	{
+		require_once(JPATH_ADMINISTRATOR.'/components/com_content/helpers/content.php');
+
+		return parent::validate($form, $data);
 	}
 
 	/**
@@ -570,7 +591,7 @@ class ModulesModelModule extends JModelAdmin
 		$query	= $db->getQuery(true);
 		$query->delete();
 		$query->from('#__modules_menu');
-		$query->where('moduleid='.(int)$table->id);
+		$query->where('moduleid = '.(int)$table->id);
 		$db->setQuery((string)$query);
 		$db->query();
 
@@ -583,6 +604,11 @@ class ModulesModelModule extends JModelAdmin
 		if (is_numeric($assignment)) {
 			// Variable is numeric, but could be a string.
 			$assignment = (int) $assignment;
+
+			// Logic check: if no module excluded then convert to display on all.
+			if ($assignment == -1 && empty($data['assigned'])){
+				$assignment = 0;
+			}
 
 			// Check needed to stop a module being assigned to `All`
 			// and other menu items resulting in a module being displayed twice.
@@ -662,7 +688,7 @@ class ModulesModelModule extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'client_id = '.(int) $table->client_id;

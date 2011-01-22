@@ -1,14 +1,16 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @package		Joomla.Administrator
+ * @subpackage	com_templates
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-jimport('joomla.application.component.modelform');
+jimport('joomla.application.component.modeladmin');
 
 /**
  * Template style model.
@@ -17,8 +19,20 @@ jimport('joomla.application.component.modelform');
  * @subpackage	com_templates
  * @since		1.6
  */
-class TemplatesModelStyle extends JModelForm
+class TemplatesModelStyle extends JModelAdmin
 {
+	/**
+	 * @var		string	The help screen key for the module.
+	 * @since	1.6
+	 */
+	protected $helpKey = 'JHELP_EXTENSIONS_TEMPLATE_MANAGER_STYLES_EDIT';
+
+	/**
+	 * @var		string	The help screen base URL for the module.
+	 * @since	1.6
+	 */
+	protected $helpURL;
+
 	/**
 	 * Item cache.
 	 */
@@ -36,9 +50,7 @@ class TemplatesModelStyle extends JModelForm
 		$app = JFactory::getApplication('administrator');
 
 		// Load the User state.
-		if (!($pk = (int) $app->getUserState('com_templates.edit.style.id'))) {
-			$pk = (int) JRequest::getInt('id');
-		}
+		$pk = (int) JRequest::getInt('id');
 		$this->setState('style.id', $pk);
 
 		// Load the parameters.
@@ -61,7 +73,8 @@ class TemplatesModelStyle extends JModelForm
 		$table	= $this->getTable();
 
 		// Iterate the items to delete each one.
-		foreach ($pks as $i => $pk) {
+		foreach ($pks as $i => $pk)
+		{
 			if ($table->load($pk)) {
 				// Access checks.
 				if (!$user->authorise('core.delete', 'com_templates')) {
@@ -72,11 +85,16 @@ class TemplatesModelStyle extends JModelForm
 					$this->setError($table->getError());
 					return false;
 				}
-			} else {
+			}
+			else {
 				$this->setError($table->getError());
 				return false;
 			}
 		}
+
+		$cache = JFactory::getCache();
+		$cache->clean('com_templates');
+		$cache->clean('_system');
 
 		return true;
 	}
@@ -102,7 +120,8 @@ class TemplatesModelStyle extends JModelForm
 
 		$table = $this->getTable();
 
-		foreach ($pks as $pk) {
+		foreach ($pks as $pk)
+		{
 			if ($table->load($pk, true)) {
 				// Reset the id to create a new record.
 				$table->id = 0;
@@ -114,18 +133,23 @@ class TemplatesModelStyle extends JModelForm
 				$m = null;
 				if (preg_match('#\((\d+)\)$#', $table->title, $m)) {
 					$table->title = preg_replace('#\(\d+\)$#', '('.($m[1] + 1).')', $table->title);
-				} else {
+				}
+				else {
 					$table->title .= ' (2)';
 				}
 
 				if (!$table->check() || !$table->store()) {
 					throw new Exception($table->getError());
 				}
-			} else {
+			}
+			else {
 				throw new Exception($table->getError());
 			}
 		}
 
+		$cache = JFactory::getCache();
+		$cache->clean('com_templates');
+		$cache->clean('_system');
 
 		return true;
 	}
@@ -148,7 +172,8 @@ class TemplatesModelStyle extends JModelForm
 			$item		= $this->getItem();
 			$clientId	= $item->client_id;
 			$template	= $item->template;
-		} else {
+		}
+		else {
 			$clientId	= JArrayHelper::getValue($data, 'client_id');
 			$template	= JArrayHelper::getValue($data, 'template');
 		}
@@ -161,6 +186,16 @@ class TemplatesModelStyle extends JModelForm
 		$form = $this->loadForm('com_templates.style', 'style', array('control' => 'jform', 'load_data' => $loadData));
 		if (empty($form)) {
 			return false;
+		}
+
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data)) {
+			// Disable fields for display.
+			$form->setFieldAttribute('home', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('home', 'filter', 'unset');
 		}
 
 		return $form;
@@ -191,7 +226,7 @@ class TemplatesModelStyle extends JModelForm
 	 *
 	 * @return	mixed	Object on success, false on failure.
 	 */
-	public function &getItem($pk = null)
+	public function getItem($pk = null)
 	{
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('style.id');
@@ -212,12 +247,24 @@ class TemplatesModelStyle extends JModelForm
 			}
 
 			// Convert to the JObject before adding other data.
-			$this->_cache[$pk] = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+			$properties = $table->getProperties(1);
+			$this->_cache[$pk] = JArrayHelper::toObject($properties, 'JObject');
 
 			// Convert the params field to an array.
 			$registry = new JRegistry;
 			$registry->loadJSON($table->params);
 			$this->_cache[$pk]->params = $registry->toArray();
+
+			// Get the template XML.
+			$client	= JApplicationHelper::getClientInfo($table->client_id);
+			$path	= JPath::clean($client->path.'/templates/'.$table->template.'/templateDetails.xml');
+
+			if (file_exists($path)) {
+				$this->_cache[$pk]->xml = simplexml_load_file($path);
+			}
+			else {
+				$this->_cache[$pk]->xml = null;
+			}
 		}
 
 		return $this->_cache[$pk];
@@ -237,28 +284,25 @@ class TemplatesModelStyle extends JModelForm
 	}
 
 	/**
-	 * Prepare and sanitise the table prior to saving.
-	 */
-	protected function prepareTable(&$table)
-	{
-	}
-
-	/**
 	 * @param	object	A form object.
 	 * @param	mixed	The data expected for the form.
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = '')
 	{
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
-
 		// Initialise variables.
 		$clientId	= $this->getState('item.client_id');
 		$template	= $this->getState('item.template');
 		$lang		= JFactory::getLanguage();
 		$client		= JApplicationHelper::getClientInfo($clientId);
+		if (!$form->loadFile('style_'.$client->name, true)) {
+			throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
+		}
+
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
+
 		$formFile	= JPath::clean($client->path.'/templates/'.$template.'/templateDetails.xml');
 
 		// Load the core and/or local language file(s).
@@ -276,12 +320,28 @@ class TemplatesModelStyle extends JModelForm
 
 		// Disable home field if it is default style
 
-		if((is_array($data) && array_key_exists('home',$data))
-			|| ((is_object($data) && $data->home))){
+		if ((is_array($data) && array_key_exists('home',$data) && $data['home']=='1')
+			|| ((is_object($data) && isset($data->home) && $data->home=='1'))){
 			$form->setFieldAttribute('home','readonly','true');
 		}
+
+		// Attempt to load the xml file.
+		if (!$xml = simplexml_load_file($formFile)) {
+			throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
+		}
+
+		// Get the help data from the XML file if present.
+		$help = $xml->xpath('/extension/help');
+		if (!empty($help)) {
+			$helpKey = trim((string) $help[0]['key']);
+			$helpURL = trim((string) $help[0]['url']);
+
+			$this->helpKey = $helpKey ? $helpKey : $this->helpKey;
+			$this->helpURL = $helpURL ? $helpURL : $this->helpURL;
+		}
+
 		// Trigger the default form events.
-		parent::preprocessForm($form, $data);
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
@@ -337,37 +397,48 @@ class TemplatesModelStyle extends JModelForm
 
 		$user = JFactory::getUser();
 		if ($user->authorise('core.edit','com_menus') && $table->client_id==0) {
-			$n=0;
+			$n		= 0;
+			$db		= JFactory::getDbo();
+			$user	= JFactory::getUser();
 
-			$db = JFactory::getDbo();
-			$user = JFactory::getUser();
-			$app = JFactory::getApplication();
-			$query=$db->getQuery(true);
-			$query->update('#__menu');
-			$query->set('template_style_id='.(int)$table->id);
-			$query->where('id IN ('.implode(',',$data['assigned']).')');
-			$query->where('template_style_id!='.(int)$table->id);
-			$query->where('checked_out in (0,'.(int)$user->id.')');
-			$db->setQuery($query);
-			$db->query();
-			$n = $n + $db->getAffectedRows();
+			if (!empty($data['assigned']) && is_array($data['assigned'])) {
+				JArrayHelper::toInteger($data['assigned']);
 
-			$query=$db->getQuery(true);
+				// Update the mapping for menu items that this style IS assigned to.
+				$query = $db->getQuery(true);
+				$query->update('#__menu');
+				$query->set('template_style_id='.(int)$table->id);
+				$query->where('id IN ('.implode(',', $data['assigned']).')');
+				$query->where('template_style_id!='.(int) $table->id);
+				$query->where('checked_out in (0,'.(int) $user->id.')');
+				$db->setQuery($query);
+				$db->query();
+				$n += $db->getAffectedRows();
+			}
+
+			// Remove style mappings for menu items this style is NOT assigned to.
+			// If unassigned then all existing maps will be removed.
+			$query = $db->getQuery(true);
 			$query->update('#__menu');
 			$query->set('template_style_id=0');
-			$query->where('id NOT IN ('.implode(',',$data['assigned']).')');
-			$query->where('template_style_id='.(int)$table->id);
-			$query->where('checked_out in (0,'.(int)$user->id.')');
+			if (!empty($data['assigned'])) {
+				$query->where('id NOT IN ('.implode(',', $data['assigned']).')');
+			}
+
+			$query->where('template_style_id='.(int) $table->id);
+			$query->where('checked_out in (0,'.(int) $user->id.')');
 			$db->setQuery($query);
 			$db->query();
-			$n = $n + $db->getAffectedRows();
-			if ($n>0) {
+
+			$n += $db->getAffectedRows();
+			if ($n > 0) {
+				$app = JFactory::getApplication();
 				$app->enQueueMessage(JText::plural('COM_TEMPLATES_MENU_CHANGED',$n));
 			}
 		}
 
 		// Clean the cache.
-		$cache = JFactory::getCache('com_templates');
+		$cache = JFactory::getCache();
 		$cache->clean();
 
 		// Trigger the onExtensionAfterSave event.
@@ -394,7 +465,7 @@ class TemplatesModelStyle extends JModelForm
 
 		// Access checks.
 		if (!$user->authorise('core.edit.state', 'com_templates')) {
-			throw new Exception(JText::_('JERROR_CORE_EDIT_STATE_NOT_PERMITTED'));
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 		}
 
 		// Lookup the client_id.
@@ -407,15 +478,17 @@ class TemplatesModelStyle extends JModelForm
 
 		if ($error = $db->getErrorMsg()) {
 			throw new Exception($error);
-		} else if (!is_numeric($clientId)) {
+		}
+		else if (!is_numeric($clientId)) {
 			throw new Exception(JText::_('COM_TEMPLATES_ERROR_STYLE_NOT_FOUND'));
 		}
 
 		// Reset the home fields for the client_id.
 		$db->setQuery(
 			'UPDATE #__template_styles' .
-			' SET home = 0' .
-			' WHERE client_id = '.(int) $clientId
+			' SET home = \'0\'' .
+			' WHERE client_id = '.(int) $clientId .
+			' AND home = \'1\''
 		);
 
 		if (!$db->query()) {
@@ -425,7 +498,7 @@ class TemplatesModelStyle extends JModelForm
 		// Set the new home style.
 		$db->setQuery(
 			'UPDATE #__template_styles' .
-			' SET home = 1' .
+			' SET home = \'1\'' .
 			' WHERE id = '.(int) $id
 		);
 
@@ -433,6 +506,78 @@ class TemplatesModelStyle extends JModelForm
 			throw new Exception($db->getErrorMsg());
 		}
 
+		// Clean the cache.
+		$cache = JFactory::getCache();
+		$cache->clean('com_templates');
+		$cache->clean('_system');
+
 		return true;
+	}
+
+	/**
+	 * Method to unset a template style as default for a language.
+	 *
+	 * @param	int		The primary key ID for the style.
+	 *
+	 * @return	boolean	True if successful.
+	 * @throws	Exception
+	 */
+	public function unsetHome($id = 0)
+	{
+		// Initialise variables.
+		$user	= JFactory::getUser();
+		$db		= $this->getDbo();
+
+		// Access checks.
+		if (!$user->authorise('core.edit.state', 'com_templates')) {
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+		}
+
+		// Lookup the client_id.
+		$db->setQuery(
+			'SELECT client_id, home' .
+			' FROM #__template_styles' .
+			' WHERE id = '.(int) $id
+		);
+		$style = $db->loadObject();
+
+		if ($error = $db->getErrorMsg()) {
+			throw new Exception($error);
+		}
+		else if (!is_numeric($style->client_id)) {
+			throw new Exception(JText::_('COM_TEMPLATES_ERROR_STYLE_NOT_FOUND'));
+		}
+		else if ($style->home=='1') {
+			throw new Exception(JText::_('COM_TEMPLATES_ERROR_CANNOT_UNSET_DEFAULT_STYLE'));
+		}
+
+		// Set the new home style.
+		$db->setQuery(
+			'UPDATE #__template_styles' .
+			' SET home = \'0\'' .
+			' WHERE id = '.(int) $id
+		);
+
+		if (!$db->query()) {
+			throw new Exception($db->getErrorMsg());
+		}
+
+		// Clean the cache.
+		$cache = JFactory::getCache();
+		$cache->clean('com_templates');
+		$cache->clean('_system');
+
+		return true;
+	}
+
+	/**
+	 * Get the necessary data to load an item help screen.
+	 *
+	 * @return	object	An object with key, url, and local properties for loading the item help screen.
+	 * @since	1.6
+	 */
+	public function getHelp()
+	{
+		return (object) array('key' => $this->helpKey, 'url' => $this->helpURL);
 	}
 }

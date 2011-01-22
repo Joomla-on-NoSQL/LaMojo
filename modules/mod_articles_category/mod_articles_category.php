@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_articles_category
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,7 @@
 defined('_JEXEC') or die;
 
 // Include the helper functions only once
-require_once JPATH::dirname(__FILE__).'/helper.php';
+require_once dirname(__FILE__).DS.'helper.php';
 
 		// Prep for Normal or Dynamic Modes
 		$mode = $params->get('mode', 'normal');
@@ -25,6 +25,9 @@ require_once JPATH::dirname(__FILE__).'/helper.php';
 					switch($view)
 					{
 						case 'category':
+							$idbase = JRequest::getInt('id');
+							break;
+						case 'categories':
 							$idbase = JRequest::getInt('id');
 							break;
 						case 'article':
@@ -52,13 +55,16 @@ $cacheparams->method = 'getList';
 $cacheparams->methodparams = $params;
 $cacheparams->modeparams = $cacheid;
 
-$list = JModuleHelper::ModuleCache ($module, $params, $cacheparams);
+$list = JModuleHelper::moduleCache ($module, $params, $cacheparams);
 
 
 if (!empty($list)) {
 	$grouped = false;
 	$article_grouping = $params->get('article_grouping', 'none');
 	$article_grouping_direction = $params->get('article_grouping_direction', 'ksort');
+	$moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
+	$item_heading = $params->get('item_heading');
+	
 	if ($article_grouping !== 'none') {
 		$grouped = true;
 		switch($article_grouping)

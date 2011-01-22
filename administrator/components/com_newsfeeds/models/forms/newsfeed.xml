@@ -5,7 +5,7 @@
 	-->
 <form>
 	<fieldset>
-		<field name="id" type="text" default="0" required="true"
+		<field name="id" type="text" default="0" 
 			readonly="true" class="readonly" label="JGLOBAL_FIELD_ID_LABEL"
 			description="JGLOBAL_FIELD_ID_DESC" />
 
@@ -40,10 +40,10 @@
 		<field name="language" type="contentlanguage" label="JFIELD_LANGUAGE_LABEL"
 			description="COM_NEWSFEEDS_FIELD_LANGUAGE_DESC" class="inputbox"
 		>
-			<option value="">JALL</option>
+			<option value="*">JALL</option>
 		</field>
 
-		<field name="link" type="Text" class="inputbox"
+		<field name="link" type="url" class="inputbox"
 			size="60" label="COM_NEWSFEEDS_FIELD_LINK_LABEL"
 			description="COM_NEWSFEEDS_FIELD_LINK_DESC" required="true" />
 
@@ -61,7 +61,7 @@
 			label="JGLOBAL_FIELD_FIELD_ORDERING_LABEL" description="COM_NEWSFEEDS_FIELD_ORDERING_DESC" />
 
 		<field name="rtl" type="list" class="inputbox"
-			default="1" label="COM_NEWSFEEDS_FIELD_RTL_LABEL"
+			default="0" label="COM_NEWSFEEDS_FIELD_RTL_LABEL"
 			description="COM_NEWSFEEDS_FIELD_RTL_DESC"
 		>
 			<option value="0">COM_NEWSFEEDS_FIELD_VALUE_SITE
@@ -73,22 +73,26 @@
 		</field>
 
 		<field name="created" type="calendar"
-			label="JGLOBAL_FIELD_CREATED_LABEL" description="JGLOBAL_FIELD_Created_Desc"
-			class="inputbox" size="20" format="%Y-%m-%d %H:%M:%S"
+			label="JGLOBAL_FIELD_CREATED_LABEL" description="JGLOBAL_FIELD_CREATED_DESC"
+			class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
 			filter="user_utc" />
 
 		<field name="created_by" type="user"
-			label="JGLOBAL_FIELD_Created_by_Label" description="JGLOBAL_FIELD_Created_by_Desc" />
+			label="JGLOBAL_FIELD_Created_by_Label" description="JGLOBAL_FIELD_CREATED_BY_DESC" />
 
 		<field name="created_by_alias" type="text"
-			label="JGLOBAL_FIELD_Created_by_alias_Label" description="JGLOBAL_FIELD_Created_by_alias_Desc"
+			label="JGLOBAL_FIELD_Created_by_alias_Label" description="JGLOBAL_FIELD_CREATED_BY_ALIAS_DESC"
 			class="inputbox" size="20" />
 
 		<field name="modified" type="calendar" class="readonly"
-			label="JGLOBAL_FIELD_Modified_Label" description="JGLOBAL_FIELD_Modified_Desc"
-			size="20" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+			label="JGLOBAL_FIELD_Modified_Label" description="JGLOBAL_FIELD_MODIFIED_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
 
-		<field name="modified_by" type="hidden" filter="unset" />
+		<field name="modified_by" type="user"
+		label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+		class="readonly"
+		readonly="true"
+		filter="unset"  />
 
 
 		<field name="checked_out" type="Text" class="inputbox"
@@ -102,13 +106,13 @@
 			readonly="true" filter="unset" />
 
 		<field name="publish_up" type="calendar"
-			label="JGLOBAL_FIELD_Publish_up_Label" description="JGLOBAL_FIELD_Publish_up_Desc"
-			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="20"
+			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL" description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
 			filter="user_utc" />
 
 		<field name="publish_down" type="calendar"
-			label="JGLOBAL_FIELD_Publish_down_Label" description="JGLOBAL_FIELD_Publish_down_Desc"
-			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="20"
+			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL" description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
 			filter="user_utc" />
 
 		<field name="access" type="accesslevel" label="JFIELD_ACCESS_LABEL"
@@ -161,6 +165,15 @@
 			<field name="feed_character_count" type="text" size="6"
 				default="0" label="COM_NEWSFEEDS_FIELD_CHARACTERS_COUNT_LABEL"
 				description="COM_NEWSFEEDS_FIELD_CHARACTERS_COUNT_DESC" />
+			<field
+				name="newsfeed_layout"
+				type="componentlayout"
+				label="JFIELD_ALT_LAYOUT_LABEL"
+				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
+				extension="com_newsfeeds"
+				view="newsfeed"
+				useglobal="true"
+				/>		
 		</fieldset>
 	</fields>
 

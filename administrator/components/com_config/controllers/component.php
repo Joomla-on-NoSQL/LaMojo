@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_config
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -70,9 +70,9 @@ class ConfigControllerComponent extends JController
 			// Push up to three validation messages out to the user.
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
 				if (JError::isError($errors[$i])) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'notice');
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				} else {
-					$app->enqueueMessage($errors[$i], 'notice');
+					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
 
@@ -103,8 +103,21 @@ class ConfigControllerComponent extends JController
 			$this->setRedirect('index.php?option=com_config&view=component&component='.$option.'&tmpl=component', $message, 'error');
 			return false;
 		}
+		
+		// Set the redirect based on the task.
+		switch ($this->getTask())
+		{
+			case 'apply':
+				$message = JText::_('COM_CONFIG_SAVE_SUCCESS');
+				$this->setRedirect('index.php?option=com_config&view=component&component='.$option.'&tmpl=component', $message);
+				break;
 
-		$this->setRedirect('index.php?option=com_config&view=close&tmpl=component');
+			case 'save':
+			default:
+				$this->setRedirect('index.php?option=com_config&view=close&tmpl=component');
+				break;
+		}
+		
 		return true;
 	}
 }

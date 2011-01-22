@@ -34,6 +34,7 @@ class JFormDataHelper
 			<field
 				name="categories" />
 		</fields>
+		<field name="keywords" />
 	</fields>
 </form>';
 
@@ -373,6 +374,17 @@ class JFormDataHelper
 				<option value="yellow">Yellow</option>
 			</field>
 		</fields>
+
+		<field
+			type="spacer"
+			label="Title"
+			description="The title." />
+
+		<field
+			name="translate_default"
+			default="DEFAULT_KEY"
+			translate_default="true"
+			type="text"/>
 	</fields>
 </form>';
 

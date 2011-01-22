@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,7 +57,6 @@ class JInstallationModelConfiguration extends JModel
 		/* Debug Settings */
 		$registry->set('debug', 0);
 		$registry->set('debug_lang', 0);
-		$registry->set('debug_modules', 0);
 
 		/* Database Settings */
 		$registry->set('dbtype', $options->db_type);
@@ -73,7 +72,6 @@ class JInstallationModelConfiguration extends JModel
 		$registry->set('gzip', 0);
 		$registry->set('error_reporting', -1);
 		$registry->set('helpurl', 'http://help.joomla.org/proxy/index.php?option=com_help&amp;keyref=Help{major}{minor}:{keyref}');
-		$registry->set('xmlrpc_server', 0);
 		$registry->set('ftp_host', $options->ftp_host);
 		$registry->set('ftp_port', $options->ftp_port);
 		$registry->set('ftp_user', $options->ftp_save ? $options->ftp_user : '');
@@ -98,13 +96,13 @@ class JInstallationModelConfiguration extends JModel
 		$registry->set('smtpport', '25');
 
 		/* Cache Settings */
-		$registry->set('caching', 2);
+		$registry->set('caching', 0);
 		$registry->set('cache_handler', 'file');
 		$registry->set('cachetime', 15);
 
 		/* Meta Settings */
-		$registry->set('MetaDesc', JText::_('INSTL_STD_METADESC'));
-		$registry->set('MetaKeys', JText::_('INSTL_STD_METAKEYS'));
+		$registry->set('MetaDesc', $options->site_metadesc);
+		$registry->set('MetaKeys', $options->site_metakeys);
 		$registry->set('MetaTitle', 1);
 		$registry->set('MetaAuthor', 1);
 
@@ -116,25 +114,25 @@ class JInstallationModelConfiguration extends JModel
 
 		/* Feed Settings */
 		$registry->set('feed_limit', 10);
-		$registry->set('log_path', JPATH_ROOT.'/logs');
-		$registry->set('tmp_path', JPATH_ROOT.'/tmp');
+		$registry->set('log_path', JPATH_ROOT.DS.'logs');
+		$registry->set('tmp_path', JPATH_ROOT.DS.'tmp');
 
 		/* Session Setting */
 		$registry->set('lifetime', 15);
 		$registry->set('session_handler', 'database');
 
 		// Generate the configuration class string buffer.
-		$buffer = $registry->toString('PHP', null, array('class'=>'JConfig'));
+		$buffer = $registry->toString('PHP', array('class'=>'JConfig', 'closingtag' => false));
 
 
 		// Build the configuration file path.
-		$path = JPATH_CONFIGURATION.'/configuration.php';
+		$path = JPATH_CONFIGURATION.DS.'configuration.php';
 
 		// Determine if the configuration file path is writable.
 		if (file_exists($path)) {
 			$canWrite = is_writable($path);
 		} else {
-			$canWrite = is_writable(JPATH_CONFIGURATION.'/');
+			$canWrite = is_writable(JPATH_CONFIGURATION.DS);
 		}
 
 		/*
@@ -142,7 +140,7 @@ class JInstallationModelConfiguration extends JModel
 		 * is not writable we need to use FTP
 		 */
 		$useFTP = false;
-		if ((file_exists($path) && !is_writable($path)) || (!file_exists($path) && !is_writable(JPATH::dirname($path).'/'))) {
+		if ((file_exists($path) && !is_writable($path)) || (!file_exists($path) && !is_writable(dirname($path).'/'))) {
 			$useFTP = true;
 		}
 

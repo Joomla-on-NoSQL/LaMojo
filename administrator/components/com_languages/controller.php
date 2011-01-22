@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -39,29 +39,25 @@ class LanguagesController extends JController
 		require_once JPATH_COMPONENT.'/helpers/languages.php';
 
 		// Load the submenu.
-		LanguagesHelper::addSubmenu(JRequest::getWord('view', 'installed'));
+		LanguagesHelper::addSubmenu(JRequest::getCmd('view', 'installed'));
+
+		$view	= JRequest::getCmd('view', 'languages');
+		$layout = JRequest::getCmd('layout', 'default');
+		$id		= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == 'language' && $layout == 'edit' && !$this->checkEditId('com_languages.edit.language', $id)) {
+
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_languages&view=languages', false));
+
+			return false;
+		}
 
 		parent::display();
 
 		return $this;
-	}
-
-	/**
-	 * task to set the default language
-	 */
-	function publish()
-	{
-		// Check for request forgeries
-		JRequest::checkToken() or jexit(JText::_('JInvalid_Token'));
-		$model = $this->getModel('languages');
-		if ($model->publish()) {
-			$msg = JText::_('COM_LANGUAGES_MSG_DEFAULT_LANGUAGE_SAVED');
-			$type = 'message';
-		} else {
-			$msg = $this->getError();
-			$type = 'error';
-		}
-		$client = $model->getClient();
-		$this->setredirect('index.php?option=com_languages&client='.$client->id,$msg,$type);
 	}
 }

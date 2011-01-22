@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -75,7 +75,7 @@ abstract class JHtmlTabs
 			$close = '';
 		}
 
-		return $close.'<dt class="'.$id.'"><span>'.$text.'</span></dt><dd>';
+		return $close.'<dt class="'.$id.'"><span><h3><a href="javascript:void(0);">'.$text.'</a></h3></span></dt><dd>';
 	}
 
 	/**

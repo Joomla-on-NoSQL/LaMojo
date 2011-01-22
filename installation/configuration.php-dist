@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  *
  * -------------------------------------------------------------------------
@@ -40,7 +40,6 @@ class JConfig {
 	public $gzip = '0';
 	public $error_reporting = '-1';
 	public $helpurl = 'http://help.joomla.org/proxy/index.php?option=com_help&amp;keyref=Help{major}{minor}:{keyref}';
-	public $xmlrpc_server = '0';
 	public $ftp_host = '';
 	public $ftp_port = '';
 	public $ftp_user = '';
@@ -78,7 +77,6 @@ class JConfig {
 	/* Debug Settings */
 	public $debug = '0';
 	public $debug_lang = '0';
-	public $debug_modules = '1';
 
 	/* Meta Settings */
 	public $MetaDesc = 'Joomla! - the dynamic portal engine and content management system';

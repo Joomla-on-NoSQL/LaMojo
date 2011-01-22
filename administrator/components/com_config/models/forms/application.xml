@@ -165,19 +165,6 @@
 			<option
 				value="0">JNO</option>
 		</field>
-
-		<field
-			name="debug_modules"
-			type="radio"
-			default="0"
-			label="COM_CONFIG_FIELD_DEBUG_MODULES_LABEL"
-			description="COM_CONFIG_FIELD_DEBUG_MODULES_DESC"
-			filter="integer">
-			<option
-				value="1">JYES</option>
-			<option
-				value="0">JNO</option>
-		</field>
 	</fieldset>
 
 	<fieldset
@@ -218,6 +205,7 @@
 			label="COM_CONFIG_FIELD_FTP_USERNAME_LABEL"
 			description="COM_CONFIG_FIELD_FTP_USERNAME_DESC"
 			filter="string"
+			autocomplete="off"
 			size="25" />
 
 		<field
@@ -226,6 +214,7 @@
 			label="COM_CONFIG_FIELD_FTP_PASSWORD_LABEL"
 			description="COM_CONFIG_FIELD_FTP_PASSWORD_DESC"
 			filter="string"
+			autocomplete="off"
 			size="25" />
 
 		<field
@@ -272,8 +261,7 @@
 
 		<field
 			name="mailfrom"
-			type="text"
-			class="validate-email"
+			type="email"
 			label="COM_CONFIG_FIELD_MAIL_FROM_EMAIL_LABEL"
 			description="COM_CONFIG_FIELD_MAIL_FROM_EMAIL_DESC"
 			filter="string"
@@ -369,7 +357,6 @@
 			type="textarea"
 			label="COM_CONFIG_FIELD_METADESC_LABEL"
 			description="COM_CONFIG_FIELD_METADESC_DESC"
-			required="true"
 			filter="string"
 			cols="60"
 			rows="3" />
@@ -379,7 +366,6 @@
 			type="textarea"
 			label="COM_CONFIG_FIELD_METAKEYS_LABEL"
 			description="COM_CONFIG_FIELD_METAKEYS_DESC"
-			required="true"
 			filter="string"
 			cols="60"
 			rows="3" />
@@ -709,19 +695,6 @@
 			size="50" />
 
 		<field
-			name="xmlrpc_server"
-			type="radio"
-			default="0"
-			label="COM_CONFIG_FIELD_WEB_SERVICES_LABEL"
-			description="COM_CONFIG_FIELD_WEB_SERVICES_DESC"
-			filter="integer">
-			<option
-				value="1">JYES</option>
-			<option
-				value="0">JNO</option>
-		</field>
-
-		<field
 			name="helpurl"
 			type="helpsite"
 			label="COM_CONFIG_FIELD_HELP_SERVER_LABEL"
@@ -758,7 +731,9 @@
 		<field
 			name="rules"
 			type="rules"
-			label="COM_CONFIG_FIELD_RULES_LABEL"
+			label="FIELD_RULES_LABEL"
+			translate_label="false"
+			validate="rules"
 			class="inputbox"
 			filter="rules">
 			<action
@@ -771,7 +746,7 @@
 				description="COM_CONFIG_ACTION_LOGIN_ADMIN_DESC" />
 			<action
 				name="core.admin"
-				title="JACTION_ADMIN"
+				title="JACTION_ADMIN_GLOBAL"
 				description="COM_CONFIG_ACTION_ADMIN_DESC" />
 			<action
 				name="core.manage"
@@ -791,8 +766,12 @@
 				description="COM_CONFIG_ACTION_EDIT_DESC" />
 			<action
 				name="core.edit.state"
-				title="JACTION_EDIT_STATE"
-				description="COM_CONFIG_ACTION_EDIT_STATE_DESC" />
+				title="JACTION_EDITSTATE"
+				description="COM_CONFIG_ACTION_EDITSTATE_DESC" />
+			<action 
+				name="core.edit.own" 
+				title="JACTION_EDITOWN" 
+				description="COM_CONFIG_ACTION_EDITOWN_DESC" />				
 		</field>
 
 	</fieldset>

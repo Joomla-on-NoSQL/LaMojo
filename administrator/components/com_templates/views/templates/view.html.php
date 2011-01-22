@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -50,7 +50,7 @@ class TemplatesViewTemplates extends JView
 		$this->items		= $this->get('Items');
 		$this->pagination	= $this->get('Pagination');
 		$this->state		= $this->get('State');
-		$this->preview		= JFactory::getConfig()->get('debug_modules');
+		$this->preview		= JComponentHelper::getParams('com_templates')->get('template_positions_display');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
@@ -76,9 +76,8 @@ class TemplatesViewTemplates extends JView
 		JToolBarHelper::title(JText::_('COM_TEMPLATES_MANAGER_TEMPLATES'), 'thememanager');
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_templates');
+			JToolBarHelper::divider();	
 		}
-
-		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_EXTENSIONS_TEMPLATE_MANAGER_TEMPLATES');
 	}
 }

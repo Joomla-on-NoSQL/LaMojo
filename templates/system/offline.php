@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Site
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,16 +22,13 @@ $app = JFactory::getApplication();
 <body>
 <jdoc:include type="message" />
 	<div id="frame" class="outline">
-		<img src="images/joomla_logo_black.jpg" alt="Joomla! Logo" align="middle" />
+		<img src="images/joomla_logo_black.jpg" alt="Joomla! Logo" />
 		<h1>
 			<?php echo $app->getCfg('sitename'); ?>
 		</h1>
 	<p>
 		<?php echo $app->getCfg('offline_message'); ?>
 	</p>
-	<?php if (JPluginHelper::isEnabled('authentication', 'openid')) : ?>
-	<?php JHTML::_('script','openid.js'); ?>
-<?php endif; ?>
 	<form action="index.php" method="post" name="login" id="form-login">
 	<fieldset class="input">
 		<p id="form-login-username">

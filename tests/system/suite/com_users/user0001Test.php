@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * Tests creating and deleting a User
  */
@@ -55,5 +55,6 @@ class User0001Test extends SeleniumJoomlaTestCase
 		$this->assertEquals("Super User", $this->getText("link=Super User"));
 		print("Finished user0001Test.php"."\n");
 		$this->doAdminLogout();
+		$this->deleteAllVisibleCookies();
 	}
 }

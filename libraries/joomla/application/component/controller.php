@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -170,8 +170,9 @@ class JController extends JObject
 				}
 
 				$filename = strtolower($parts['name']).'/view'.$parts['type'].'.php';
-			break;
+				break;
 		}
+
 		return $filename;
 	}
 
@@ -198,9 +199,11 @@ class JController extends JObject
 
 		// Check for array format.
 		$filter = JFilterInput::getInstance();
+
 		if (is_array($command)) {
 			$command = $filter->clean(array_pop(array_keys($command)), 'cmd');
-		} else {
+		}
+		else {
 			$command = $filter->clean($command, 'cmd');
 		}
 
@@ -215,7 +218,8 @@ class JController extends JObject
 
 			// Reset the task without the contoller context.
 			JRequest::setVar('task', $task);
-		} else {
+		}
+		else {
 			// Base controller.
 			$type	= null;
 			$task	= $command;
@@ -233,7 +237,8 @@ class JController extends JObject
 			// If the controller file path exists, include it.
 			if (file_exists($path)) {
 				require_once $path;
-			} else {
+			}
+			else {
 				throw new JException(JText::sprintf('JLIB_APPLICATION_ERROR_INVALID_CONTROLLER', $type, $format), 1056, E_ERROR, $type, true);
 			}
 		}
@@ -241,7 +246,8 @@ class JController extends JObject
 		// Instantiate the class.
 		if (class_exists($class)) {
 			$instance = new $class($config);
-		} else {
+		}
+		else {
 			throw new JException(JText::sprintf('JLIB_APPLICATION_ERROR_INVALID_CONTROLLER_CLASS', $class), 1057, E_ERROR, $class, true);
 		}
 
@@ -275,7 +281,9 @@ class JController extends JObject
 		$rName		= $r->getName();
 		$rMethods	= $r->getMethods(ReflectionMethod::IS_PUBLIC);
 		$methods	= array();
-		foreach ($rMethods as $rMethod) {
+
+		foreach ($rMethods as $rMethod)
+		{
 			$mName = $rMethod->getName();
 
 			// Add default display method if not explicitly declared.
@@ -290,7 +298,8 @@ class JController extends JObject
 		if (empty($this->name)) {
 			if (array_key_exists('name', $config))  {
 				$this->name = $config['name'];
-			} else {
+			}
+			else {
 				$this->name = $this->getName();
 			}
 		}
@@ -298,14 +307,16 @@ class JController extends JObject
 		// Set a base path for use by the controller
 		if (array_key_exists('base_path', $config)) {
 			$this->basePath	= $config['base_path'];
-		} else {
+		}
+		else {
 			$this->basePath	= JPATH_COMPONENT;
 		}
 
 		// If the default task is set, register it as such
 		if (array_key_exists('default_task', $config)) {
 			$this->registerDefaultTask($config['default_task']);
-		} else {
+		}
+		else {
 			$this->registerDefaultTask('display');
 		}
 
@@ -313,7 +324,8 @@ class JController extends JObject
 		if (array_key_exists('model_path', $config)) {
 			// user-defined dirs
 			$this->addModelPath($config['model_path']);
-		} else {
+		}
+		else {
 			$this->addModelPath($this->basePath.'/models');
 		}
 
@@ -321,14 +333,16 @@ class JController extends JObject
 		if (array_key_exists('view_path', $config)) {
 			// user-defined dirs
 			$this->setPath('view', $config['view_path']);
-		} else {
+		}
+		else {
 			$this->setPath('view', $this->basePath.'/views');
 		}
 
 		// Set the default view.
 		if (array_key_exists('default_view', $config)) {
 			$this->default_view	= $config['default_view'];
-		} else if (empty($this->default_view)) {
+		}
+		else if (empty($this->default_view)) {
 			$this->default_view = $this->getName();
 		}
 
@@ -352,7 +366,8 @@ class JController extends JObject
 		}
 
 		// loop through the path directories
-		foreach ($path as $dir) {
+		foreach ($path as $dir)
+		{
 			// no surrounding spaces allowed!
 			$dir = rtrim(JPath::check($dir, '/'), '/').'/';
 
@@ -372,6 +387,7 @@ class JController extends JObject
 	public function addViewPath($path)
 	{
 		$this->addPath('view', $path);
+
 		return $this;
 	}
 
@@ -406,9 +422,43 @@ class JController extends JObject
 			}
 			// Get the JUser object for the current user and return the authorization boolean
 			$user = JFactory::getUser();
+
 			return $user->authorise($this->_acoSection, $task);
-		} else {
+		}
+		else {
 			// Nothing set, nothing to check... so obviously its ok :)
+			return true;
+		}
+	}
+
+	/**
+	 * Method to check whether an ID is in the edit list.
+	 *
+	 * @param	string	$context	The context for the session storage.
+	 * @param	int		$id			The ID of the record to add to the edit list.
+	 *
+	 * @return	boolean	True if the ID is in the edit list.
+	 * @since	1.6
+	 */
+	protected function checkEditId($context, $id)
+	{
+		if ($id) {
+			$app	= JFactory::getApplication();
+			$values = (array) $app->getUserState($context.'.id');
+
+			$result	= in_array((int) $id, $values);
+
+			if (JDEBUG) {
+				jimport('joomla.error.log');
+				$log = JLog::getInstance('jcontroller.log.php')->addEntry(
+					array('comment' => sprintf('Checking edit ID %s.%s: %d %s', $context, $id, (int) $result, str_replace("\n", ' ', print_r($values, 1))))
+				);
+			}
+
+			return $result;
+		}
+		else {
+			// No id for a new item.
 			return true;
 		}
 	}
@@ -429,6 +479,7 @@ class JController extends JObject
 		$classPrefix	= preg_replace('/[^A-Z0-9_]/i', '', $prefix);
 
 		$result = JModel::getInstance($modelName, $classPrefix, $config);
+
 		return $result;
 	}
 
@@ -463,6 +514,7 @@ class JController extends JObject
 				$this->paths['view'],
 				$this->createFileName('view', array('name' => $viewName, 'type' => $viewType))
 			);
+
 			if ($path) {
 				require_once $path;
 
@@ -471,7 +523,8 @@ class JController extends JObject
 						500, JText::sprintf('JLIB_APPLICATION_ERROR_VIEW_CLASS_NOT_FOUND', $viewClass, $path));
 					return null;
 				}
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -496,7 +549,7 @@ class JController extends JObject
 		$document	= JFactory::getDocument();
 		$viewType	= $document->getType();
 		$viewName	= JRequest::getCmd('view', $this->default_view);
-		$viewLayout	= JRequest::getCmd('layout', 'default');
+		$viewLayout = JRequest::getCmd('layout', 'default');
 
 		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
 
@@ -527,7 +580,8 @@ class JController extends JObject
 					$registeredurlparams = new stdClass();
 				}
 
-				foreach ($urlparams AS $key => $value) {
+				foreach ($urlparams AS $key => $value)
+				{
 					// add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
 					$registeredurlparams->$key = $value;
 				}
@@ -537,7 +591,8 @@ class JController extends JObject
 
 			$cache->get($view, 'display');
 
-		} else {
+		}
+		else {
 			$view->display();
 		}
 
@@ -558,9 +613,11 @@ class JController extends JObject
 		$task = strtolower($task);
 		if (isset($this->taskMap[$task])) {
 			$doTask = $this->taskMap[$task];
-		} elseif (isset($this->taskMap['__default'])) {
+		}
+		elseif (isset($this->taskMap['__default'])) {
 			$doTask = $this->taskMap['__default'];
-		} else {
+		}
+		else {
 			return JError::raiseError(404, JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task));
 		}
 
@@ -571,7 +628,8 @@ class JController extends JObject
 		if ($this->authorise($doTask)) {
 			$retval = $this->$doTask();
 			return $retval;
-		} else {
+		}
+		else {
 			return JError::raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 	}
@@ -700,6 +758,36 @@ class JController extends JObject
 	}
 
 	/**
+	 * Method to add a record ID to the edit list.
+	 *
+	 * @param	string	$context	The context for the session storage.
+	 * @param	int		$id			The ID of the record to add to the edit list.
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+	protected function holdEditId($context, $id)
+	{
+		// Initialise variables.
+		$app	= JFactory::getApplication();
+		$values	= (array) $app->getUserState($context.'.id');
+
+		// Add the id to the list if non-zero.
+		if (!empty($id)) {
+			array_push($values, (int) $id);
+			$values = array_unique($values);
+			$app->setUserState($context.'.id', $values);
+
+			if (JDEBUG) {
+				jimport('joomla.error.log');
+				$log = JLog::getInstance('jcontroller.log.php')->addEntry(
+					array('comment' => sprintf('Holding edit ID %s.%s %s', $context, $id, str_replace("\n", ' ', print_r($values, 1))))
+				);
+			}
+		}
+	}
+
+	/**
 	 * Redirects the browser or returns false if no redirect is set.
 	 *
 	 * @return	boolean	False if no redirect exists.
@@ -711,6 +799,7 @@ class JController extends JObject
 			$app = JFactory::getApplication();
 			$app->redirect($this->redirect, $this->message, $this->messageType);
 		}
+
 		return false;
 	}
 
@@ -724,6 +813,7 @@ class JController extends JObject
 	public function registerDefaultTask($method)
 	{
 		$this->registerTask('__default', $method);
+
 		return $this;
 	}
 
@@ -740,7 +830,38 @@ class JController extends JObject
 		if (in_array(strtolower($method), $this->methods)) {
 			$this->taskMap[strtolower($task)] = $method;
 		}
+
 		return $this;
+	}
+
+	/**
+	 * Method to check whether an ID is in the edit list.
+	 *
+	 * @param	string	$context	The context for the session storage.
+	 * @param	int		$id			The ID of the record to add to the edit list.
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+	protected function releaseEditId($context, $id)
+	{
+		$app	= JFactory::getApplication();
+		$values = (array) $app->getUserState($context.'.id');
+
+		// Do a strict search of the edit list values.
+		$index = array_search((int) $id, $values, true);
+
+		if (is_int($index)) {
+			unset($values[$index]);
+			$app->setUserState($context.'.id', $values);
+
+			if (JDEBUG) {
+				jimport('joomla.error.log');
+				$log = JLog::getInstance('jcontroller.log.php')->addEntry(
+					array('comment' => sprintf('Releasing edit ID %s.%s %s', $context, $id, str_replace("\n", ' ', print_r($values, 1))))
+				);
+			}
+		}
 	}
 
 	/**
@@ -794,11 +915,13 @@ class JController extends JObject
 	/**
 	 * Set a URL for browser redirection.
 	 *
-	 * @param	string 		URL to redirect to.
-	 * @param	string		Message to display on redirect. Optional, defaults to value set internally by controller, if any.
-	 * @param	string		Message type. Optional, defaults to 'message'.
-	 * @return	JController	This object to support chaining.
-	 * @since	1.5
+	 * @param   string  $url   URL to redirect to.
+	 * @param   string  $msg   Message to display on redirect. Optional, defaults to value set internally by controller, if any.
+	 * @param   string  $type  Message type. Optional, defaults to 'message' or the type set by a previous call to setMessage.
+	 *
+	 * @return  JController  This object to support chaining.
+	 *
+	 * @since   1.5
 	 */
 	public function setRedirect($url, $msg = null, $type = null)
 	{
@@ -809,7 +932,15 @@ class JController extends JObject
 		}
 
 		// Ensure the type is not overwritten by a previous call to setMessage.
-		$this->messageType	= ($type === null || empty($this->messageType)) ? 'message' : $type;
+		if (empty($type)) {
+			if (empty($this->messageType)) {
+				$this->messageType = 'message';
+			}
+		}
+		// If the type is explicitly set, set it.
+		else {
+			$this->messageType = $type;
+		}
 
 		return $this;
 	}

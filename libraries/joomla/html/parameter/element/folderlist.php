@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Parameter
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,7 +33,7 @@ class JElementFolderlist extends JElement
 		jimport('joomla.filesystem.folder');
 
 		// Initialise variables.
-		$path		= JPATH_ROOT.'/'.$node->attributes('directory');
+		$path		= JPATH_ROOT.DS.$node->attributes('directory');
 		$filter		= $node->attributes('filter');
 		$exclude	= $node->attributes('exclude');
 		$folders	= JFolder::folders($path, $filter);

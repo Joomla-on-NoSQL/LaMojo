@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -42,7 +42,7 @@ class JCacheStorageCachelite extends JCacheStorage
 		$this->_root	= $options['cachebase'];
 
 		$cloptions = array(
-			'cacheDir' 					=> $this->_root.'/',
+			'cacheDir' 					=> $this->_root.DS,
 			'lifeTime' 					=> $this->_lifetime,
 			'fileLocking'   			=> $this->_locking,
 			'automaticCleaningFactor'	=> isset($options['autoclean']) ? $options['autoclean'] : 200,
@@ -79,10 +79,10 @@ class JCacheStorageCachelite extends JCacheStorage
 	 * @return	mixed	Boolean false on failure or a cached data string
 	 * @since	1.6
 	 */
-	public function get($id, $group, $checkTime)
+	public function get($id, $group, $checkTime = true)
 	{
 		$data = false;
-		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.'/'.$group.'/');
+		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.DS.$group.DS);
 		$this->_getCacheId($id, $group);
 		$data = self::$CacheLiteInstance->get($this->rawname, $group);
 		return $data;
@@ -106,11 +106,11 @@ class JCacheStorageCachelite extends JCacheStorage
 		$data = array();
 
 		foreach ($folders as $folder) {
-			$files = JFolder::files($path.'/'.$folder);
+			$files = JFolder::files($path.DS.$folder);
 			$item = new JCacheStorageHelper($folder);
 
 			foreach ($files as $file) {
-				$item->updateSize(filesize($path.'/'.$folder.'/'.$file)/1024);
+				$item->updateSize(filesize($path.DS.$folder.DS.$file)/1024);
 			}
 			$data[$folder] = $item;
 		}
@@ -129,7 +129,7 @@ class JCacheStorageCachelite extends JCacheStorage
 	 */
 	public function store($id, $group, $data)
 	{
-		$dir = $this->_root.'/'.$group;
+		$dir = $this->_root.DS.$group;
 
 		// If the folder doesn't exist try to create it
 		if (!is_dir($dir)) {
@@ -144,7 +144,7 @@ class JCacheStorageCachelite extends JCacheStorage
 			return false;
 		}
 
-		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.'/'.$group.'/');
+		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.DS.$group.DS);
 		$this->_getCacheId($id, $group);
 		$sucess = self::$CacheLiteInstance->save($data, $this->rawname, $group);
 		if ($sucess == true) {
@@ -164,7 +164,7 @@ class JCacheStorageCachelite extends JCacheStorage
 	 */
 	public function remove($id, $group)
 	{
-		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.'/'.$group.'/');
+		self::$CacheLiteInstance->setOption('cacheDir', $this->_root.DS.$group.DS);
 		$this->_getCacheId($id, $group);
 		$sucess = self::$CacheLiteInstance->remove($this->rawname, $group);
 		if ($sucess == true) {
@@ -185,7 +185,7 @@ class JCacheStorageCachelite extends JCacheStorage
 	 * @return	boolean	True on success, false otherwise
 	 * @since	1.6
 	 */
-	public function clean($group, $mode=null)
+	public function clean($group, $mode = null)
 	{
 		jimport('joomla.filesystem.folder');
 
@@ -204,15 +204,15 @@ class JCacheStorageCachelite extends JCacheStorage
 				break;
 			case 'group':
 				$clmode = $group;
-				self::$CacheLiteInstance->setOption('cacheDir', $this->_root.'/'.$group.'/');
+				self::$CacheLiteInstance->setOption('cacheDir', $this->_root.DS.$group.DS);
 				$sucess = self::$CacheLiteInstance->clean($group, $clmode);
-				if (is_dir($this->_root.'/'.$group)) {
-					$return = JFolder::delete($this->_root.'/'.$group);
+				if (is_dir($this->_root.DS.$group)) {
+					$return = JFolder::delete($this->_root.DS.$group);
 				}
 				break;
 			default:
 				$clmode = $group;
-				self::$CacheLiteInstance->setOption('cacheDir', $this->_root.'/'.$group.'/');
+				self::$CacheLiteInstance->setOption('cacheDir', $this->_root.DS.$group.DS);
 				$sucess = self::$CacheLiteInstance->clean($group, $clmode);
 				break;
 		}
@@ -236,17 +236,17 @@ class JCacheStorageCachelite extends JCacheStorage
 		self::$CacheLiteInstance->setOption('automaticCleaningFactor', 1);
 		self::$CacheLiteInstance->setOption('hashedDirectoryLevel', 1);
 		$test 		= self::$CacheLiteInstance;
-		$sucess1 	= self::$CacheLiteInstance->_cleanDir($this->_root.'/', false, 'old');
+		$sucess1 	= self::$CacheLiteInstance->_cleanDir($this->_root.DS, false, 'old');
 
-		if (!($dh = opendir($this->_root.'/'))) {
+		if (!($dh = opendir($this->_root.DS))) {
 			return false;
 		}
 
 		while ($file = readdir($dh)) {
 			if (($file != '.') && ($file != '..') && ($file != '.svn')) {
-				$file2 = $this->_root.'/'.$file;
+				$file2 = $this->_root.DS.$file;
 				if (is_dir($file2)) {
-					$result = ($result and (self::$CacheLiteInstance->_cleanDir($file2.'/', false, 'old')));
+					$result = ($result and (self::$CacheLiteInstance->_cleanDir($file2.DS, false, 'old')));
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -9,7 +9,7 @@
 defined('JPATH_BASE') or die;
 
 // Register the session storage class with the loader
-JLoader::register('JSessionStorage', str_replace('\\','/',(dirname(__FILE__))).'/storage.php');
+JLoader::register('JSessionStorage', dirname(__FILE__).DS.'storage.php');
 
 /**
  * Class for managing HTTP sessions
@@ -255,7 +255,7 @@ class JSession extends JObject
 	public static function getStores()
 	{
 		jimport('joomla.filesystem.folder');
-		$handlers = JFolder::files(str_replace('\\','/',dirname(__FILE__)).'/storage', '.php$');
+		$handlers = JFolder::files(dirname(__FILE__).DS.'storage', '.php$');
 
 		$names = array();
 		foreach($handlers as $handler) {
@@ -264,7 +264,7 @@ class JSession extends JObject
 
 			//Load the class only if needed
 			if (!class_exists($class)) {
-				require_once str_replace('\\','/',dirname(__FILE__)).'/storage/'.$name.'.php';
+				require_once dirname(__FILE__).DS.'storage'.DS.$name.'.php';
 			}
 
 			if (call_user_func_array(array(trim($class), 'test'), array())) {
@@ -342,7 +342,7 @@ class JSession extends JObject
 	}
 
 	/**
-	 * Check wheter data exists in the session store
+	 * Check whether data exists in the session store
 	 *
 	 * @param	string	Name of variable
 	 * @param	string	Namespace to use, default to 'default'
@@ -397,13 +397,22 @@ class JSession extends JObject
 		//  start session if not startet
 		if ($this->_state == 'restart') {
 			session_id($this->_createId());
+		} else {
+			$session_name = session_name();
+			if (!JRequest::getVar($session_name, false, 'COOKIE')) {
+				if (JRequest::getVar($session_name)) {
+					session_id(JRequest::getVar($session_name));
+					setcookie($session_name, '', time() - 3600);
+				}
+			}
 		}
 
 		session_cache_limiter('none');
 		session_start();
 
 		// Send modified header for IE 6.0 Security Policy
-		header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
+		// Joomla! 1.6: Moved to configurable plugin due to security concerns 
+		//header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
 
 		return true;
 	}

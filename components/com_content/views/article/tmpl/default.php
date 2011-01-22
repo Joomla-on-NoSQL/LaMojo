@@ -3,19 +3,20 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers');
 
-// Create shortcut to parameters.
-$params = $this->item->params;
+// Create shortcuts to some parameters.
+$params		= $this->item->params;
+$canEdit	= $this->item->params->get('access-edit');
 ?>
-<div class="item-page<?php echo $params->get('pageclass_sfx')?>">
+<div class="item-page<?php echo $this->pageclass_sfx?>">
 <?php if ($this->params->get('show_page_heading', 1)) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -33,7 +34,7 @@ $params = $this->item->params;
 <?php endif; ?>
 
 
-<?php if ($params->get('access-edit') ||  $params->get('show_print_icon') || $params->get('show_email_icon')) : ?>
+<?php if ($canEdit ||  $params->get('show_print_icon') || $params->get('show_email_icon')) : ?>
 		<ul class="actions">
 		<?php if (!$this->print) : ?>
 				<?php if ($params->get('show_print_icon')) : ?>
@@ -47,7 +48,7 @@ $params = $this->item->params;
 						<?php echo JHtml::_('icon.email',  $this->item, $params); ?>
 				</li>
 				<?php endif; ?>
-				<?php if ($this->user->authorise('core.edit', 'com_content.article.'.$this->item->id)) : ?>
+				<?php if ($canEdit) : ?>
 						<li class="edit-icon">
 							<?php echo JHtml::_('icon.edit', $this->item, $params); ?>
 						</li>
@@ -111,13 +112,20 @@ $params = $this->item->params;
 		<?php echo JText::sprintf('COM_CONTENT_PUBLISHED_DATE', JHTML::_('date',$this->item->publish_up, JText::_('DATE_FORMAT_LC2'))); ?>
 		</dd>
 <?php endif; ?>
-<?php if ($params->get('show_author') && !empty($this->item->author)) : ?>
-	<dd class="createdby">
-		<?php $author = $params->get('link_author', 0) ? JHTML::_('link',JRoute::_('index.php?option=com_users&view=profile&member_id='.$this->item->created_by),$this->item->author) : $this->item->author; ?>
-		<?php $author=($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
-	<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
-		</dd>
-<?php endif; ?>
+<?php if ($params->get('show_author') && !empty($this->item->author )) : ?>
+	<dd class="createdby"> 
+		<?php $author =  $this->item->author; ?>
+		<?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
+
+			<?php if (!empty($this->item->contactid ) &&  $params->get('link_author') == true):?>
+				<?php 	echo JText::sprintf('COM_CONTENT_WRITTEN_BY' , 
+				 JHTML::_('link',JRoute::_('index.php?option=com_contact&view=contact&id='.$this->item->contactid),$author)); ?>
+
+			<?php else :?>
+				<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
+			<?php endif; ?>
+	</dd>
+<?php endif; ?>	
 <?php if ($params->get('show_hits')) : ?>
 		<dd class="hits">
 		<?php echo JText::sprintf('COM_CONTENT_ARTICLE_HITS', $this->item->hits); ?>

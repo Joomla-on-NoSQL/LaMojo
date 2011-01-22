@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -26,7 +26,7 @@ class plgSystemSef extends JPlugin
 	{
 		$app = JFactory::getApplication();
 
-		if ($app->getName() != 'site') {
+		if ($app->getName() != 'site' || $app->getCfg('sef')=='0') {
 			return true;
 		}
 
@@ -34,10 +34,10 @@ class plgSystemSef extends JPlugin
 		$base	= JURI::base(true).'/';
 		$buffer = JResponse::getBody();
 
-			$regex  = '#href="index.php\?([^"]*)#m';
-		$buffer = preg_replace_callback($regex, array('plgSystemSEF', 'route'), $buffer);
+		$regex  = '#href="index.php\?([^"]*)#m';
+		$buffer = preg_replace_callback($regex, array('plgSystemSef', 'route'), $buffer);
 
-			$protocols	= '[a-zA-Z0-9]+:'; //To check for all unknown protocals (a protocol must contain at least one alpahnumeric fillowed by :
+		$protocols	= '[a-zA-Z0-9]+:'; //To check for all unknown protocals (a protocol must contain at least one alpahnumeric fillowed by :
 		$regex		= '#(src|href)="(?!/|'.$protocols.'|\#|\')([^"]*)"#m';
 		$buffer		= preg_replace($regex, "$1=\"$base\$2\"", $buffer);
 		$regex		= '#(onclick="window.open\(\')(?!/|'.$protocols.'|\#)([^/]+[^\']*?\')#m';

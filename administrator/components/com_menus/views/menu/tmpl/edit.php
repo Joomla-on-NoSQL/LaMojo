@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_menus
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,15 +18,15 @@ JHtml::_('behavior.formvalidation');
 ?>
 
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'menu.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('item-form'));
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_menus'); ?>" method="post" name="adminForm" id="item-form">
+<form action="<?php echo JRoute::_('index.php?option=com_menus&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="item-form">
 <div class="width-40">
 	<fieldset class="adminform">
 		<legend><?php echo JText::_('COM_MENUS_MENU_DETAILS');?></legend>

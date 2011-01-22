@@ -7,7 +7,6 @@
 			description="JGLOBAL_FIELD_ID_DESC"
 			size="10"
 			default="0"
-			required="true"
 			readonly="true"
 			class="readonly"
 		/>
@@ -98,8 +97,8 @@
 			size="30"
 		/>
 
-		<field name="email_to" type="text"
-			label="COM_CONTACT_FIELD_INFORMATION_EMAIL_LABEL"
+		<field name="email_to" type="email"
+			label="JGLOBAL_EMAIL"
 			description="COM_CONTACT_FIELD_INFORMATION_EMAIL_DESC"
 			class="inputbox"
 			size="30"
@@ -163,7 +162,7 @@
 		/>
 
 		<field name="webpage"
-			type="text"
+			type="url"
 			label="COM_CONTACT_FIELD_INFORMATION_WEBPAGE_LABEL"
 			description="COM_CONTACT_FIELD_INFORMATION_WEBPAGE_DESC"
 			class="inputbox"
@@ -185,6 +184,29 @@
 			description="COM_CONTACT_FIELD_PARAMS_IMAGE_DESC"
 			/>
 
+		<field name="created_by" type="user"
+			label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="COM_CONTACT_FIELD_CREATED_BY_DESC" />
+
+		<field name="created_by_alias" type="text"
+			label="COM_CONTACT_FIELD_CREATED_BY_ALIAS_LABEL" description="COM_CONTACT_FIELD_CREATED_BY_ALIAS_DESC"
+			class="inputbox" size="20" />
+
+		<field name="created" type="calendar" label="COM_CONTACT_FIELD_CREATED_LABEL"
+			description="COM_CONTACT_FIELD_CREATED_DESC" class="inputbox" size="22"
+			format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+		
+		<field name="modified" type="calendar" class="readonly"
+			label="JGLOBAL_MODIFIED_DATE" description="COM_CONTACT_FIELD_MODIFIED_DESC"
+			size="22" readonly="true" format="%Y-%m-%d %H:%M:%S" filter="user_utc" />
+
+		<field name="modified_by" type="user"
+		label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+		class="readonly"
+		readonly="true"
+		filter="unset"/>
+
+
+
 		<field name="checked_out"
 			type="hidden"
 			filter="unset"
@@ -201,6 +223,18 @@
 			label="JFIELD_ORDERING_LABEL"
 			description="JFIELD_ORDERING_DESC"
 		/>
+
+		<field name="publish_up" type="calendar"
+			label="COM_CONTACT_FIELD_PUBLISH_UP_LABEL" description="COM_CONTACT_FIELD_PUBLISH_UP_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc"
+		/>
+
+		<field name="publish_down" type="calendar"
+			label="COM_CONTACT_FIELD_PUBLISH_DOWN_LABEL" description="COM_CONTACT_FIELD_PUBLISH_DOWN_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc"
+		/>		 
 
 		<field name="metakey"
 			type="textarea"
@@ -226,13 +260,13 @@
 			<option value="*">JALL</option>
 		</field>
 		<field name="featured"
-			type="radio"
+			type="list"
 			label="JFEATURED"
 			description="COM_CONTACT_FIELD_FEATURED_DESC"
 			default="0"
 		>
-			<option value="0">JOFF</option>
-			<option value="1">JON</option>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
 		</field>
 
 		<field name="contact_icons"
@@ -285,16 +319,6 @@
 			hide_none="1" label="COM_CONTACT_FIELD_ICONS_MISC_LABEL"
 			description="COM_CONTACT_FIELD_ICONS_MISC_DESC"
 		/>
-
-		<field id="metadata"
-			name="metadata"
-			type="textarea"
-			label="Contact_Metadata_Label"
-			description="Contact_Metadata_Desc"
-			class="inputbox"
-			rows="3"
-			cols="30"
-		 />
 	</fieldset>
 
 	<fields name="params">
@@ -317,7 +341,7 @@
 			<field name="show_contact_list"
 			type="list"
 			label="COM_CONTACT_FIELD_CONTACT_SHOW_LIST_LABEL"
-			description="COM_CONTACT_FIELD_CONTACT_SHOW_LIST_LABEL"
+			description="COM_CONTACT_FIELD_CONTACT_SHOW_LIST_DESC"
 		>
 			<option value="">JGLOBAL_USE_GLOBAL</option>
 			<option value="0">JHIDE</option>
@@ -333,6 +357,7 @@
 				<option value="tabs">COM_CONTACT_FIELD_VALUE_TABS</option>
 				<option value="plain">COM_CONTACT_FIELD_VALUE_PLAIN</option>
 			</field>
+			
 			<field name="show_name"
 				type="list"
 				label="COM_CONTACT_FIELD_PARAMS_NAME_LABEL" description="COM_CONTACT_FIELD_PARAMS_NAME_DESC"
@@ -352,7 +377,7 @@
 			</field>
 
 			<field name="show_email" type="list"
-				label="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_LABEL"
+				label="JGLOBAL_EMAIL"
 				description="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_DESC"
 			>
 				<option value="">JGLOBAL_USE_GLOBAL</option>
@@ -574,11 +599,19 @@
 				class="inputbox"
 				size="30"
 			/>
+			<field
+				name="contact_layout"
+				type="componentlayout"
+				label="JFIELD_ALT_LAYOUT_LABEL"
+				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
+				extension="com_contact"
+				view="contact"
+				useglobal="true"
+				/>			
 		</fieldset>
 
 		<fieldset name="email"
-			label="COM_CONTACT_FIELDSET_CONTACT_FORM"
-			description="COM_CONTACT_EMAIL_FORM_DETAILS"
+			label="COM_CONTACT_FIELDSET_CONTACT_FORM"			
 		>
 
 			<field name="show_email_form" type="list"
@@ -640,8 +673,8 @@
 			<field name="redirect"
 				type="text"
 				size="30"
-				label="COM_CONTACT_FIELD_EMAIL_REDIRECT_LABEL"
-				description="COM_CONTACT_FIELD_EMAIL_REDIRECT_DESC" />
+				label="COM_CONTACT_FIELD_CONFIG_REDIRECT_LABEL"
+			description="COM_CONTACT_FIELD_CONFIG_REDIRECT_DESC" />
 		</fieldset>
 	</fields>
 	<fields name="metadata">

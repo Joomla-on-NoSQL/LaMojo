@@ -8,7 +8,6 @@
 			description ="JGLOBAL_FIELD_ID_DESC"
 			type="text"
 			default="0"
-			required="true"
 			readonly="true"
 			class="readonly" />
 
@@ -66,10 +65,6 @@
 			class="inputbox"
 			label="JFIELD_ORDERING_LABEL"
 			description="JFIELD_ORDERING_DESC" />
-
-		<field
-			name="params"
-			type="hidden" />
 
 	</fieldset>
 </form>

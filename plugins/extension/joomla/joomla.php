@@ -3,7 +3,7 @@
  * @version		$Id: weblinks.php 16731 2010-05-04 05:40:37Z eddieajau $
  * @package		Joomla.Plugin
  * @subpackage	Extension.Joomla
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -34,6 +34,20 @@ class plgExtensionJoomla extends JPlugin
 	private $installer = null;
 
 	/**
+	 * Constructor
+	 *
+	 * @access      protected
+	 * @param       object  $subject The object to observe
+	 * @param       array   $config  An array that holds the plugin configuration
+	 * @since       1.5
+	 */
+	public function __construct(& $subject, $config)
+	{
+		parent::__construct($subject, $config);
+		$this->loadLanguage();
+	}
+
+	/**
 	 * Adds an update site to the table if it doesn't exist.
 	 *
 	 * @param	string	The friendly name of the site
@@ -53,7 +67,8 @@ class plgExtensionJoomla extends JPlugin
 		$update_site_id = (int)$dbo->loadResult();
 
 		// if it doesn't exist, add it!
-		if (!$update_site_id) {
+		if (!$update_site_id) 
+		{
 			$query->clear();
 			$query->insert('#__update_sites');
 			$query->set('name = ' . $dbo->Quote($name));
@@ -61,21 +76,32 @@ class plgExtensionJoomla extends JPlugin
 			$query->set('location = '. $dbo->Quote($location));
 			$query->set('enabled = '. (int)$enabled);
 			$dbo->setQuery($query);
-			if ($dbo->query()) {
+			if ($dbo->query()) 
+			{
 				// link up this extension to the update site
 				$update_site_id = $dbo->insertid();
 			}
 		}
 
 		// check if it has an update site id (creation might have faileD)
-		if ($update_site_id) {
-			// link this extension to the relevant update site
+		if ($update_site_id) 
+		{
 			$query->clear();
-			$query->insert('#__update_sites_extensions');
-			$query->set('update_site_id = '. $update_site_id);
-			$query->set('extension_id = '. $this->eid);
+			// look for an update site entry that exists
+			$query->select('update_site_id')->from('#__update_sites_extensions');
+			$query->where('update_site_id = '. $update_site_id)->where('extension_id = '. $this->eid);
 			$dbo->setQuery($query);
-			$dbo->query();
+			$tmpid = (int)$dbo->loadResult();
+			if(!$tmpid)
+			{
+				// link this extension to the relevant update site
+				$query->clear();
+				$query->insert('#__update_sites_extensions');
+				$query->set('update_site_id = '. $update_site_id);
+				$query->set('extension_id = '. $this->eid);
+				$dbo->setQuery($query);
+				$dbo->query();
+			}
 		}
 	}
 

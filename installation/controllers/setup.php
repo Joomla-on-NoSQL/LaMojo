@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,9 +57,9 @@ class JInstallationControllerSetup extends JController
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
 
 				if (JError::isError($errors[$i])) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'notice');
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				} else {
-					$app->enqueueMessage($errors[$i], 'notice');
+					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
 
@@ -95,6 +95,9 @@ class JInstallationControllerSetup extends JController
 
 		// Check for validation errors.
 		if ($return === false) {
+			// Store the options in the session.
+			$vars = $model->storeOptions($data);
+
 			// Get the validation messages.
 			$errors	= $model->getErrors();
 
@@ -102,9 +105,9 @@ class JInstallationControllerSetup extends JController
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
 
 				if (JError::isError($errors[$i])) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'notice');
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				} else {
-					$app->enqueueMessage($errors[$i], 'notice');
+					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
 
@@ -165,9 +168,9 @@ class JInstallationControllerSetup extends JController
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
 
 				if (JError::isError($errors[$i])) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'notice');
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				} else {
-					$app->enqueueMessage($errors[$i], 'notice');
+					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
 
@@ -216,9 +219,9 @@ class JInstallationControllerSetup extends JController
 			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
 
 				if (JError::isError($errors[$i])) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'notice');
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
 				} else {
-					$app->enqueueMessage($errors[$i], 'notice');
+					$app->enqueueMessage($errors[$i], 'warning');
 				}
 			}
 

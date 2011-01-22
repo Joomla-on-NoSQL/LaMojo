@@ -2,12 +2,12 @@
 /**
  * @version $Id$
  * @package		Joomla.Framework
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 if (!defined('DS')) {
-	define('DS', '/');
+	define('DS', DIRECTORY_SEPARATOR);
 }
 
 spl_autoload_register(array('JLoader','load'));
@@ -36,7 +36,7 @@ abstract class JLoader
 		if (!isset(JLoader::$paths[$keyPath]))
 		{
 			if (!$base) {
-				$base = str_replace('\\','/',(dirname(__FILE__)));
+				$base = dirname(__FILE__);
 			}
 
 			$parts = explode('.', $filePath);
@@ -59,7 +59,7 @@ abstract class JLoader
 			{
 				// If we are loading a joomla class prepend the classname with a capital J.
 				$className = 'J'.$className;
-				$classes = JLoader::register($className, $base.'/'.$path.'.php');
+				$classes = JLoader::register($className, $base.DS.$path.'.php');
 				$rs = isset($classes[strtolower($className)]);
 			}
 			else
@@ -68,10 +68,10 @@ abstract class JLoader
 				// it uses our pattern for class names/files so just include
 				// if the file exists or set it to false if not
 
-				$filename = $base.'/'.$path.'.php';
+				$filename = $base.DS.$path.'.php';
 				if (is_file($filename))
 				{
-					$rs   = (bool) include $filename;
+					$rs   = (bool) include_once $filename;
 				}
 				else
 				{
@@ -129,7 +129,7 @@ abstract class JLoader
 
 		if (array_key_exists($class, JLoader::$classes))
 		{
-			include JLoader::$classes[$class];
+			include_once JLoader::$classes[$class];
 			return true;
 		}
 		return false;

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,11 +15,10 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 ?>
 <script type="text/javascript">
-<!--
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'banner.cancel' || document.formvalidator.isValid(document.id('banner-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('banner-form'));
 		}
 	}
 	window.addEvent('domready', function() {
@@ -39,10 +38,9 @@ JHtml::_('behavior.formvalidation');
 			document.id('jform_type1').fireEvent('click');
 		}
 	});
-// -->
 </script>
 
-<form action="<?php JRoute::_('index.php?option=com_banners'); ?>" method="post" name="adminForm" id="banner-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_banners&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="banner-form" class="form-validate">
 	<div class="col main-section">
 		<fieldset class="adminform">
 			<legend><?php echo empty($this->item->id) ? JText::_('COM_BANNERS_NEW_BANNER') : JText::sprintf('COM_BANNERS_BANNER_DETAILS', $this->item->id); ?></legend>
@@ -55,23 +53,24 @@ JHtml::_('behavior.formvalidation');
 
 				<li><?php echo $this->form->getLabel('access'); ?>
 				<?php echo $this->form->getInput('access'); ?></li>
-
+				
 				<li><?php echo $this->form->getLabel('catid'); ?>
 				<?php echo $this->form->getInput('catid'); ?></li>
 
 				<li><?php echo $this->form->getLabel('type'); ?>
 				<?php echo $this->form->getInput('type'); ?></li>
-
-				<li>
-				<div id="image">
-					<?php foreach($this->form->getFieldset('image') as $field): ?>
-						<?php if (!$field->hidden): ?>
-							<?php echo $field->label; ?>
-						<?php endif; ?>
-						<?php echo $field->input; ?>
-					<?php endforeach; ?>
-				</div>
-				</li>
+				
+				<li><?php echo $this->form->getLabel('state'); ?>
+				<?php echo $this->form->getInput('state'); ?></li>
+				
+				<?php foreach($this->form->getFieldset('image') as $field): ?>
+					<li>
+					<?php if (!$field->hidden): ?>
+						<?php echo $field->label; ?>
+					<?php endif; ?>
+					<?php echo $field->input; ?>
+					</li>
+				<?php endforeach; ?>
 
 				<li><div id="custom">
 					<?php echo $this->form->getLabel('custombannercode'); ?>
@@ -88,7 +87,8 @@ JHtml::_('behavior.formvalidation');
 				<li><?php echo $this->form->getLabel('description'); ?>
 				<?php echo $this->form->getInput('description'); ?></li>
 
-
+				<li><?php echo $this->form->getLabel('state'); ?>
+				<?php echo $this->form->getInput('state'); ?></li>
 
 				<li><?php echo $this->form->getLabel('language'); ?>
 				<?php echo $this->form->getInput('language'); ?></li>

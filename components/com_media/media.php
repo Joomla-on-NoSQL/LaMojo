@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	Massmail
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,35 +11,40 @@
 defined('_JEXEC') or die;
 
 $params = JComponentHelper::getParams('com_media');
-$ranks = array('publisher', 'editor', 'author', 'registered');
-$acl = JFactory::getACL();
-
-// TODO: Fix this ACL call
-		//for($i = 0; $i < $params->get('allowed_media_usergroup', 3); $i++)
-		//{
-		//	$acl->addACL('com_media', 'popup', 'users', $ranks[$i]);
-		//}
-
 // Make sure the user is authorized to view this page
 $user = JFactory::getUser();
-$app	= JFactory::getApplication();
-if (!$user->authorise('com_media', 'popup')) {
-	$app->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'));
+$asset = JRequest::getCmd('asset');
+$author = JRequest::getCmd('author');
+if (!$asset or
+		!$user->authorise('core.edit', $asset)
+	&&	!$user->authorise('core.create', $asset)
+	&&	!($user->id==$author && $user->authorise('core.edit.own', $asset)))
+{
+	return JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
 // Set the path definitions
 define('COM_MEDIA_BASE',	JPATH_ROOT.'/'.$params->get('image_path', 'images'));
 define('COM_MEDIA_BASEURL', JURI::root().'/'.$params->get('image_path', 'images'));
 
+$lang = JFactory::getLanguage();
+	$lang->load($option, JPATH_ADMINISTRATOR, null, false, false)
+||	$lang->load($option, JPATH_COMPONENT_ADMINISTRATOR, null, false, false)
+||	$lang->load($option, JPATH_ADMINISTRATOR, $lang->getDefault(), false, false)
+||	$lang->load($option, JPATH_COMPONENT_ADMINISTRATOR, $lang->getDefault(), false, false);
+
 // Load the admin HTML view
-require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/media.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'media.php';
 
 // Require the base controller
 require_once JPATH_COMPONENT.'/controller.php';
 
-$cmd = JRequest::getCmd('task', null);
-if (strpos($cmd, '.') != false)
-{
+// Make sure the user is authorized to view this page
+$user	= JFactory::getUser();
+$app	= JFactory::getApplication();
+$cmd	= JRequest::getCmd('task', null);
+
+if (strpos($cmd, '.') != false) {
 	// We have a defined controller/task pair -- lets split them out
 	list($controllerName, $task) = explode('.', $cmd);
 
@@ -50,21 +55,24 @@ if (strpos($cmd, '.') != false)
 	// If the controller file path exists, include it ... else lets die with a 500 error
 	if (file_exists($controllerPath)) {
 		require_once $controllerPath;
-	} else {
+	}
+	else {
 		JError::raiseError(500, 'JERROR_INVALID_CONTROLLER');
 	}
 }
-else
-{
+else {
 	// Base controller, just set the task :)
 	$controllerName = null;
 	$task = $cmd;
 }
+
 // Set the name for the controller and instantiate it
 $controllerClass = 'MediaController'.ucfirst($controllerName);
+
 if (class_exists($controllerClass)) {
 	$controller = new $controllerClass();
-} else {
+}
+else {
 	JError::raiseError(500, 'JERROR_INVALID_CONTROLLER_CLASS');
 }
 

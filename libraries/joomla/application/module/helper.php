@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -90,7 +90,7 @@ abstract class JModuleHelper
 		}
 		if (count($result) == 0)
 		{
-			if ($app->getCfg('debug_modules') && JRequest::getBool('tp'))
+			if (JRequest::getBool('tp') && JComponentHelper::getParams('com_templates')->get('template_positions_display'))
 			{
 				$result[0] = JModuleHelper::getModule('mod_'.$position);
 				$result[0]->title = $position;
@@ -151,9 +151,9 @@ abstract class JModuleHelper
 			// 1.5 or Core then
 			// 1.6 3PD
 				$lang->load($module->module, JPATH_BASE, null, false, false)
-			||	$lang->load($module->module, JPATH::dirname($path), null, false, false)
+			||	$lang->load($module->module, dirname($path), null, false, false)
 			||	$lang->load($module->module, JPATH_BASE, $lang->getDefault(), false, false)
-			||	$lang->load($module->module, JPATH::dirname($path), $lang->getDefault(), false, false);
+			||	$lang->load($module->module, dirname($path), $lang->getDefault(), false, false);
 
 
 
@@ -170,8 +170,8 @@ abstract class JModuleHelper
 			$chrome = array();
 		}
 
-		require_once JPATH_BASE.'/templates/system/html/modules.php';
-		$chromePath = JPATH_BASE.'/templates/'.$app->getTemplate().'/html/modules.php';
+		require_once JPATH_THEMES.'/system/html/modules.php';
+		$chromePath = JPATH_THEMES.'/'.$app->getTemplate().'/html/modules.php';
 		if (!isset($chrome[$chromePath]))
 		{
 			if (file_exists($chromePath)) {
@@ -186,7 +186,7 @@ abstract class JModuleHelper
 		}
 
 		//dynamically add outline style
-		if ($app->getCfg('debug_modules') && JRequest::getBool('tp')) {
+		if (JRequest::getBool('tp') && JComponentHelper::getParams('com_templates')->get('template_positions_display')) {
 			$attribs['style'] .= ' outline';
 		}
 
@@ -216,17 +216,26 @@ abstract class JModuleHelper
 	 *
 	 * @static
 	 * @param	string	$module	The name of the module
-	 * @param	string	$layout	The name of the module layout
+	 * @param	string	$layout	The name of the module layout. If alternative layout, in the form template:filename.
 	 * @return	string	The path to the module layout
 	 * @since	1.5
 	 */
 	public static function getLayoutPath($module, $layout = 'default')
 	{
-		$app = JFactory::getApplication();
+		$template = JFactory::getApplication()->getTemplate();
+		$defaultLayout = $layout;
+		if (strpos($layout, ':') !== false )
+		{
+			// Get the template and file name from the string
+			$temp = explode(':', $layout);
+			$template = ($temp[0] == '_') ? $template : $temp[0];
+			$layout = $temp[1];
+			$defaultLayout = ($temp[1]) ? $temp[1] : 'default';
+		}
 
 		// Build the template and base path for the layout
-		$tPath = JPATH_BASE.'/templates/'.$app->getTemplate().'/html/'.$module.'/'.$layout.'.php';
-		$bPath = JPATH_BASE.'/modules/'.$module.'/tmpl/'.$layout.'.php';
+		$tPath = JPATH_THEMES.'/'.$template.'/html/'.$module.'/'.$layout.'.php';
+		$bPath = JPATH_BASE.'/modules/'.$module.'/tmpl/'.$defaultLayout.'.php';
 
 		// If the template has a layout override use it
 		if (file_exists($tPath)) {
@@ -250,99 +259,96 @@ abstract class JModuleHelper
 			return $clean;
 		}
 
-		$Itemid = JRequest::getInt('Itemid');
-		$app	= JFactory::getApplication();
-		$user	= JFactory::getUser();
-		$groups	= implode(',', $user->authorisedLevels());
-		$db		= JFactory::getDbo();
+		$Itemid 	= JRequest::getInt('Itemid');
+		$app		= JFactory::getApplication();
+		$user		= JFactory::getUser();
+		$groups		= implode(',', $user->getAuthorisedViewLevels());
+		$lang 		= JFactory::getLanguage()->getTag();
+		$clientId 	= (int) $app->getClientId();
 
-		$query = new JDatabaseQuery;
-		$query->select('id, title, module, position, content, showtitle, params, mm.menuid');
-		$query->from('#__modules AS m');
-		$query->join('LEFT','#__modules_menu AS mm ON mm.moduleid = m.id');
-		$query->where('m.published = 1');
+		$cache 		= JFactory::getCache ('com_modules', '');
+		$cacheid 	= md5(serialize(array($Itemid, $groups, $clientId, $lang)));
 
-		$date = JFactory::getDate();
-		$now = $date->toMySQL();
-		$nullDate = $db->getNullDate();
-		$query->where('(m.publish_up = '.$db->Quote($nullDate).' OR m.publish_up <= '.$db->Quote($now).')');
-		$query->where('(m.publish_down = '.$db->Quote($nullDate).' OR m.publish_down >= '.$db->Quote($now).')');
+		if (!($clean = $cache->get($cacheid))) {
+			$db	= JFactory::getDbo();
 
-		$clientid = (int) $app->getClientId();
+			$query = new JDatabaseQuery;
+			$query->select('id, title, module, position, content, showtitle, params, mm.menuid');
+			$query->from('#__modules AS m');
+			$query->join('LEFT','#__modules_menu AS mm ON mm.moduleid = m.id');
+			$query->where('m.published = 1');
 
-		if (!$user->authorise('core.admin',1)) {
+			$date = JFactory::getDate();
+			$now = $date->toMySQL();
+			$nullDate = $db->getNullDate();
+			$query->where('(m.publish_up = '.$db->Quote($nullDate).' OR m.publish_up <= '.$db->Quote($now).')');
+			$query->where('(m.publish_down = '.$db->Quote($nullDate).' OR m.publish_down >= '.$db->Quote($now).')');
+
 			$query->where('m.access IN ('.$groups.')');
-		}
-		$query->where('m.client_id = '. $clientid);
-		if (isset($Itemid)) {
+			$query->where('m.client_id = '. $clientId);
 			$query->where('(mm.menuid = '. (int) $Itemid .' OR mm.menuid <= 0)');
-		}
-		$query->order('position, ordering');
 
-		// Filter by language
-		if ($app->isSite() && $app->getLanguageFilter()) {
-			$query->where('m.language in (' . $db->Quote(JFactory::getLanguage()->getTag()) . ',' . $db->Quote('*') . ')');
-		}
+			// Filter by language
+			if ($app->isSite() && $app->getLanguageFilter()) {
+				$query->where('m.language IN (' . $db->Quote($lang) . ',' . $db->Quote('*') . ')');
+			}
 
-		// Set the query
-		$db->setQuery($query);
+			$query->order('position, ordering');
 
-		$cache 		= JFactory::getCache ('com_modules', 'callback');
-		$cacheid 	= md5(serialize(array($Itemid, $groups, $clientid, JFactory::getLanguage()->getTag())));
+			// Set the query
+			$db->setQuery($query);
+			if (!($modules = $db->loadObjectList())) {
+				JError::raiseWarning(500, JText::sprintf('JLIB_APPLICATION_ERROR_MODULE_LOAD', $db->getErrorMsg()));
+				return false;
+			}
 
-		$modules = $cache->get(array($db, 'loadObjectList'), null, $cacheid, false);
-		if (null === $modules)
-		{
-			JError::raiseWarning('SOME_ERROR_CODE', JText::sprintf('JLIB_APPLICATION_ERROR_MODULE_LOAD', $db->getErrorMsg()));
-			$return = false;
-			return $return;
-		}
-
-		// Apply negative selections and eliminate duplicates
-		$negId	= $Itemid ? -(int)$Itemid : false;
-		$dupes	= array();
-		$clean	= array();
-		for ($i = 0, $n = count($modules); $i < $n; $i++)
-		{
-			$module = &$modules[$i];
-
-			// The module is excluded if there is an explicit prohibition, or if
-			// the Itemid is missing or zero and the module is in exclude mode.
-			$negHit	= ($negId === (int) $module->menuid)
-					|| (!$negId && (int)$module->menuid < 0);
-
-			if (isset($dupes[$module->id]))
+			// Apply negative selections and eliminate duplicates
+			$negId	= $Itemid ? -(int)$Itemid : false;
+			$dupes	= array();
+			$clean	= array();
+			for ($i = 0, $n = count($modules); $i < $n; $i++)
 			{
-				// If this item has been excluded, keep the duplicate flag set,
-				// but remove any item from the cleaned array.
-				if ($negHit) {
-					unset($clean[$module->id]);
+				$module = &$modules[$i];
+
+				// The module is excluded if there is an explicit prohibition, or if
+				// the Itemid is missing or zero and the module is in exclude mode.
+				$negHit	= ($negId === (int) $module->menuid)
+						|| (!$negId && (int)$module->menuid < 0);
+
+				if (isset($dupes[$module->id]))
+				{
+					// If this item has been excluded, keep the duplicate flag set,
+					// but remove any item from the cleaned array.
+					if ($negHit) {
+						unset($clean[$module->id]);
+					}
+					continue;
 				}
-				continue;
-			}
-			$dupes[$module->id] = true;
+				$dupes[$module->id] = true;
 
-			// Only accept modules without explicit exclusions.
-			if (!$negHit)
-			{
-				//determine if this is a custom module
-				$file				= $module->module;
-				$custom				= substr($file, 0, 4) == 'mod_' ?  0 : 1;
-				$module->user		= $custom;
-				// Custom module name is given by the title field, otherwise strip off "com_"
-				$module->name		= $custom ? $module->title : substr($file, 4);
-				$module->style		= null;
-				$module->position	= strtolower($module->position);
-				$clean[$module->id]	= $module;
+				// Only accept modules without explicit exclusions.
+				if (!$negHit)
+				{
+					//determine if this is a custom module
+					$file				= $module->module;
+					$custom				= substr($file, 0, 4) == 'mod_' ?  0 : 1;
+					$module->user		= $custom;
+					// Custom module name is given by the title field, otherwise strip off "com_"
+					$module->name		= $custom ? $module->title : substr($file, 4);
+					$module->style		= null;
+					$module->position	= strtolower($module->position);
+					$clean[$module->id]	= $module;
+				}
 			}
+			unset($dupes);
+			// Return to simple indexing that matches the query order.
+			$clean = array_values($clean);
+
+			$cache->store($clean, $cacheid);
 		}
-		unset($dupes);
-		// Return to simple indexing that matches the query order.
-		$clean = array_values($clean);
 
 		return $clean;
 	}
-
 
 	/**
 	* Module cache helper
@@ -364,7 +370,7 @@ abstract class JModuleHelper
 	*
 	* @since	1.6
 	*/
-	public static function ModuleCache($module, $moduleparams, $cacheparams)
+	public static function moduleCache($module, $moduleparams, $cacheparams)
 	{
 		if(!isset ($cacheparams->modeparams)) {
 			$cacheparams->modeparams=null;
@@ -374,17 +380,13 @@ abstract class JModuleHelper
 			$cacheparams->cachegroup = $module->module;
 		}
 
-		if (!is_array($cacheparams->methodparams)) {
-			$cacheparams->methodparams = array($cacheparams->methodparams);
-		}
-
 		$user = JFactory::getUser();
 		$cache = JFactory::getCache($cacheparams->cachegroup, 'callback');
 		$conf = JFactory::getConfig();
 
 		// turn cache off for internal callers if parameters are set to off and for all loged in users
-		if($moduleparams->get('owncache', null) == 0  || $conf->get('caching') == 0 || $user->get('id')) {
-			$cache->setCaching = false;
+		if($moduleparams->get('owncache', null) === 0  || $conf->get('caching') == 0 || $user->get('id')) {
+			$cache->setCaching(false);
 		}
 
 		$cache->setLifeTime($moduleparams->get('cache_time', $conf->get('cachetime') * 60));

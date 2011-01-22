@@ -68,6 +68,10 @@ class JStringTest extends PHPUnit_Framework_TestCase
 		return JStringTest_DataSet::$strcasecmpTests;
 	}
 
+	static public function strcmpData() {
+		return JStringTest_DataSet::$strcmpTests;
+	}
+
 	static public function strcspnData() {
 		return JStringTest_DataSet::$strcspnTests;
 	}
@@ -210,9 +214,28 @@ class JStringTest extends PHPUnit_Framework_TestCase
 	 * @covers JString::strcasecmp
 	 * @dataProvider strcasecmpData
 	 */
-	public function testStrcasecmp($string1, $string2, $expect)
+	public function testStrcasecmp($string1, $string2, $locale, $expect)
 	{
-		$actual = JString::strcasecmp ($string1, $string2);
+		if (substr(php_uname(), 0, 6) != 'Darwin') {
+			$actual = JString::strcasecmp ($string1, $string2, $locale);
+			if ($actual != 0) {
+				$actual = $actual/abs($actual);
+			}
+			$this->assertEquals($expect, $actual);
+		}
+	}
+
+	/**
+	 * @group String
+	 * @covers JString::strcmp
+	 * @dataProvider strcmpData
+	 */
+	public function testStrcmp($string1, $string2, $locale, $expect)
+	{
+		$actual = JString::strcmp ($string1, $string2, $locale);
+		if ($actual != 0) {
+			$actual = $actual/abs($actual);
+		}
 		$this->assertEquals($expect, $actual);
 	}
 
@@ -372,6 +395,31 @@ class JStringTest extends PHPUnit_Framework_TestCase
 	{
 		$actual = JString::compliant ($string);
 		$this->assertEquals($expect, $actual);
+	}
+
+	/**
+	 * @group String
+	 * @covers JString::parse_url
+	 */
+	public function testParse_Url() {
+		$url = 'http://localhost/joomla_development/j16_trunk/administrator/index.php?option=com_contact&view=contact&layout=edit&id=5';
+		$expected = parse_url($url);
+		$actual = JString::parse_url($url);
+		$this->assertEquals($expected, $actual, 'Line: ' . __LINE__ . ' Results should be equal');
+
+		$url = 'http://joomla.org/mytestpath/È';
+		$expected = parse_url($url);
+		// Fix up path for UTF-8 characters
+		$expected['path'] = '/mytestpath/È';
+		$actual = JString::parse_url($url);
+		$this->assertEquals($expected, $actual, 'Line: ' . __LINE__ . ' Results should be equal');
+
+		// Test special characters in URL
+		$url = 'http://mydomain.com/!*\'();:@&=+$,/?%#[]';
+		$expected = parse_url($url);
+		$actual = JString::parse_url($url);
+		$this->assertEquals($expected, $actual, 'Line: ' . __LINE__ . ' Results should be equal');
+
 	}
 }
 ?>

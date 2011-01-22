@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -191,7 +191,7 @@ abstract class JModel extends JObject
 		if (array_key_exists('table_path', $config)) {
 			$this->addTablePath($config['table_path']);
 		} else if (defined('JPATH_COMPONENT_ADMINISTRATOR')){
-			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR.'/tables');
+			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'tables');
 		}
 
 		// set the internal state marker - used to ignore setting state from the request

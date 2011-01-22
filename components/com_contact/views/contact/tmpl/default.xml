@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-	<layout title="COM_CONTACT_VIEW_DEFAULT_TITLE">
+	<layout title="COM_CONTACT_CONTACT_VIEW_DEFAULT_TITLE" option="COM_CONTACT_CONTACT_VIEW_DEFAULT_OPTION">
 		<help
 			key = "JHELP_MENUS_MENU_ITEM_CONTACT_SINGLE_CONTACT"
 		/>
@@ -85,7 +85,7 @@
 			<field name="show_email"
 				type="list"
 				description="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_DESC"
-				label="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_LABEL"
+				label="JGLOBAL_EMAIL"
 			>
 				<option value="">JGLOBAL_USE_GLOBAL</option>
 				<option value="0">JHIDE</option>

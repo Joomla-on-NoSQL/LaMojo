@@ -10,7 +10,6 @@
 			description ="JGLOBAL_FIELD_ID_DESC"
 			default="0"
 			filter="int"
-			required="true"
 			readonly="true"/>
 
 		<field
@@ -54,6 +53,7 @@
 			description="COM_MENUS_ITEM_FIELD_ASSIGNED_DESC"
 			class="inputbox"
 			required="true"
+			onchange="javascript:Joomla.submitbutton('item.setMenuType',this.value);"
 			size="1" />
 
 		<field
@@ -92,10 +92,13 @@
 			type="menuparent"
 			label="COM_MENUS_ITEM_FIELD_PARENT_LABEL"
 			description="COM_MENUS_ITEM_FIELD_PARENT_DESC"
-			default="MENU_ITEM_ROOT"
+			default="1"
 			filter="int"
 			class="inputbox"
-			size="1"/>
+			size="1">
+			<option
+				value="1">COM_MENUS_ITEM_ROOT</option>
+		</field>
 
 		<field
 			name="component_id"

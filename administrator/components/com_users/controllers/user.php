@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -28,12 +28,36 @@ class UsersControllerUser extends JControllerForm
 	protected $text_prefix = 'COM_USERS_USER';
 
 	/**
+	 * Overrides JControllerForm::allowEdit
+	 *
+	 * Checks that non-Super Admins are not editing Super Admins.
+	 *
+	 * @param	array	An array of input data.
+	 * @param	string	The name of the key for the primary key.
+	 *
+	 * @return	boolean
+	 * @since	1.6
+	 */
+	protected function allowEdit($data = array(), $key = 'id')
+	{
+		// Check if this person is a Super Admin
+		if (JAccess::check($data[$key], 'core.admin')) {
+			// If I'm not a Super Admin, then disallow the edit.
+			if (!JFactory::getUser()->authorise('core.admin')) {
+				return false;
+			}
+		}
+
+		return parent::allowEdit($data, $key);
+	}
+
+	/**
 	 * Overrides parent save method to check the submitted passwords match.
 	 *
 	 * @return	mixed	Boolean or JError.
 	 * @since	1.6
 	 */
-	public function save()
+	public function save($key = null, $urlVar = null)
 	{
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
 
@@ -43,7 +67,6 @@ class UsersControllerUser extends JControllerForm
 			if ($data['password'] != $data['password2']) {
 				$this->setMessage(JText::_('JLIB_USER_ERROR_PASSWORD_NOT_MATCH'), 'warning');
 				$this->setRedirect(JRoute::_('index.php?option=com_users&view=user&layout=edit', false));
-				return false;
 			}
 
 			unset($data['password2']);

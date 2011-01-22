@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -21,12 +21,11 @@ class JTableUsergroup extends JTable
 	/**
 	 * Constructor
 	 *
-	 * @access	public
 	 * @param	object	Database object
 	 * @return	void
 	 * @since	1.0
 	 */
-	function __construct(&$db)
+	public function __construct(&$db)
 	{
 		parent::__construct('#__usergroups', 'id', $db);
 	}
@@ -34,15 +33,30 @@ class JTableUsergroup extends JTable
 	/**
 	 * Method to check the current record to save
 	 *
-	 * @access	public
 	 * @return	boolean	True on success
-	 * @since	1.0
+	 * @since	1.6
 	 */
-	function check()
+	public function check()
 	{
 		// Validate the title.
 		if ((trim($this->title)) == '') {
 			$this->setError(JText::_('JLIB_DATABASE_ERROR_USERGROUP_TITLE'));
+			return false;
+		}
+
+		// Check for a duplicate parent_id, title.
+		// There is a unique index on the (parend_id, title) field in the table.
+		$db = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select('COUNT(title)')
+			->from($this->_tbl)
+			->where('title = '.$db->quote(trim($this->title)))
+			->where('parent_id = '.(int) $this->parent_id)
+			->where('id <> '.(int) $this->id);
+		$db->setQuery($query);
+
+		if ($db->loadResult() > 0) {
+			$this->setError(JText::_('JLIB_DATABASE_ERROR_USERGROUP_TITLE_EXISTS'));
 			return false;
 		}
 
@@ -52,13 +66,13 @@ class JTableUsergroup extends JTable
 	/**
 	 * Method to recursively rebuild the nested set tree.
 	 *
-	 * @access	public
 	 * @param	integer	The root of the tree to rebuild.
 	 * @param	integer	The left id to start with in building the tree.
+	 *
 	 * @return	boolean	True on success
-	 * @since	1.0
+	 * @since	1.6
 	 */
-	function rebuild($parent_id = 0, $left = 0)
+	public function rebuild($parent_id = 0, $left = 0)
 	{
 		// get the database object
 		$db = &$this->_db;
@@ -105,14 +119,14 @@ class JTableUsergroup extends JTable
 	/**
 	 * Inserts a new row if id is zero or updates an existing row in the database table
 	 *
-	 * @access	public
-	 * @param	boolean		If false, null object variables are not updated
-	 * @return	boolean		True successful, false otherwise and an internal error message is set`
+	 * @param	boolean		$updateNulls	If false, null object variables are not updated
+	 *
+	 * @return	boolean		True successful, false otherwise and an internal error message is set
+	 * @since	1.6
 	 */
 	function store($updateNulls = false)
 	{
-		if ($result = parent::store($updateNulls))
-		{
+		if ($result = parent::store($updateNulls)) {
 			// Rebuild the nested set tree.
 			$this->rebuild();
 		}
@@ -122,6 +136,11 @@ class JTableUsergroup extends JTable
 
 	/**
 	 * Delete this object and it's dependancies
+	 *
+	 * @param	int		$oid	The primary key of the user group to delete.
+	 *
+	 * @return	mixed	Boolean or Exception.
+	 * @since	1.6
 	 */
 	function delete($oid = null)
 	{
@@ -168,12 +187,14 @@ class JTableUsergroup extends JTable
 
 		// Delete the usergroup in view levels
 		$replace = array();
-		foreach ($ids as $id) {
+		foreach ($ids as $id)
+		{
 			$replace []= ','.$db->quote("[$id,").','.$db->quote("[").')';
 			$replace []= ','.$db->quote(",$id,").','.$db->quote(",").')';
 			$replace []= ','.$db->quote(",$id]").','.$db->quote("]").')';
 			$replace []= ','.$db->quote("[$id]").','.$db->quote("[]").')';
 		}
+
 		$query = $db->getQuery(true);
 		$query->set('rules='.str_repeat('replace(',4*count($ids)).'rules'.implode('',$replace));
 		$query->update('#__viewlevels');

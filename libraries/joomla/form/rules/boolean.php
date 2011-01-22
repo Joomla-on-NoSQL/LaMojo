@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -26,7 +26,7 @@ class JFormRuleBoolean extends JFormRule
 	 * @var		string
 	 * @since	1.6
 	 */
-	protected $regex = '^0|1|true|false$';
+	protected $regex = '^(?:[01]|true|false)$'; 
 
 	/**
 	 * The regular expression modifiers to use when testing a form field value.

@@ -3,7 +3,7 @@
  * @version		$Id:storage.php 6961 2007-03-15 16:06:53Z tcp $
  * @package		Joomla.Framework
  * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -39,7 +39,7 @@ class JCacheController
 	public function __construct($options)
 	{
 		$this->cache 	= new JCache($options);
-		$this->options 	= $this->cache->_options;
+		$this->options 	= & $this->cache->_options;
 
 		// Overwrite default options with given options
 		foreach ($options AS $option=>$value) {
@@ -67,7 +67,7 @@ class JCacheController
 	 */
 	public static function getInstance($type = 'output', $options = array())
 	{
-		JCacheController::addIncludePath(JPATH_LIBRARIES.'/joomla/cache/controller');
+		JCacheController::addIncludePath(JPATH_LIBRARIES.DS.'joomla'.DS.'cache'.DS.'controller');
 
 		$type = strtolower(preg_replace('/[^A-Z0-9_\.-]/i', '', $type));
 
@@ -95,9 +95,8 @@ class JCacheController
 	 * @since	1.6
 	 */
 	public function setCaching($enabled)
-	{
-		$this->options['caching'] = (bool) $enabled;
-		$this->cache->setCaching($enabled);
+	{	
+		$this->cache->setCaching($enabled);	
 	}
 
 	/**

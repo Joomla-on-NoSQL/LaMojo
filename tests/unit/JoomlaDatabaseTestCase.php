@@ -4,7 +4,7 @@
  *
  * @version		$Id$
  * @package	Joomla.UnitTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -207,7 +207,7 @@ abstract class JoomlaDatabaseTestCase extends PHPUnit_Extensions_Database_TestCa
 		}
 
 		$options = array (
-			'driver' => isset ($config) ? $config->dbtype : 'mysql',
+			'driver' => ((isset ($config)) && ($config->dbtype != 'mysqli')) ? $config->dbtype : 'mysql',
 			'host' => isset ($config) ? $config->host : '127.0.0.1',
 			'user' => isset ($config) ? $config->user : 'utuser',
 			'password' => isset ($config) ? $config->password : 'ut1234',

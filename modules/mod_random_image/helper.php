@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_random_image
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 class modRandomImageHelper
 {
-	function getRandomImage(&$params, $images)
+	static function getRandomImage(&$params, $images)
 	{
 		$width	= $params->get('width');
 		$height	= $params->get('height');
@@ -20,7 +20,7 @@ class modRandomImageHelper
 		$i			= count($images);
 		$random		= mt_rand(0, $i - 1);
 		$image		= $images[$random];
-		$size		= getimagesize (JPATH_BASE.'/'.$image->folder .'/'. $image->name);
+		$size		= getimagesize (JPATH_BASE.DS.$image->folder .DS. $image->name);
 
 
 		if ($width == '') {
@@ -50,14 +50,14 @@ class modRandomImageHelper
 		return $image;
 	}
 
-	function getImages(&$params, $folder)
+	static function getImages(&$params, $folder)
 	{
 		$type		= $params->get('type', 'jpg');
 
 		$files	= array();
 		$images	= array();
 
-		$dir = JPATH_BASE.'/'.$folder;
+		$dir = JPATH_BASE.DS.$folder;
 
 		// check if directory exists
 		if (is_dir($dir))
@@ -74,9 +74,11 @@ class modRandomImageHelper
 			$i = 0;
 			foreach ($files as $img)
 			{
-				if (!is_dir($dir .'/'. $img))
+				if (!is_dir($dir .DS. $img))
 				{
 					if (preg_match('/'.$type.'/', $img)) {
+						$images[$i] = new stdClass;
+						
 						$images[$i]->name	= $img;
 						$images[$i]->folder	= $folder;
 						$i++;
@@ -88,7 +90,7 @@ class modRandomImageHelper
 		return $images;
 	}
 
-	function getFolder(&$params)
+	static function getFolder(&$params)
 	{
 		$folder	= $params->get('folder');
 

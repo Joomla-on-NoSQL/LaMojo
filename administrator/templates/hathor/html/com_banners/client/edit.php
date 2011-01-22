@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,19 +13,18 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
+$canDo	= BannersHelper::getActions();
 ?>
 <script type="text/javascript">
-<!--
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'client.cancel' || document.formvalidator.isValid(document.id('client-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('client-form'));
 		}
 	}
-// -->
 </script>
 
-<form action="<?php JRoute::_('index.php?option=com_banners'); ?>" method="post" name="adminForm" id="client-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_banners&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="client-form" class="form-validate">
 
 <div class="col main-section">
 	<fieldset class="adminform">
@@ -40,9 +39,11 @@ JHtml::_('behavior.formvalidation');
 				<li><?php echo $this->form->getLabel('email'); ?>
 				<?php echo $this->form->getInput('email'); ?></li>
 
-				<li><?php echo $this->form->getLabel('state'); ?>
-				<?php echo $this->form->getInput('state'); ?></li>
-
+				<?php if ($canDo->get('core.edit.state')) { ?>
+					<li><?php echo $this->form->getLabel('state'); ?>
+					<?php echo $this->form->getInput('state'); ?></li>
+				<?php }?>	
+				
 				<li><?php echo $this->form->getLabel('purchase_type'); ?>
 				<?php echo $this->form->getInput('purchase_type'); ?></li>
 
@@ -59,7 +60,7 @@ JHtml::_('behavior.formvalidation');
 	</fieldset>
 </div>
 
-<div class="col options-sections">
+<div class="col options-section">
 	<?php echo JHtml::_('sliders.start','banner-client-sliders-'.$this->item->id, array('useCookie'=>1)); ?>
 
 	<?php echo JHtml::_('sliders.panel',JText::_('JGLOBAL_FIELDSET_METADATA_OPTIONS'), 'metadata'); ?>
@@ -78,7 +79,7 @@ JHtml::_('behavior.formvalidation');
 		</fieldset>
 
 	<?php echo JHtml::_('sliders.panel',JText::_('COM_BANNERS_EXTRA'), 'extra'); ?>
-		<fieldset class="adminform">
+		<fieldset class="panelform">
 		<legend class="element-invisible"><?php echo JText::_('COM_BANNERS_EXTRA'); ?></legend>
 		<ul class="adminformlist">
 			<?php foreach($this->form->getFieldset('extra') as $field): ?>

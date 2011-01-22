@@ -3,12 +3,13 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_media
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('_JEXEC') or die;
+$user = JFactory::getUser();
 ?>
 		<tr>
 			<td class="imgTotal">
@@ -20,5 +21,7 @@ defined('_JEXEC') or die;
 			</td>
 			<td>&#160;</td>
 			<td>&#160;</td>
+		<?php if ($user->authorise('core.delete','com_media')):?>
 			<td>&#160;</td>
+		<?php endif;?>
 		</tr>

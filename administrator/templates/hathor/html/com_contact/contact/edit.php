@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -16,21 +16,19 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 ?>
 <script type="text/javascript">
-<!--
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'contact.cancel' || document.formvalidator.isValid(document.id('contact-form'))) {
 			<?php echo $this->form->getField('misc')->save(); ?>
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('contact-form'));
 		}
 		else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
-// -->
 </script>
 
-<form action="<?php JRoute::_('index.php?option=com_contact'); ?>" method="post" name="adminForm" id="contact-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_contact&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="contact-form" class="form-validate">
 	<div class="col main-section">
 		<fieldset class="adminform">
 			<legend><?php echo empty($this->item->id) ? JText::_('COM_CONTACT_NEW_CONTACT') : JText::sprintf('COM_CONTACT_EDIT_CONTACT', $this->item->id); ?></legend>
@@ -52,13 +50,13 @@ JHtml::_('behavior.formvalidation');
 
 			<li><?php echo $this->form->getLabel('catid'); ?>
 			<?php echo $this->form->getInput('catid'); ?></li>
-
+			
 			<li><?php echo $this->form->getLabel('ordering'); ?>
 			<?php echo $this->form->getInput('ordering'); ?></li>
 
 			<li><?php echo $this->form->getLabel('language'); ?>
 			<?php echo $this->form->getInput('language'); ?></li>
-
+			
 			<li><?php echo $this->form->getLabel('featured'); ?>
 			<?php echo $this->form->getInput('featured'); ?></li>
 
@@ -71,10 +69,41 @@ JHtml::_('behavior.formvalidation');
 			<?php echo $this->form->getInput('misc'); ?>
 		</fieldset>
 	</div>
-
-	<div class="col options-section">
+    <div class="col options-section">
 		<?php echo  JHtml::_('sliders.start', 'contact-slider'); ?>
+			<?php echo JHtml::_('sliders.panel',JText::_('JGLOBAL_FIELDSET_PUBLISHING'), 'publishing-details'); ?>
+
+			<fieldset class="panelform">
+			<legend class="element-invisible"><?php echo JText::_('JGLOBAL_FIELDSET_PUBLISHING'); ?></legend>
+				<ul class="adminformlist">
+				
+					<li><?php echo $this->form->getLabel('created_by'); ?>
+					<?php echo $this->form->getInput('created_by'); ?></li>
+
+					<li><?php echo $this->form->getLabel('created_by_alias'); ?>
+					<?php echo $this->form->getInput('created_by_alias'); ?></li>
+
+					<li><?php echo $this->form->getLabel('created'); ?>
+					<?php echo $this->form->getInput('created'); ?></li>
+
+					<li><?php echo $this->form->getLabel('publish_up'); ?>
+					<?php echo $this->form->getInput('publish_up'); ?></li>
+
+					<li><?php echo $this->form->getLabel('publish_down'); ?>
+					<?php echo $this->form->getInput('publish_down'); ?></li>
+
+					<?php if ($this->item->modified_by) : ?>
+						<li><?php echo $this->form->getLabel('modified_by'); ?>
+						<?php echo $this->form->getInput('modified_by'); ?></li>
+
+						<li><?php echo $this->form->getLabel('modified'); ?>
+						<?php echo $this->form->getInput('modified'); ?></li>
+					<?php endif; ?>
+					
+				</ul>
+			</fieldset>		
 			<?php echo JHtml::_('sliders.panel',JText::_('COM_CONTACT_CONTACT_DETAILS'), 'basic-options'); ?>
+	
 			<fieldset class="panelform">
 			<legend class="element-invisible"><?php echo JText::_('COM_CONTACT_CONTACT_DETAILS'); ?></legend>
 				<p><?php echo empty($this->item->id) ? JText::_('COM_CONTACT_DETAILS') : JText::sprintf('COM_CONTACT_EDIT_DETAILS', $this->item->id); ?></p>

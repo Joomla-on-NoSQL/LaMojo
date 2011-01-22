@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,36 +14,6 @@ defined('_JEXEC') or die;
  */
 class TemplatesTableStyle extends JTable
 {
-	/**
-	 * @var int Primary key
-	 */
-	public $id = null;
-
-	/**
-	 * @var string
-	 */
-	public $template = null;
-
-	/**
-	 * @var int
-	 */
-	public $client_id = null;
-
-	/**
-	 * @var int
-	 */
-	public $home = null;
-
-	/**
-	 * @var string
-	 */
-	public $title = null;
-
-	/**
-	 * @var string
-	 */
-	public $params = null;
-
 	/**
 	 * Constructor
 	 *
@@ -72,7 +42,7 @@ class TemplatesTableStyle extends JTable
 		}
 
 		// Verify that the default style is not unset
-		if ($array['home']==0 && $this->home) {
+		if ($array['home']=='0' && $this->home=='1') {
 			$this->setError(JText::_('COM_TEMPLATES_ERROR_CANNOT_UNSET_DEFAULT_STYLE'));
 			return false;
 		}
@@ -105,11 +75,12 @@ class TemplatesTableStyle extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
-		if ($this->home) {
+		if ($this->home!='0') {
 			$query = $this->_db->getQuery(true);
 			$query->update('#__template_styles');
-			$query->set('home=0');
+			$query->set('home=\'0\'');
 			$query->where('client_id='.(int)$this->client_id);
+			$query->where('home='.$this->_db->quote($this->home));
 			$this->_db->setQuery($query);
 			$this->_db->query();
 		}

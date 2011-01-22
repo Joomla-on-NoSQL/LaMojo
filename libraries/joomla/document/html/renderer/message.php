@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -51,10 +51,10 @@ class JDocumentRendererMessage extends JDocumentRenderer
 			$buffer .= "\n<dl id=\"system-message\">";
 			foreach ($lists as $type => $msgs)
 			{
-				if (count($msgs))
+			if (count($msgs))
 				{
 					$buffer .= "\n<dt class=\"".strtolower($type)."\">".JText::_($type)."</dt>";
-					$buffer .= "\n<dd class=\"".strtolower($type)." message fade\">";
+					$buffer .= "\n<dd class=\"".strtolower($type)." message\">";
 					$buffer .= "\n\t<ul>";
 					foreach ($msgs as $msg) {
 						$buffer .="\n\t\t<li>".$msg."</li>";

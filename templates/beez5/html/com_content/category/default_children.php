@@ -3,7 +3,7 @@
  * @version		$Id: default_children.php 17017 2010-05-13 10:48:48Z eddieajau $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -37,13 +37,13 @@ $class = ' class="first"';
 				<span class="item-title"><a href="<?php echo JRoute::_(ContentHelperRoute::getCategoryRoute($child->id));?>">
 					<?php echo $this->escape($child->title); ?></a>
 				</span>
-
+				<?php if ($this->params->get('show_subcat_desc') == 1) :?>
 				<?php if ($child->description and $this->params->get('show_description')!=0 ) : ?>
 					<div class="category-desc">
 						<?php echo JHtml::_('content.prepare', $child->description); ?>
 					</div>
 				<?php endif; ?>
-
+				<?php endif; ?>
 				<?php if ($child->getNumItems()==true) : ?>
 				<dl>
 					<dt>

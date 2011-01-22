@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -113,11 +113,11 @@ class InstallerModelInstall extends JModel
 		// Install the package
 		if (!$installer->install($package['dir'])) {
 			// There was an error installing the package
-			$msg = JText::sprintf('COM_INSTALLER_INSTALL_ERROR', $package['type']);
+			$msg = JText::sprintf('COM_INSTALLER_INSTALL_ERROR', JText::_('COM_INSTALLER_TYPE_TYPE_'.strtoupper($package['type'])));
 			$result = false;
 		} else {
 			// Package installed sucessfully
-			$msg = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS', $package['type']);
+			$msg = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS', JText::_('COM_INSTALLER_TYPE_TYPE_'.strtoupper($package['type'])));
 			$result = true;
 		}
 
@@ -133,7 +133,7 @@ class InstallerModelInstall extends JModel
 		// Cleanup the install files
 		if (!is_file($package['packagefile'])) {
 			$config = JFactory::getConfig();
-			$package['packagefile'] = $config->get('tmp_path').'/'.$package['packagefile'];
+			$package['packagefile'] = $config->get('tmp_path').DS.$package['packagefile'];
 		}
 
 		JInstallerHelper::cleanupInstall($package['packagefile'], $package['extractdir']);
@@ -178,7 +178,7 @@ class InstallerModelInstall extends JModel
 
 		// Build the appropriate paths
 		$config		= JFactory::getConfig();
-		$tmp_dest	= $config->get('tmp_path').'/'.$userfile['name'];
+		$tmp_dest	= $config->get('tmp_path').DS.$userfile['name'];
 		$tmp_src	= $userfile['tmp_name'];
 
 		// Move uploaded file
@@ -259,7 +259,7 @@ class InstallerModelInstall extends JModel
 		$tmp_dest	= $config->get('tmp_path');
 
 		// Unpack the downloaded package file
-		$package = JInstallerHelper::unpack($tmp_dest.'/'.$p_file);
+		$package = JInstallerHelper::unpack($tmp_dest.DS.$p_file);
 
 		return $package;
 	}

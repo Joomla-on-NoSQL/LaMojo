@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -230,7 +230,7 @@ abstract class JModelForm extends JModel
 		if ($return === false) {
 			// Get the validation messages from the form.
 			foreach ($form->getErrors() as $message) {
-				$this->setError($message);
+				$this->setError(JText::_($message));
 			}
 
 			return false;

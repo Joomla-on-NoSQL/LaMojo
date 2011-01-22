@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_config
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,7 +24,7 @@ class ConfigViewClose extends JView
 	/**
 	 * Display the view
 	 */
-	function display()
+	function display($tpl = null)
 	{
 		// close a modal window
 		JFactory::getDocument()->addScriptDeclaration('window.parent.SqueezeBox.close();');

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	Content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -42,9 +42,9 @@ class ConfigController extends JController
 		$document	= JFactory::getDocument();
 
 		// Set the default view name and format from the Request.
-		$vName		= JRequest::getWord('view', 'application');
+		$vName		= JRequest::getCmd('view', 'application');
 		$vFormat	= $document->getType();
-		$lName		= JRequest::getWord('layout', 'default');
+		$lName		= JRequest::getCmd('layout', 'default');
 
 		// Get and render the view.
 		if ($view = $this->getView($vName, $vFormat)) {

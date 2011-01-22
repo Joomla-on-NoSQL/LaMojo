@@ -3,11 +3,13 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
+
+jimport('joomla.filesystem.path');
 
 /**
  * JForm's helper class.
@@ -248,7 +250,7 @@ class JFormHelper
 			// But when someday we would want to support more entities, then we should consider adding
 			// an inflector class to "libraries/joomla/utilities" and use it here (or somebody can use a real inflector in his subclass).
 			// see also: pluralization snippet by Paul Osman in JControllerForm's constructor.
-			$paths[] = JPATH::dirname(__FILE__). '/' . $entity_plural;
+			$paths[] = dirname(__FILE__). DS . $entity_plural;
 		}
 
 		// Force the new path(s) to an array.

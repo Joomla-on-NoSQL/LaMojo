@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * checks that all menu choices are shown in back end
  */
@@ -36,7 +36,7 @@ class ControlPanel0001 extends SeleniumJoomlaTestCase
 		echo "Check that Site menu options are visible\n";
 		$this->assertTrue($this->isElementPresent("link=Control Panel"));
 		$this->assertTrue($this->isElementPresent("link=Global Configuration"));
-		$this->assertTrue($this->isElementPresent("link=Site Maintenance"));
+		$this->assertTrue($this->isElementPresent("link=Maintenance"));
 		$this->assertTrue($this->isElementPresent("link=System Information"));
 		$this->assertTrue($this->isElementPresent("link=Logout"));
 		$this->assertTrue($this->isElementPresent("link=Global Check-in"));
@@ -99,6 +99,7 @@ class ControlPanel0001 extends SeleniumJoomlaTestCase
 		$this->assertTrue($this->isElementPresent("//div[@id='cpanel']/div[8]/div/a/img"));
 		$this->doAdminLogout();
 		print("Finish control_panel0001Test.php." . "\n");
+		$this->deleteAllVisibleCookies();
 	}
 }
-?>
+

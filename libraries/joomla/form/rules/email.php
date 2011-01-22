@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -26,7 +26,7 @@ class JFormRuleEmail extends JFormRule
 	 * @var		string
 	 * @since	1.6
 	 */
-	protected $regex = '[\w\.\-]+@\w+[\w\.\-]*?\.\w{1,4}';
+	protected $regex = '^[\w.-]+(\+[\w.-]+)*@\w+[\w.-]*?\.\w{2,4}$';
 
 	/**
 	 * Method to test the email address and optionally check for uniqueness.
@@ -50,7 +50,7 @@ class JFormRuleEmail extends JFormRule
 	{
 		// If the field is empty and not required, the field is valid.
 		$required = ((string) $element['required'] == 'true' || (string) $element['required'] == 'required');
-		if ($required && empty($value)) {
+		if (!$required && empty($value)) {
 			return true;
 		}
 

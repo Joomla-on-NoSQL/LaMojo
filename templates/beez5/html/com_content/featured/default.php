@@ -17,13 +17,12 @@ if ($templateparams->get('html5')!=1)
 	require(JPATH_BASE.'/components/com_content/views/featured/tmpl/default.php');
 	//evtl. ersetzen durch JPATH_COMPONENT.'/views/...'
 } else {
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
+JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers');
+
 // If the page class is defined, add to class as suffix.
 // It will be a separate class if the user starts it with a space
-$pageClass = $this->params->get('pageclass_sfx');
 ?>
-
-<section class="blog-featured<?php echo $pageClass;?>">
+<section class="blog-featured<?php echo $this->pageclass_sfx;?>">
 <?php if ( $this->params->get('show_page_heading')!=0) : ?>
 	<h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>

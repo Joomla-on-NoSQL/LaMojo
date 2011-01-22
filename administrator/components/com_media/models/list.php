@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -21,8 +21,7 @@ jimport('joomla.filesystem.file');
  */
 class MediaModelList extends JModel
 {
-
-	function getState($property = null)
+	function getState($property = null, $default = null)
 	{
 		static $set;
 
@@ -35,24 +34,28 @@ class MediaModelList extends JModel
 			$this->setState('parent', $parent);
 			$set = true;
 		}
-		return parent::getState($property);
+
+		return parent::getState($property, $default);
 	}
 
 	function getImages()
 	{
 		$list = $this->getList();
+
 		return $list['images'];
 	}
 
 	function getFolders()
 	{
 		$list = $this->getList();
+
 		return $list['folders'];
 	}
 
 	function getDocuments()
 	{
 		$list = $this->getList();
+
 		return $list['docs'];
 	}
 
@@ -82,9 +85,11 @@ class MediaModelList extends JModel
 		// Initialise variables.
 		if (strlen($current) > 0) {
 			$basePath = COM_MEDIA_BASE.'/'.$current;
-		} else {
+		}
+		else {
 			$basePath = COM_MEDIA_BASE;
 		}
+
 		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
 
 		$images		= array ();
@@ -102,7 +107,8 @@ class MediaModelList extends JModel
 				if (is_file($basePath.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
 					$tmp = new JObject();
 					$tmp->name = $file;
-					$tmp->path = str_replace(DS, '/', JPath::clean($basePath.'/'.$file));
+					$tmp->title = $file;
+					$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$file));
 					$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 					$tmp->size = filesize($tmp->path);
 
@@ -123,13 +129,12 @@ class MediaModelList extends JModel
 							$tmp->type		= @$info[2];
 							$tmp->mime		= @$info['mime'];
 
-							$filesize		= MediaHelper::parseSize($tmp->size);
-
 							if (($info[0] > 60) || ($info[1] > 60)) {
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 60);
 								$tmp->width_60 = $dimensions[0];
 								$tmp->height_60 = $dimensions[1];
-							} else {
+							}
+							else {
 								$tmp->width_60 = $tmp->width;
 								$tmp->height_60 = $tmp->height;
 							}
@@ -138,28 +143,19 @@ class MediaModelList extends JModel
 								$dimensions = MediaHelper::imageResize($info[0], $info[1], 16);
 								$tmp->width_16 = $dimensions[0];
 								$tmp->height_16 = $dimensions[1];
-							} else {
+							}
+							else {
 								$tmp->width_16 = $tmp->width;
 								$tmp->height_16 = $tmp->height;
 							}
+
 							$images[] = $tmp;
 							break;
+
 						// Non-image document
 						default:
-							// $iconfile_32 = JPATH_ADMINISTRATOR."/components/com_media/images/mime-icon-32/".$ext.".png";
-							$iconfile_32 = "media/images/media/mime-icon-32/".$ext.".png";
-							if (file_exists($iconfile_32)) {
-								$tmp->icon_32 = "media/mime-icon-32/".$ext.".png";
-							} else {
-								$tmp->icon_32 = "media/con_info.png";
-							}
-							// $iconfile_16 = JPATH_ADMINISTRATOR."/components/com_media/images/mime-icon-16/".$ext.".png";
-							$iconfile_16 = "media/images/media/mime-icon-16/".$ext.".png";
-							if (file_exists($iconfile_16)) {
-								$tmp->icon_16 = "media/mime-icon-16/".$ext.".png";
-							} else {
-								$tmp->icon_16 = "media/con_info.png";
-							}
+							$tmp->icon_32 = "media/mime-icon-32/".$ext.".png";
+							$tmp->icon_16 = "media/mime-icon-16/".$ext.".png";
 							$docs[] = $tmp;
 							break;
 					}
@@ -169,10 +165,11 @@ class MediaModelList extends JModel
 
 		// Iterate over the folders if they exist
 		if ($folderList !== false) {
-			foreach ($folderList as $folder) {
+			foreach ($folderList as $folder)
+			{
 				$tmp = new JObject();
 				$tmp->name = basename($folder);
-				$tmp->path = str_replace(DS, '/', JPath::clean($basePath.'/'.$folder));
+				$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$folder));
 				$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 				$count = MediaHelper::countFiles($tmp->path);
 				$tmp->files = $count[0];

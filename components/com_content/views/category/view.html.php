@@ -3,7 +3,7 @@
  * version $Id$
  * @package		Joomla
  * @subpackage	Content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -53,16 +53,21 @@ class ContentViewCategory extends JView
 		}
 
 		if ($category == false) {
-			return JError::raiseWarning(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
+			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
 		if ($parent == false) {
-			//TODO Raise error for missing parent category here
+			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
+
+		// Setup the category parameters.
+		$cparams = $category->getParams();
+		$category->params = clone($params);
+		$category->params->merge($cparams);
 
 		// Check whether category access level allows access.
 		$user	= JFactory::getUser();
-		$groups	= $user->authorisedLevels();
+		$groups	= $user->getAuthorisedViewLevels();
 		if (!in_array($category->access, $groups)) {
 			return JError::raiseError(403, JText::_("JERROR_ALERTNOAUTHOR"));
 		}
@@ -74,7 +79,8 @@ class ContentViewCategory extends JView
 		$numLinks	= $params->def('num_links', 4);
 
 		// Compute the article slugs and prepare introtext (runs content plugins).
-		for ($i = 0, $n = count($items); $i < $n; $i++) {
+		for ($i = 0, $n = count($items); $i < $n; $i++)
+		{
 			$item = &$items[$i];
 			$item->slug = $item->alias ? ($item->id . ':' . $item->alias) : $item->id;
 
@@ -101,10 +107,25 @@ class ContentViewCategory extends JView
 				$item->event->afterDisplayContent = trim(implode("\n", $results));
 			}
 		}
+		
+		// Check for layout override only if this is not the active menu item
+		// If it is the active menu item, then the view and category id will match
+		$active	= $app->getMenu()->getActive();
+		if ((!$active) || ((strpos($active->link, 'view=category') === false) || (strpos($active->link, '&id=' . (string) $category->id) === false))) {
+			// Get the layout from the merged category params
+			if ($layout = $category->params->get('category_layout')) {
+				$this->setLayout($layout);
+			}
+		}
+		// At this point, we are in a menu item, so we don't override the layout
+		elseif (isset($active->query['layout'])) {
+			// We need to set the layout from the query in case this is an alternative menu item (with an alternative layout)
+			$this->setLayout($active->query['layout']);
+		}
 
 		// For blog layouts, preprocess the breakdown of leading, intro and linked articles.
 		// This makes it much easier for the designer to just interrogate the arrays.
-		if ($this->_layout == 'blog') {
+		if ($this->getLayout() != 'default') {
 			$max = count($items);
 
 			// The first group is the leading articles.
@@ -129,12 +150,16 @@ class ContentViewCategory extends JView
 			}
 
 			// The remainder are the links.
-			for ($i = $numLeading + $numIntro; $i < $max; $i++) {
+			for ($i = $numLeading + $numIntro; $i < $max; $i++)
+			{
 				$this->link_items[$i] = &$items[$i];
 			}
 		}
 
 		$children = array($category->id => $children);
+		
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
 		$this->assign('maxLevel', $params->get('maxLevel', -1));
 		$this->assignRef('state', $state);
@@ -145,7 +170,7 @@ class ContentViewCategory extends JView
 		$this->assignRef('parent', $parent);
 		$this->assignRef('pagination', $pagination);
 		$this->assignRef('user', $user);
-
+		
 		$this->_prepareDocument();
 
 		parent::display($tpl);
@@ -164,37 +189,41 @@ class ContentViewCategory extends JView
 		// Because the application sets a default page title,
 		// we need to get it from the menu item itself
 		$menu = $menus->getActive();
+
 		if ($menu) {
 			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
-		} else {
+		}
+		else {
 			$this->params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
 		}
 
-		$id = @$menu->query['id'];
+		$id = (int) @$menu->query['id'];
 
-		if ($menu && $menu->query['view'] != 'article' && $id != $this->category->id) {
-			$this->params->set('page_subheading', $this->category->title);
-			$path = array($this->category->title  => '');
+		if ($menu && ($menu->query['option'] != 'com_content' || $menu->query['view'] == 'article' || $id != $this->category->id)) {
+			$path = array(array('title' => $this->category->title, 'link' => ''));
 			$category = $this->category->getParent();
 
-			while ($id != $category->id && $category->id > 1) {
-				$path[$category->title] = ContentHelperRoute::getCategoryRoute($category->id);
+			while (($menu->query['option'] != 'com_content' || $menu->query['view'] == 'article' || $id != $category->id) && $category->id > 1)
+			{
+				$path[] = array('title' => $category->title, 'link' => ContentHelperRoute::getCategoryRoute($category->id));
 				$category = $category->getParent();
 			}
 
 			$path = array_reverse($path);
 
-			foreach ($path as $title => $link) {
-				$pathway->addItem($title, $link);
+			foreach ($path as $item)
+			{
+				$pathway->addItem($item['title'], $item['link']);
 			}
 		}
 
 		$title = $this->params->get('page_title', '');
 
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
-		} elseif ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = $app->getCfg('sitename');
+		}
+		elseif ($app->getCfg('sitename_pagetitles', 0)) {
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 
 		$this->document->setTitle($title);
@@ -217,7 +246,8 @@ class ContentViewCategory extends JView
 
 		$mdata = $this->category->getMetadata()->toArray();
 
-		foreach ($mdata as $k => $v) {
+		foreach ($mdata as $k => $v)
+		{
 			if ($v) {
 				$this->document->setMetadata($k, $v);
 			}

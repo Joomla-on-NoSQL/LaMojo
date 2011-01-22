@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_messages
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -17,9 +17,9 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 ?>
 <script type="text/javascript">
-	function submitbutton(task) {
+	Joomla.submitbutton = function(task) {
 		if (task == 'message.cancel' || document.formvalidator.isValid(document.id('message-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('message-form'));
 		}
 	}
 </script>
@@ -37,7 +37,7 @@ JHtml::_('behavior.keepalive');
 			<?php echo $this->form->getInput('message'); ?></li>
 		</ul>
 		</fieldset>
-		<input type="hidden" name="task" value="">
+		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

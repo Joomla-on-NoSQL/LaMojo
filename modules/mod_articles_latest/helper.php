@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_articles_latest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,6 +11,9 @@
 defined('_JEXEC') or die;
 
 require_once JPATH_SITE.'/components/com_content/helpers/route.php';
+
+jimport('joomla.application.component.model');
+
 JModel::addIncludePath(JPATH_SITE.'/components/com_content/models');
 
 abstract class modArticlesLatestHelper
@@ -24,7 +27,8 @@ abstract class modArticlesLatestHelper
 		$model = JModel::getInstance('Articles', 'ContentModel', array('ignore_request' => true));
 
 		// Set application parameters in model
-		$appParams = JFactory::getApplication()->getParams();
+		$app = JFactory::getApplication();
+		$appParams = $app->getParams();
 		$model->setState('params', $appParams);
 
 		// Set the filters based on the module params
@@ -52,7 +56,7 @@ abstract class modArticlesLatestHelper
 				$model->setState('filter.author_id.include', false);
 				break;
 
-			case 0:
+			case '0':
 				break;
 
 			default:
@@ -60,14 +64,31 @@ abstract class modArticlesLatestHelper
 				break;
 		}
 
+		// Filter by language
+		$model->setState('filter.language',$app->getLanguageFilter());
+
+		//  Featured switch
+		switch ($params->get('show_featured'))
+		{
+			case '1':
+				$model->setState('filter.featured', 'only');
+				break;
+			case '0':
+				$model->setState('filter.featured', 'hide');
+				break;
+			default:
+				$model->setState('filter.featured', 'show');
+				break;
+		}
+
 		// Set ordering
 		$order_map = array(
 			'm_dsc' => 'a.modified DESC, a.created',
 			'mc_dsc' => 'CASE WHEN (a.modified = '.$db->quote($db->getNullDate()).') THEN a.created ELSE a.modified END',
-			'c_dsc' => 'a.created'
+			'c_dsc' => 'a.created',
+			'p_dsc' => 'a.publish_up',
 		);
-
-		$ordering = JArrayHelper::getValue($order_map, $params->get('ordering'), 'a.created');
+		$ordering = JArrayHelper::getValue($order_map, $params->get('ordering'), 'a.publish_up');
 		$dir = 'DESC';
 
 		$model->setState('list.ordering', $ordering);

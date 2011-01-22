@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -281,7 +281,7 @@ class JInstallationModelSetup extends JModel
 		// Check for configuration file writeable.
 		$option = new stdClass;
 		$option->label  = 'configuration.php '.JText::_('INSTL_WRITABLE');
-		$option->state  = ((@file_exists('../configuration.php') && @is_writable('../configuration.php')) || is_writable('../'));
+		$option->state  = (is_writable('../configuration.php') || (!file_exists('../configuration.php') && is_writable('../')));
 		$option->notice = ($option->state) ? null : JText::_('INSTL_NOTICEYOUCANSTILLINSTALL');
 		$options[] = $option;
 

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_wrapper
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -30,8 +30,6 @@ defined('_JEXEC') or die;
 	width="<?php echo $width ?>"
 	height="<?php echo $height ?>"
 	scrolling="<?php echo $scroll ?>"
-	align="top"
-	frameborder="0"
-	class="wrapper<?php echo $params->get('moduleclass_sfx') ?>" >
+	class="wrapper<?php echo $moduleclass_sfx ?>" >
 	<?php echo JText::_('MOD_WRAPPER_NO_IFRAMES'); ?>
 </iframe>

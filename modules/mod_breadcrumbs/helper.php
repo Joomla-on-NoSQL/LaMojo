@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_breadcrumbs
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -29,8 +29,8 @@ class modBreadCrumbsHelper
 		if ($params->get('showHome', 1))
 		{
 			$item = new stdClass();
-			$item->name = $params->get('homeText', JText::_('MOD_BREADCRUMBS_HOME'));
-			$item->link = JURI::base();
+			$item->name = htmlspecialchars($params->get('homeText', JText::_('MOD_BREADCRUMBS_HOME')));
+			$item->link = JRoute::_('index.php?Itemid='.$app->getMenu()->getDefault()->id);
 			array_unshift($items, $item);
 		}
 
@@ -59,7 +59,7 @@ class modBreadCrumbsHelper
 				$_separator = JHTML::_('image','system/arrow.png', NULL, NULL, true);
 			}
 		} else {
-			$_separator = $custom;
+			$_separator = htmlspecialchars($custom);
 		}
 
 		return $_separator;

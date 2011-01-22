@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -152,6 +152,16 @@ class JInstallation extends JApplication
 		$conf = JFactory::getConfig();
 		$conf->set('language', $options['language']);
 		$conf->set('debug_lang', $forced['debug']);
+		$conf->set('sampledata', $forced['sampledata']);
+
+		// Load Library language 
+		// Commented for now as it systematically loads en-GB.lib_joomla.ini 
+		// instead of the equivalent strings in the installation ini file when no lang .lib_joomla ini is present
+		
+		//$lang = JFactory::getLanguage();
+		//$lang->load('lib_joomla', JPATH_SITE)
+		//|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR);
+
 	}
 
 	/**
@@ -222,7 +232,7 @@ class JInstallation extends JApplication
 	 */
 	public function getLocalise()
 	{
-		$xml = JFactory::getXML(JPATH_SITE.'/installation/localise.xml');
+		$xml = JFactory::getXML(JPATH_SITE.DS.'installation'.DS.'localise.xml');
 
 		if( ! $xml)
 		{
@@ -240,6 +250,7 @@ class JInstallation extends JApplication
 		$ret['language'] = (string)$xml->forceLang;
 		$ret['helpurl'] = (string)$xml->helpurl;
 		$ret['debug'] = (string)$xml->debug;
+		$ret['sampledata'] = (string)$xml->sampledata;
 
 		return $ret;
 
@@ -256,7 +267,7 @@ class JInstallation extends JApplication
 		jimport('joomla.filesystem.folder');
 
 		// Read the files in the admin area
-		$path = JLanguage::getLanguagePath(JPATH_SITE.'/administrator');
+		$path = JLanguage::getLanguagePath(JPATH_SITE.DS.'administrator');
 		$langfiles['admin'] = JFolder::folders($path);
 
 		$path = JLanguage::getLanguagePath(JPATH_SITE);

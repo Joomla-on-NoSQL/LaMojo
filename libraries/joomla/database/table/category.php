@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -58,7 +58,7 @@ class JTableCategory extends JTableNested
 	 *
 	 * @return	int
 	 */
-	protected function _getAssetParentId()
+	protected function _getAssetParentId($table = null, $id = null)
 	{
 		// Initialise variables.
 		$assetId = null;
@@ -97,7 +97,7 @@ class JTableCategory extends JTableNested
 		if ($assetId) {
 			return $assetId;
 		} else {
-			return parent::_getAssetParentId();
+			return parent::_getAssetParentId($table, $id);
 		}
 	}
 
@@ -115,7 +115,7 @@ class JTableCategory extends JTableNested
 			$this->setError(JText::_('JLIB_DATABASE_ERROR_MUSTCONTAIN_A_TITLE_CATEGORY'));
 			return false;
 		}
-
+		$this->alias = trim($this->alias);
 		if (empty($this->alias)) {
 			$this->alias = strtolower($this->title);
 		}
@@ -182,7 +182,8 @@ class JTableCategory extends JTableNested
 		}
 	// Verify that the alias is unique
 		$table = JTable::getInstance('Category','JTable');
-		if ($table->load(array('alias'=>$this->alias,'parent_id'=>$this->parent_id)) && ($table->id != $this->id || $this->id==0)) {
+		if ($table->load(array('alias'=>$this->alias,'parent_id'=>$this->parent_id,'extension'=>$this->extension)) && ($table->id != $this->id || $this->id==0)) {
+
 			$this->setError(JText::_('JLIB_DATABASE_ERROR_CATEGORY_UNIQUE_ALIAS'));
 			return false;
 		}

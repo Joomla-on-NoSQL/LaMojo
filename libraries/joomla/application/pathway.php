@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -66,7 +66,7 @@ class JPathway extends JObject
 			//Load the router object
 			$info = JApplicationHelper::getClientInfo($client, true);
 
-			$path = $info->path.'/includes/pathway.php';
+			$path = $info->path.DS.'includes'.DS.'pathway.php';
 			if (file_exists($path))
 			{
 				require_once $path;

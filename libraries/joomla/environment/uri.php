@@ -3,12 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Environment
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('JPATH_BASE') or die;
+
+jimport('joomla.utilities.string');
 
 /**
  * JURI Class
@@ -215,7 +217,7 @@ class JURI extends JObject
 					$script_name =  $_SERVER['SCRIPT_NAME'];
 				}
 
-				$base['path'] =  rtrim(str_replace('\\','/',(dirname($script_name))), '/\\');
+				$base['path'] =  rtrim(dirname($script_name), '/\\');
 			}
 		}
 
@@ -288,7 +290,7 @@ class JURI extends JObject
 		 * Parse the URI and populate the object fields.  If URI is parsed properly,
 		 * set method return value to true.
 		 */
-		if ($_parts = parse_url($uri)) {
+		if ($_parts = JString::parse_url($uri)) {
 			$retval = true;
 		}
 

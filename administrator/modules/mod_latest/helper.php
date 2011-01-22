@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -9,6 +9,8 @@
 defined('_JEXEC') or die;
 
 JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_content/models');
+
+jimport('joomla.application.categories');
 
 /**
  * @package		Joomla.Administrator
@@ -33,7 +35,7 @@ abstract class modLatestHelper
 
 		// Set List SELECT
 		$model->setState('list.select', 'a.id, a.title, a.checked_out, a.checked_out_time, ' .
-				' a.access, a.created, a.created_by, a.created_by_alias, a.featured');
+				' a.access, a.created, a.created_by, a.created_by_alias, a.featured, a.state');
 
 		// Set Ordering filter
 		switch ($params->get('ordering')) {
@@ -89,5 +91,33 @@ abstract class modLatestHelper
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Get the alternate title for the module
+	 *
+	 * @param	JObject	The module parameters.
+	 * @return	string	The alternate title for the module.
+	 */
+	public static function getTitle($params)
+	{
+		$who = $params->get('user_id');
+		$catid = (int)$params->get('catid');
+		$type = $params->get('ordering') == 'c_dsc' ? '_CREATED' : '_MODIFIED';
+		if ($catid)
+		{
+			$category = JCategories::getInstance('Content')->get($catid);
+			if ($category) {
+				$title = $category->title;
+			}
+			else {
+				$title = JText::_('MOD_POPULAR_UNEXISTING');
+			}
+		}
+		else
+		{
+			$title = '';
+		}
+		return JText::plural('MOD_LATEST_TITLE'.$type.($catid ? "_CATEGORY" : '').($who!='0' ? "_$who" : ''), (int)$params->get('count'), $title);
 	}
 }

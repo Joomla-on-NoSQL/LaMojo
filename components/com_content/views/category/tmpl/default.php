@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,9 +12,8 @@ defined('_JEXEC') or die;
 
 JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
 
-$pageClass = $this->params->get('pageclass_sfx');
 ?>
-<div class="category-list <?php echo $pageClass;?>">
+<div class="category-list<?php echo $this->pageclass_sfx;?>">
 
 	<?php if ($this->params->get('show_page_heading', 1)) : ?>
 	<h1>
@@ -43,19 +42,17 @@ $pageClass = $this->params->get('pageclass_sfx');
 	</div>
 	<?php endif; ?>
 
-	<?php if (is_array($this->children) && count($this->children) > 0 && $this->params->get('maxLevel') !=0)  : ?>
-	<div class="jcat-children">
+	<div class="cat-items">
+		<?php echo $this->loadTemplate('articles'); ?>
+	</div>
+
+	<?php if (!empty($this->children[$this->category->id])&& $this->maxLevel != 0) : ?>
+	<div class="cat-children">
 		<h3>
 			<?php echo JTEXT::_('JGLOBAL_SUBCATEGORIES'); ?>
 		</h3>
 
 		<?php echo $this->loadTemplate('children'); ?>
-
 	</div>
 	<?php endif; ?>
-
-	<div class="cat-items">
-		<?php echo $this->loadTemplate('articles'); ?>
-	</div>
-
 </div>

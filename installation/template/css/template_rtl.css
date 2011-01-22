@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,6 +14,15 @@ body{
 
 #header3 {
 	background-image: url(../images/j_header_left_rtl.png);
+}
+
+#header3 span.logo {
+	float: left;
+	padding-left:15px;
+}
+
+#header3 span {
+	padding-right: 15px;
 }
 
 #version {
@@ -66,4 +75,20 @@ h3.moofx-toggler-down {
 
 #srcEncoding{
 	text-align: right;
+}
+
+td.item + td {
+	text-align: right;
+}
+
+/* make the radio buttons vertical to make room for long language strings */
+
+fieldset#jform_db_old label {
+	float: right;
+	clear: left;
+}
+
+fieldset#jform_db_old input {
+	float: right;
+	clear: right;
 }

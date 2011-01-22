@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -12,6 +12,7 @@
 defined('_JEXEC') or die;
 
 $app = JFactory::getApplication();
+JHtml::_('behavior.noframes');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->language; ?>" lang="<?php echo $this->language; ?>" dir="<?php echo $this->direction; ?>" >
@@ -24,15 +25,21 @@ $app = JFactory::getApplication();
 <!-- Load Template CSS -->
 <link href="templates/<?php echo $this->template ?>/css/template.css" rel="stylesheet" type="text/css" />
 
-<!-- Load additional CSS styles for rtl sites -->
-<?php  if ($this->direction == 'rtl') : ?>
-	<link href="templates/<?php echo $this->template ?>/css/template_rtl.css" rel="stylesheet" type="text/css" />
-<?php  endif; ?>
+<!-- Load additional CSS styles for colors -->
+<?php 
+	if (!$this->params->get('colourChoice')) : 
+		$colour = 'standard';
+	else :
+		$colour = htmlspecialchars($this->params->get('colourChoice'));
+	endif; 
+?>
+<link href="templates/<?php echo $this->template ?>/css/colour_<?php echo $colour; ?>.css" rel="stylesheet" type="text/css" />
 
-<!-- Load additional CSS styles for High Contrast colors -->
-<?php if ($this->params->get('highContrast')) : ?>
-	<link href="templates/<?php echo $this->template ?>/css/highcontrast.css" rel="stylesheet" type="text/css" />
-<?php  endif; ?>
+<!-- Load additional CSS styles for rtl sites -->
+<?php if ($this->direction == 'rtl') : ?>
+	<link href="templates/<?php echo  $this->template ?>/css/template_rtl.css" rel="stylesheet" type="text/css" />
+	<link href="templates/<?php echo $this->template ?>/css/colour_<?php echo $colour; ?>_rtl.css" rel="stylesheet" type="text/css" />
+<?php endif; ?>
 
 <!-- Load additional CSS styles for bold Text -->
 <?php if ($this->params->get('boldText')) : ?>
@@ -93,7 +100,7 @@ $app = JFactory::getApplication();
 	<!-- Footer -->
 	<div id="footer">
 		<p class="copyright">
-			<?php $joomla= '<a href="http://www.joomla.org">Joomla!</a>';
+			<?php $joomla= '<a href="http://www.joomla.org">Joomla!&#174;</a>';
 			echo JText::sprintf('JGLOBAL_ISFREESOFTWARE', $joomla) ?>
 		</p>
 	</div>

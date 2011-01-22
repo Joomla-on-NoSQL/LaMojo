@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -43,15 +43,16 @@ class LanguagesHelper
 	 */
 	public static function getActions()
 	{
-		$user	= JFactory::getUser();
-		$result	= new JObject;
+		$user		= JFactory::getUser();
+		$result		= new JObject;
+		$assetName	= 'com_languages';
 
 		$actions = array(
 			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.state', 'core.delete'
 		);
 
 		foreach ($actions as $action) {
-			$result->set($action, $user->authorise($action, 'com_languages'));
+			$result->set($action,	$user->authorise($action, $assetName));
 		}
 
 		return $result;

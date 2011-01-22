@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,22 +20,20 @@ $listDirn	= $this->state->get('list.direction');
 <?php else : ?>
 
 <form action="<?php echo JFilterOutput::ampReplace(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
+<?php if ($this->params->get('show_pagination_limit')) : ?>
 	<fieldset class="filters">
 	<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
-	<?php if ($this->params->get('show_pagination_limit')) : ?>
+	
 		<div class="display-limit">
 			<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>&#160;
 			<?php echo $this->pagination->getLimitBox(); ?>
 		</div>
-	<?php endif; ?>
 	</fieldset>
-
+<?php endif; ?>
 	<table class="category">
 		<?php if ($this->params->get('show_headings')) : ?>
 		<thead><tr>
-			<th class="item-num">
-				<?php echo JText::_('JGLOBAL_NUM'); ?>
-			</th>
+			
 			<th class="item-title">
 				<?php echo JHtml::_('grid.sort', 'COM_CONTACT_CONTACT_EMAIL_NAME', 'a.name', $listDirn, $listOrder); ?>
 			</th>
@@ -46,7 +44,7 @@ $listDirn	= $this->state->get('list.direction');
 			<?php endif; ?>
 			<?php if ($this->params->get('show_email_headings')) : ?>
 			<th class="item-email">
-				<?php echo JText::_('COM_CONTACT_CONTACT_EMAIL_ADDRESS'); ?>
+				<?php echo JText::_('JGLOBAL_EMAIL'); ?>
 			</th>
 			<?php endif; ?>
 			<?php if ($this->params->get('show_telephone_headings')) : ?>
@@ -91,10 +89,11 @@ $listDirn	= $this->state->get('list.direction');
 
 		<tbody>
 			<?php foreach($this->items as $i => $item) : ?>
-				<tr class="<?php echo ($i % 2) ? "odd" : "even"; ?>">
-					<td class="item-num">
-						<?php echo $i; ?>
-					</td>
+				<?php if ($this->items[$i]->published == 0) : ?>
+					<tr class="system-unpublished cat-list-row<?php echo $i % 2; ?>">
+				<?php else: ?>
+					<tr class="cat-list-row<?php echo $i % 2; ?>" >
+				<?php endif; ?>
 
 					<td class="item-title">
 						<a href="<?php echo JRoute::_(ContactHelperRoute::getContactRoute($item->slug, $item->catid)); ?>">

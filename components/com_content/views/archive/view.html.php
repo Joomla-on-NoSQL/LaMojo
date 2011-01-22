@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -45,6 +45,8 @@ class ContentViewArchive extends JView
 			$item->parent_slug = ($item->parent_alias) ? ($item->parent_id . ':' . $item->parent_alias) : $item->parent_id;
 		}
 
+		
+		
 		$form = new stdClass();
 		// Month Field
 		$months = array(
@@ -86,6 +88,9 @@ class ContentViewArchive extends JView
 		);
 		$form->limitField = $pagination->getLimitBox();
 
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
 		$this->assign('filter', $state->get('list.filter'));
 		$this->assignRef('form', $form);
 		$this->assignRef('items', $items);
@@ -120,10 +125,10 @@ class ContentViewArchive extends JView
 
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
+			$title = $app->getCfg('sitename');
 		}
 		elseif ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 		$this->document->setTitle($title);
 	}

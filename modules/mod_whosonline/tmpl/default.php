@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_whosonline
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,7 +19,7 @@ if ($showmode == 0 || $showmode == 2) :
 endif;
 
 if (($showmode > 0) && count($names)) : ?>
-	<ul  class="whosonline<?php echo $params->get('moduleclass_sfx') ?>" >
+	<ul  class="whosonline<?php echo $moduleclass_sfx ?>" >
 <?php foreach($names as $name) : ?>
 
 		<li>

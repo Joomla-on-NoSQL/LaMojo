@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -229,8 +229,8 @@ class JPaneSliders extends JPane
 	public function startPanel($text, $id)
 	{
 		return '<div class="panel">'
-			.'<h3 class="jpane-toggler title" id="'.$id.'"><a href="#"><span>'.$text.'</span></a></h3>'
-			.'<div class="jpane-slider content">';
+			.'<h3 class="pane-toggler title" id="'.$id.'"><a href="#"><span>'.$text.'</span></a></h3>'
+			.'<div class="pane-slider content">';
 	}
 
 	/**
@@ -254,8 +254,8 @@ class JPaneSliders extends JPane
 		$document = JFactory::getDocument();
 
 		$options = '{';
-		$opt['onActive']	= 'function(toggler, i) { toggler.addClass(\'jpane-toggler-down\'); toggler.removeClass(\'jpane-toggler\'); }';
-		$opt['onBackground'] = 'function(toggler, i) { toggler.addClass(\'jpane-toggler\'); toggler.removeClass(\'jpane-toggler-down\'); }';
+		$opt['onActive']	= 'function(toggler, i) { toggler.addClass(\'pane-toggler-down\'); toggler.removeClass(\'pane-toggler\');i.addClass(\'pane-down\');i.removeClass(\'pane-hide\'); }';
+		$opt['onBackground'] = 'function(toggler, i) { toggler.addClass(\'pane-toggler\'); toggler.removeClass(\'pane-toggler-down\');i.addClass(\'pane-hide\');i.removeClass(\'pane-down\'); }';
 		$opt['duration']	= (isset($params['duration'])) ? (int)$params['duration'] : 300;
 		$opt['display']		= (isset($params['startOffset']) && ($params['startTransition'])) ? (int)$params['startOffset'] : null ;
 		$opt['show']		= (isset($params['startOffset']) && (!$params['startTransition'])) ? (int)$params['startOffset'] : null ;
@@ -272,7 +272,7 @@ class JPaneSliders extends JPane
 		}
 		$options .= '}';
 
-		$js = '	window.addEvent(\'domready\', function(){ new Accordion($$(\'.panel h3.jpane-toggler\'), $$(\'.panel div.jpane-slider\'), '.$options.'); });';
+		$js = '	window.addEvent(\'domready\', function(){ new Accordion($$(\'.panel h3.pane-toggler\'), $$(\'.panel div.pane-slider\'), '.$options.'); });';
 
 		$document->addScriptDeclaration($js);
 	}

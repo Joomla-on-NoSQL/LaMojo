@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	FileSystem
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -77,8 +77,8 @@ class JFile
 	{
 		// Prepend a base path if it exists
 		if ($path) {
-			$src = JPath::clean($path.'/'.$src);
-			$dest = JPath::clean($path.'/'.$dest);
+			$src = JPath::clean($path.DS.$src);
+			$dest = JPath::clean($path.DS.$dest);
 		}
 
 		//Check src path
@@ -107,9 +107,9 @@ class JFile
 				$ftp = JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
 				// If the parent folder doesn't exist we must create it
-				if (!file_exists(JPATH::dirname($dest))) {
+				if (!file_exists(dirname($dest))) {
 					jimport('joomla.filesystem.folder');
-					JFolder::create(JPATH::dirname($dest));
+					JFolder::create(dirname($dest));
 				}
 
 				//Translate the destination path for the FTP account
@@ -197,8 +197,8 @@ class JFile
 	public static function move($src, $dest, $path = '', $use_streams=false)
 	{
 		if ($path) {
-			$src = JPath::clean($path.'/'.$src);
-			$dest = JPath::clean($path.'/'.$dest);
+			$src = JPath::clean($path.DS.$src);
+			$dest = JPath::clean($path.DS.$dest);
 		}
 
 		//Check src path
@@ -311,9 +311,9 @@ class JFile
 	{
 
 		// If the destination directory doesn't exist we need to create it
-		if (!file_exists(JPATH::dirname($file))) {
+		if (!file_exists(dirname($file))) {
 			jimport('joomla.filesystem.folder');
-			JFolder::create(JPATH::dirname($file));
+			JFolder::create(dirname($file));
 		}
 
 		if ($use_streams) {
@@ -363,7 +363,7 @@ class JFile
 		$dest = JPath::clean($dest);
 
 		// Create the destination directory if it does not exist
-		$baseDir = JPATH::dirname($dest);
+		$baseDir = dirname($dest);
 
 		if (!file_exists($baseDir)) {
 			jimport('joomla.filesystem.folder');

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -45,6 +45,6 @@ class JFormFieldHidden extends JFormField
 
 		return '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'"' .
 				' value="'.htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8').'"' .
-				$class.$disabled.$onchange.'/>';
+				$class.$disabled.$onchange.' />';
 	}
 }

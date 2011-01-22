@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -59,7 +59,7 @@ class JTableContent extends JTable
 	 * @return	int
 	 * @since	1.6
 	 */
-	protected function _getAssetParentId()
+	protected function _getAssetParentId($table = null, $id = null)
 	{
 		// Initialise variables.
 		$assetId = null;
@@ -84,7 +84,7 @@ class JTableContent extends JTable
 		if ($assetId) {
 			return $assetId;
 		} else {
-			return parent::_getAssetParentId();
+			return parent::_getAssetParentId($table, $id);
 		}
 	}
 
@@ -142,12 +142,12 @@ class JTableContent extends JTable
 	 */
 	public function check()
 	{
-		if (empty($this->title) OR (trim($this->title) == '')) {
+		if (trim($this->title) == '') {
 			$this->setError(JText::_('COM_CONTENT_WARNING_PROVIDE_VALID_NAME'));
 			return false;
 		}
 
-		if (empty($this->alias)) {
+		if (trim($this->alias) == '') {
 			$this->alias = $this->title;
 		}
 
@@ -161,7 +161,7 @@ class JTableContent extends JTable
 			$this->fulltext = '';
 		}
 
-		if (empty($this->introtext) && empty($this->fulltext)) {
+		if (trim($this->introtext) == '' && trim($this->fulltext) == '') {
 			$this->setError(JText::_('JGLOBAL_ARTICLE_MUST_HAVE_TEXT'));
 			return false;
 		}

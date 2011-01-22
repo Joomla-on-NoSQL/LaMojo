@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,6 +18,34 @@ jimport('joomla.application.component.modellist');
  */
 class TemplatesModelTemplates extends JModelList
 {
+	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'name', 'a.name',
+				'folder', 'a.folder',
+				'element', 'a.element',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'state', 'a.state',
+				'enabled', 'a.enabled',
+				'access', 'a.access', 'access_level',
+				'ordering', 'a.ordering',
+				'client_id', 'a.client_id',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
 	/**
 	 * Override parent getItems to add extra XML metadata.
 	 *
@@ -109,16 +137,16 @@ class TemplatesModelTemplates extends JModelList
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$clientId = $app->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', null);
+		$clientId = $this->getUserStateFromRequest($this->context.'.filter.client_id', 'filter_client_id', null);
 		$this->setState('filter.client_id', $clientId);
 
 		// Load the parameters.

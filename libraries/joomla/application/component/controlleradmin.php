@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -140,6 +140,9 @@ class JControllerAdmin extends JController
 		// Check for request forgeries
 		JRequest::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
+		$session	= JFactory::getSession();
+		$registry	= $session->get('registry');
+
 		// Get items to publish from the request.
 		$cid	= JRequest::getVar('cid', array(), '', 'array');
 		$data	= array('publish' => 1, 'unpublish' => 0, 'archive'=> 2, 'trash' => -2, 'report'=>-3);
@@ -148,7 +151,8 @@ class JControllerAdmin extends JController
 
 		if (empty($cid)) {
 			JError::raiseWarning(500, JText::_($this->text_prefix.'_NO_ITEM_SELECTED'));
-		} else {
+		}
+		else {
 			// Get the model.
 			$model = $this->getModel();
 
@@ -158,21 +162,26 @@ class JControllerAdmin extends JController
 			// Publish the items.
 			if (!$model->publish($cid, $value)) {
 				JError::raiseWarning(500, $model->getError());
-			} else {
+			}
+			else {
 				if ($value == 1) {
 					$ntext = $this->text_prefix.'_N_ITEMS_PUBLISHED';
-				} else if ($value == 0) {
+				}
+				else if ($value == 0) {
 					$ntext = $this->text_prefix.'_N_ITEMS_UNPUBLISHED';
-				} else if ($value == 2) {
+				}
+				else if ($value == 2) {
 					$ntext = $this->text_prefix.'_N_ITEMS_ARCHIVED';
-				} else {
+				}
+				else {
 					$ntext = $this->text_prefix.'_N_ITEMS_TRASHED';
 				}
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 		}
-
-		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list, false));
+		$extension = JRequest::getCmd('extension');
+		$extensionURL = ($extension) ? '&extension=' . JRequest::getCmd('extension') : '';
+		$this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_list.$extensionURL, false));
 	}
 
 	/**

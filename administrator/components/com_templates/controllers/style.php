@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,8 +38,9 @@ class TemplatesControllerStyle extends JControllerForm
 
 		// Clear the component's cache
 		if (!in_array($task, array('display', 'edit', 'cancel'))) {
-			$cache = JFactory::getCache('com_templates');
-			$cache->clean();
+			$cache = JFactory::getCache();
+			$cache->clean('com_templates');
+			$cache->clean('_system');
 		}
 	}
 }

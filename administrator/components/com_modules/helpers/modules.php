@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @subpackage	com_modules
  * @since		1.6
  */
-class ModulesHelper
+abstract class ModulesHelper
 {
 	/**
 	 * Configure the Linkbar.
@@ -53,12 +53,12 @@ class ModulesHelper
 	 *
 	 * @return	array	An array of JHtmlOption elements.
 	 */
-	static function getStateOptions()
+	public static function getStateOptions()
 	{
 		// Build the filter options.
 		$options	= array();
-		$options[]	= JHtml::_('select.option',	'1',	JText::_('JENABLED'));
-		$options[]	= JHtml::_('select.option',	'0',	JText::_('JDISABLED'));
+		$options[]	= JHtml::_('select.option',	'1',	JText::_('JPUBLISHED'));
+		$options[]	= JHtml::_('select.option',	'0',	JText::_('JUNPUBLISHED'));
 		$options[]	= JHtml::_('select.option',	'-2',	JText::_('JTRASH'));
 		return $options;
 	}
@@ -68,7 +68,7 @@ class ModulesHelper
 	 *
 	 * @return	array	An array of JHtmlOption elements.
 	 */
-	static function getClientOptions()
+	public static function getClientOptions()
 	{
 		// Build the filter options.
 		$options	= array();
@@ -82,20 +82,14 @@ class ModulesHelper
 		jimport('joomla.filesystem.folder');
 
 		$db		= JFactory::getDbo();
+		$query	= $db->getQuery(true);
 
-		if ($clientId == '*') {
-			$where = '';
-		} else {
-			$where = ' WHERE client_id = '.(int) $clientId;
-		}
+		$query->select('DISTINCT(position)');
+		$query->from('#__modules');
+		$query->where('`client_id` = '.(int) $clientId);
+		$query->order('position');
 
-		$db->setQuery(
-			'SELECT DISTINCT(position)' .
-			' FROM #__modules' .
-			$where .
-			' ORDER BY position'
-		);
-
+		$db->setQuery($query);
 		$positions = $db->loadResultArray();
 		$positions = (is_array($positions)) ? $positions : array();
 
@@ -112,6 +106,30 @@ class ModulesHelper
 		return $options;
 	}
 
+	public static function getTemplates($clientId = 0, $state = '', $template='')
+	{
+		$db = JFactory::getDbo();
+		// Get the database object and a new query object.
+		$query	= $db->getQuery(true);
+
+		// Build the query.
+		$query->select('element, name, enabled');
+		$query->from('#__extensions');
+		$query->where('client_id = '.(int) $clientId);
+		$query->where('type = '.$db->quote('template'));
+		if ($state!='') {
+			$query->where('enabled = '.$db->quote($state));
+		}
+		if ($template!='') {
+			$query->where('element = '.$db->quote($template));
+		}
+
+		// Set the query and load the templates.
+		$db->setQuery($query);
+		$templates = $db->loadObjectList('element');
+		return $templates;
+	}
+
 	/**
 	 * Get a list of the unique modules installed in the client application.
 	 *
@@ -124,31 +142,25 @@ class ModulesHelper
 		$db		= JFactory::getDbo();
 		$query	= $db->getQuery(true);
 
-		if ($clientId == '*') {
-			$where = '';
-		} else {
-			$where = 'm.`client_id` = '.(int)$clientId;
-		}
-
 		$query->select('DISTINCT(m.module) AS value, e.name AS text');
 		$query->from('#__modules AS m');
 		$query->join('LEFT', '#__extensions AS e ON e.element=m.module');
-		$query->where($where);
+		$query->where('m.`client_id` = '.(int)$clientId);
 
 		$db->setQuery($query);
 		$modules = $db->loadObjectList();
+		$lang = JFactory::getLanguage();
 		foreach ($modules as $i=>$module) {
 			$extension = $module->value;
 			$path = $clientId ? JPATH_ADMINISTRATOR : JPATH_SITE;
 			$source = $path . "/modules/$extension";
-			$lang = JFactory::getLanguage();
 				$lang->load("$extension.sys", $path, null, false, false)
 			||	$lang->load("$extension.sys", $source, null, false, false)
 			||	$lang->load("$extension.sys", $path, $lang->getDefault(), false, false)
 			||	$lang->load("$extension.sys", $source, $lang->getDefault(), false, false);
 			$modules[$i]->text = JText::_($module->text);
 		}
-		JArrayHelper::sortObjects($modules,'text');
+		JArrayHelper::sortObjects($modules, 'text', 1, true, $lang->getLocale());
 		return $modules;
 	}
 

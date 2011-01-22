@@ -3,7 +3,7 @@
  * $Id$
  * @package		Joomla.Site
  * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 
 $cparams = JComponentHelper::getParams ('com_media');
 ?>
-<div class="contact<?php echo $this->params->get('pageclass_sfx')?>">
+<div class="contact<?php echo $this->pageclass_sfx?>">
 <?php if ($this->params->get('show_page_heading', 1)) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -48,9 +48,9 @@ $cparams = JComponentHelper::getParams ('com_media');
 		<?php  echo '<h3>'. JText::_('COM_CONTACT_DETAILS').'</h3>';  ?>
 	<?php endif; ?>	
 	<?php if ($this->contact->image && $this->params->get('show_image')) : ?>
-		<span class="contact-image">
+		<div class="contact-image">
 			<?php echo JHTML::_('image',$this->contact->image, JText::_('COM_CONTACT_IMAGE_DETAILS'), array('align' => 'middle')); ?>
-		</span>
+		</div>
 	<?php endif; ?> 	
 
 	<?php if ($this->contact->con_position && $this->params->get('show_position')) : ?>
@@ -59,13 +59,13 @@ $cparams = JComponentHelper::getParams ('com_media');
 
 	<?php echo $this->loadTemplate('address'); ?>
 
-	<?php if ($this->params->get('allow_vcard')) :	//TODO either reimplement vcard or delete this.?>
+	<?php if ($this->params->get('allow_vcard')) :	?>
 		<?php echo JText::_('COM_CONTACT_DOWNLOAD_INFORMATION_AS');?>
-			<a href="<?php echo JURI::base(); ?>index.php?option=com_contact&amp;view=contact&amp;task=vcard&amp;contact_id=<?php echo $this->contact->id; ?>&amp;format=vcard&amp;tmpl=component">
+			<a href="<?php echo JURI::base(); ?>index.php?option=com_contact&amp;view=contact&amp;id=<?php echo $this->contact->id; ?>&amp;format=vcf">
 				<?php echo JText::_('COM_CONTACT_VCARD');?></a>
 	<?php endif; ?>
 	<p></p>
-	<?php if ($this->params->get('show_email_form') && ($this->contact->email_to )) : ?>
+	<?php if ($this->params->get('show_email_form') && ($this->contact->email_to || $this->contact->user_id)) : ?>
 
 		<?php if ($this->params->get('presentation_style')!='plain'):?>
 			<?php  echo JHtml::_($this->params->get('presentation_style').'.panel', JText::_('COM_CONTACT_EMAIL_FORM'), 'display-form');  ?>
@@ -78,7 +78,7 @@ $cparams = JComponentHelper::getParams ('com_media');
 	<?php if ($this->params->get('show_links')) : ?>
 		<?php echo $this->loadTemplate('links'); ?>
 	<?php endif; ?>
-	<?php if ($this->params->get('show_articles') && $this->contact->user_id) : ?>
+	<?php if ($this->params->get('show_articles') && $this->contact->user_id && $this->contact->articles) : ?>
 		<?php if ($this->params->get('presentation_style')!='plain'):?>
 			<?php echo JHtml::_($this->params->get('presentation_style').'.panel', JText::_('JGLOBAL_ARTICLES'), 'display-articles'); ?>
 			<?php endif; ?>
@@ -103,12 +103,12 @@ $cparams = JComponentHelper::getParams ('com_media');
 			<?php echo '<h3>'. JText::_('COM_CONTACT_OTHER_INFORMATION').'</h3>'; ?>
 		<?php endif; ?>
 				<div class="contact-miscinfo">
-					<span class="<?php echo $this->params->get('marker_class'); ?>">
+					<div class="<?php echo $this->params->get('marker_class'); ?>">
 						<?php echo $this->params->get('marker_misc'); ?>
-					</span>
-					<span class="contact-misc">
+					</div>
+					<div class="contact-misc">
 						<?php echo $this->contact->misc; ?>
-					</span>
+					</div>
 				</div>
 	<?php endif; ?>
 	<?php if ($this->params->get('presentation_style')!='plain'){?>

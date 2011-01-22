@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,8 +33,22 @@ class NewsfeedsController extends JController
 		require_once JPATH_COMPONENT.'/helpers/newsfeeds.php';
 
 		// Load the submenu.
-		NewsfeedsHelper::addSubmenu(JRequest::getWord('view', 'newsfeeds'));
-		
+		NewsfeedsHelper::addSubmenu(JRequest::getCmd('view', 'newsfeeds'));
+
+		$view		= JRequest::getCmd('view', 'newsfeeds');
+		$layout 	= JRequest::getCmd('layout', 'default');
+		$id			= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == 'newsfeed' && $layout == 'edit' && !$this->checkEditId('com_newsfeeds.edit.newsfeed', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_newsfeeds&view=newsfeeds', false));
+
+			return false;
+		}
+
 		parent::display();
 	}
 }

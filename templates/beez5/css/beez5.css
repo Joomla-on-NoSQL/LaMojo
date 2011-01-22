@@ -8,14 +8,11 @@
 
 
 @font-face {
-font-family: 'Titillium Maps';
-src: url("../fonts/TitilliumMaps29L002.eot")
-}
-@font-face {
-font-family: 'Titillium Maps';
-src:
-url("../fonts/TitilliumMaps29L002.otf") format("opentype"),
-url("../fonts/TitilliumMaps29L002.woff") format("woff")
+	font-family: 'Titillium Maps';
+	src: url("../fonts/TitilliumMaps29L002.eot");
+	src: local('Titillium Maps'), local('TitilliumMaps'), 
+		url("../fonts/TitilliumMaps29L002.otf") format("opentype"), 
+		url("../fonts/TitilliumMaps29L002.woff") format("woff");
 }
 
 body
@@ -548,7 +545,7 @@ ul.menu li ul li ul li ul li ul
 	border:solid 0px #eee !important;
 	padding-top:5px !important;
 	padding-bottom:10px !important;
-	background:#fff url(../images/nature/level4.png) repeat-x !important;
+	background:#fff url(../images/level4.png) repeat-x !important;
 }
 
 
@@ -628,17 +625,24 @@ min-height:300px
 	border:solid 0;
 }
 
-ul#archive-items li
+ul#archive-items li.row0,
+ul#archive-items li.row1
 {
-	border-bottom:solid 1px #ddd
+	border-bottom:solid 1px #ddd 
+}
+
+.archive #adminForm fieldset
+{
+	border:0;
+	padding:0;
+	margin:20px 0
 }
 
 /* ++++++++++++++  images  ++++++++++++++ */
 
 .image-left
 {
-	border:solid 1px #ddd;
-		padding:2px
+		padding:2px;
 }
 
 .image-right
@@ -685,8 +689,8 @@ ul#archive-items li
 .items-row h2 a:visited,
 .items-leading h2 a:link,
 .items-leading h2 a:visited
-{color:#7BA428 !important;
-text-decoration:underline !important
+{
+	color:#7BA428 !important;
 }
 
 
@@ -719,7 +723,7 @@ text-decoration:none !important
 
 #main h2 a
 {
-	color:#333
+	color:#333;
 }
 
 
@@ -944,7 +948,7 @@ ul.newsflash-horiz li h4
 
 /* ++++++++++++++  login  ++++++++++++++ */
 
-#form-login .inputbox
+#login-form .inputbox
 {
 	border:solid 1px #ddd;
 	background:url(../images/content_bg.gif) repeat-x;
@@ -1098,12 +1102,12 @@ dl.search-results
 	background:#f5f5f5;
 }
 
-dl.search_results dt.result-title
+dl.search-results dt.result-title
 {
 	border-top:dotted 1px #ddd
 }
 
-dl.search_results dd.result-created
+dl.search-results dd.result-created
 {
 	border-bottom:solid 5px #fff;
 }
@@ -1321,7 +1325,7 @@ form#adminForm
 	border:solid 0px #000
 }
 
-form#adminForm fieldset
+.edit form#adminForm fieldset
 {
 	border:solid 1px #ddd
 }
@@ -1349,7 +1353,7 @@ table.pagenav td
 	margin: 20px 0
 }
 
-.jform-required
+.form-required
 {
 	font-weight:bold;
 	margin:10px 0;
@@ -1389,17 +1393,17 @@ table.pagenav td
 }
 
 
-.panel h3.jpane-toggler a
+.panel h3.pane-toggler a
 {
 	background:#f5f5f5 url(../images/slider_plus.png) right  top no-repeat;
 }
-.panel h3.jpane-toggler-down a
+.panel h3.pane-toggler-down a
 {
 	background:#f5f5f5  url(../images/slider_minus.png) right  top no-repeat;
 	border-bottom:solid 1px #ddd;
 }
 
-.jpane-slider
+.pane-slider
 {
 	border:solid 0px;
 	padding:0px 10px !important;
@@ -1407,23 +1411,65 @@ table.pagenav td
 	background: url(../images/nav_level_1.gif) repeat-x ;
 }
 
-.panel .jcontact-form,
+.panel .contact-form,
 .panel  .contact-miscinfo
 {
 	padding:10px
 }
 
-.contact .panel .jcontact-form form,
-.contact .panel .jcontact-address
+.contact .panel .contact-form form,
+.contact .panel .contact-address
 {
 	margin:20px 0 0 0
 }
 
-
+.categories-list .category-desc ul li
+{list-style-type:square
+}
 /* tabs */
 
 div.current
 {
 
 	background: url(../images/nav_level_1.gif) repeat-x ;
+}
+
+#close a
+{text-decoration:none}
+
+/*Encyclopedia*/
+div.encyclopedia_col1 {
+	width:49%;
+	float:left;
+
+}
+div.encyclopedia_col1 p.img_caption {
+	font-size: .6em;
+}
+div.encyclopedia_col2 {
+	width:49%;
+	float:right;
+	padding-left:3px;
+	margin-left: 2px;	
+} 
+div.encyclopedia_col2 p {
+	padding-left:3px;
+	margin-left: 2px;	
+} 
+
+div.encyclopedia_links ul
+{
+        display:block;
+        margin:0px 0px 1px 0px;
+        list-style-type:none;
+        padding:10px 0px 10px 0px;
+        width:100%
+}
+div.encyclopedia_links ul li
+{
+        display:inline ;
+        padding:2px ;
+        margin:2px;
+        white-space:nowrap;
+
 }

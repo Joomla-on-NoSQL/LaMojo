@@ -3,7 +3,7 @@
  * @version
  * @package		Joomla.Site
  * @subpackage	tpl_beez2
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,7 +19,7 @@ function modChrome_beezDivision($module, &$params, &$attribs)
 {
 	$headerLevel = isset($attribs['headerLevel']) ? (int) $attribs['headerLevel'] : 3;
 	if (!empty ($module->content)) { ?>
-<div class="moduletable<?php echo $params->get('moduleclass_sfx'); ?>">
+<div class="moduletable<?php echo htmlspecialchars($params->get('moduleclass_sfx')); ?>">
 <?php if ($module->showtitle) { ?> <h<?php echo $headerLevel; ?>><span
 	class="backh"><span class="backh2"><span class="backh3"><?php echo $module->title; ?></span></span></span></h<?php echo $headerLevel; ?>>
 <?php }; ?> <?php echo $module->content; ?></div>
@@ -39,7 +39,7 @@ function modChrome_beezHide($module, &$params, &$attribs)
 	if (!empty ($module->content)) { ?>
 
 <div
-	class="moduletable_js <?php echo $params->get('moduleclass_sfx');?>"><?php if ($module->showtitle) : ?>
+	class="moduletable_js <?php echo htmlspecialchars($params->get('moduleclass_sfx'));?>"><?php if ($module->showtitle) : ?>
 <h<?php echo $headerLevel; ?> class="js_heading"><span class="backh"> <span
 	class="backh1"><?php echo $module->title; ?> <a href="#"
 	title="<?php echo JText::_('TPL_BEEZ5_CLICK'); ?>"
@@ -62,7 +62,7 @@ function modChrome_beezHide($module, &$params, &$attribs)
 function modChrome_beezTabs($module, $params, $attribs)
 {
 	$area = isset($attribs['id']) ? (int) $attribs['id'] :'1';
-	$area = 'area_'.$area;
+	$area = 'area-'.$area;
 
 	static $modulecount;
 	static $modules;

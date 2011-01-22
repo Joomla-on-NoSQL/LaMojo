@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -50,6 +50,30 @@ class ContactModelCategory extends JModelList
 	protected $_categories = null;
 
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'name', 'a.name',
+				'con_position', 'a.con_position',
+				'suburb', 'a.suburb',
+				'state', 'a.state',
+				'country', 'a.country',
+				'ordering', 'a.ordering',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to get a list of items.
 	 *
 	 * @return	mixed	An array of objects on success, false on failure.
@@ -81,7 +105,7 @@ class ContactModelCategory extends JModelList
 	protected function getListQuery()
 	{
 		$user	= JFactory::getUser();
-		$groups	= implode(',', $user->authorisedLevels());
+		$groups	= implode(',', $user->getAuthorisedViewLevels());
 
 		// Create a new query object.
 		$db		= $this->getDbo();
@@ -102,16 +126,18 @@ class ContactModelCategory extends JModelList
 		}
 
 		// Filter by state
-		$state = $this->getState('filter.state');
+		$state = $this->getState('filter.published');
 		if (is_numeric($state)) {
-			$query->where('a.state = '.(int) $state);
+			$query->where('a.published = '.(int) $state);
 		}
 		// Filter by start and end dates.
 		$nullDate = $db->Quote($db->getNullDate());
 		$nowDate = $db->Quote(JFactory::getDate()->toMySQL());
 
-		$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
-		$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
+		if ($this->getState('filter.publish_date')){
+			$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
+			$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
+		}
 
 		// Filter by language
 		if ($this->getState('filter.language')) {
@@ -131,30 +157,48 @@ class ContactModelCategory extends JModelList
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app	= JFactory::getApplication();
 		$params	= JComponentHelper::getParams('com_contact');
-
+		$db		= $this->getDbo();
 		// List state information
-		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		$format = JRequest::getWord('format');
+		if ($format=='feed') {
+			$limit = $app->getCfg('feed_limit');
+		}
+		else {
+			$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		}
 		$this->setState('list.limit', $limit);
 
 		$limitstart = JRequest::getVar('limitstart', 0, '', 'int');
 		$this->setState('list.start', $limitstart);
 
 		$orderCol	= JRequest::getCmd('filter_order', 'ordering');
+		if (!in_array($orderCol, $this->filter_fields)) {
+			$orderCol = 'ordering';
+		}
 		$this->setState('list.ordering', $orderCol);
 
 		$listOrder	=  JRequest::getCmd('filter_order_Dir', 'ASC');
+		if (!in_array(strtoupper($listOrder), array('ASC', 'DESC', ''))) {
+			$listOrder = 'ASC';
+		}
 		$this->setState('list.direction', $listOrder);
 
 		$id = JRequest::getVar('id', 0, '', 'int');
 		$this->setState('category.id', $id);
 
-		$this->setState('filter.published',	1);
+		$user = JFactory::getUser();
+		if ((!$user->authorise('core.edit.state', 'com_contact')) &&  (!$user->authorise('core.edit', 'com_contact'))){
+			// limit to published for people who can't edit or edit.state.
+			$this->setState('filter.published', 1);
 
+			// Filter by start and end dates.
+			$this->setState('filter.publish_date', true);
+		}
 		$this->setState('filter.language',$app->getLanguageFilter());
 
 		// Load the parameters.

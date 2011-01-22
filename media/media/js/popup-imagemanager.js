@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -71,7 +71,11 @@ var ImageManager = this.ImageManager = {
 			}
 		}, query);
 		a.query = query.join('&');
-		$('uploadForm').setProperty('action', a.scheme+'://'+a.domain+a.path+'?'+a.query);
+		var portString = '';
+		if (typeof(a.port) !== 'undefined' && a.port != 80) {
+			portString = ':'+a.port;
+		}
+		$('uploadForm').setProperty('action', a.scheme+'://'+a.domain+portString+a.path+'?'+a.query);
 	},
 
 	getImageFolder: function()
@@ -119,7 +123,7 @@ var ImageManager = this.ImageManager = {
 		return false;
 	},
 
-	setFolder: function(folder)
+	setFolder: function(folder,asset,author)
 	{
 		//this.showMessage('Loading');
 
@@ -130,7 +134,7 @@ var ImageManager = this.ImageManager = {
 				break;
 			}
 		}
-		this.frame.location.href='index.php?option=com_media&view=imagesList&tmpl=component&folder=' + folder;
+		this.frame.location.href='index.php?option=com_media&view=imagesList&tmpl=component&folder=' + folder + '&asset=' + asset + '&author=' + author;
 	},
 
 	getFolder: function() {

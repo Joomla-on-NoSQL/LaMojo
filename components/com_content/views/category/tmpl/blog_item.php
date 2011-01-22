@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +12,11 @@ defined('_JEXEC') or die;
 
 // Create a shortcut for params.
 $params = &$this->item->params;
-$canEdit = $this->user->authorise('core.edit', 'com_content.category.' . $this->item->id);
+$canEdit	= $this->item->params->get('access-edit');
+JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHtml::_('behavior.tooltip');
+JHtml::core();
+
 ?>
 
 <?php if ($this->item->state == 0) : ?>
@@ -98,13 +102,20 @@ $canEdit = $this->user->authorise('core.edit', 'com_content.category.' . $this->
 		<?php echo JText::sprintf('COM_CONTENT_PUBLISHED_DATE', JHTML::_('date',$this->item->publish_up, JText::_('DATE_FORMAT_LC2'))); ?>
 		</dd>
 <?php endif; ?>
-<?php if ($params->get('show_author') && !empty($this->item->author)) : ?>
-	<dd class="createdby">
-		<?php $author = $this->params->get('link_author', 0) ? JHTML::_('link',JRoute::_('index.php?option=com_users&view=profile&member_id='.$this->item->created_by),$this->item->author) : $this->item->author; ?>
-		<?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author); ?>
-	<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
-		</dd>
-	<?php endif; ?>
+<?php if ($params->get('show_author') && !empty($this->item->author )) : ?>
+	<dd class="createdby"> 
+		<?php $author =  $this->item->author; ?>
+		<?php $author = ($this->item->created_by_alias ? $this->item->created_by_alias : $author);?>
+
+			<?php if (!empty($this->item->contactid ) &&  $params->get('link_author') == true):?>
+				<?php 	echo JText::sprintf('COM_CONTENT_WRITTEN_BY' , 
+				 JHTML::_('link',JRoute::_('index.php?option=com_contact&view=contact&id='.$this->item->contactid),$author)); ?>
+
+			<?php else :?>
+				<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
+			<?php endif; ?>
+	</dd>
+<?php endif; ?>	
 <?php if ($params->get('show_hits')) : ?>
 		<dd class="hits">
 		<?php echo JText::sprintf('COM_CONTENT_ARTICLE_HITS', $this->item->hits); ?>
@@ -132,11 +143,15 @@ $canEdit = $this->user->authorise('core.edit', 'com_content.category.' . $this->
 		<p class="readmore">
 				<a href="<?php echo $link; ?>">
 					<?php if (!$params->get('access-view')) :
-						echo JText::_('REGISTER_TO_READ_MORE');
+						echo JText::_('COM_CONTENT_REGISTER_TO_READ_MORE');
 					elseif ($readmore = $this->item->alternative_readmore) :
 						echo $readmore;
+						echo JHTML::_('string.truncate', ($this->item->title), $params->get('readmore_limit'));
+					elseif ($params->get('show_readmore_title', 0) == 0) :
+						echo JText::sprintf('COM_CONTENT_READ_MORE_TITLE');	
 					else :
-						echo JText::sprintf('COM_CONTENT_READ_MORE', $this->escape($this->item->title));
+						echo JText::_('COM_CONTENT_READ_MORE');
+						echo JHTML::_('string.truncate', ($this->item->title), $params->get('readmore_limit'));
 					endif; ?></a>
 		</p>
 <?php endif; ?>

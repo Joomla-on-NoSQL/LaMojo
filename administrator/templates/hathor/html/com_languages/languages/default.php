@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -54,7 +54,7 @@ $listDirn	= $this->state->get('list.direction');
 					<?php echo JText::_('JGRID_HEADING_ROW_NUMBER'); ?>
 				</th>
 				<th class="checkmark-col">
-					<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('TPL_HATHOR_CHECKMARK_ALL'); ?>" onclick="checkAll(<?php echo count($this->items); ?>);" />
+					<input type="checkbox" name="checkall-toggle" value="" title="<?php echo JText::_('TPL_HATHOR_CHECKMARK_ALL'); ?>" onclick="checkAll(this)" />
 				</th>
 				<th class="title">
 					<?php echo JHtml::_('grid.sort',  'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
@@ -95,32 +95,32 @@ $listDirn	= $this->state->get('list.direction');
 					<?php echo JHtml::_('grid.id', $i, $item->lang_id); ?>
 				</td>
 				<td>
-					<span class="editlinktip hasTip" title="<?php echo JText::_('JGLOBAL_EDIT_ITEM');?>::<?php echo $item->title; ?>">
+					<span class="editlinktip hasTip" title="<?php echo JText::_('JGLOBAL_EDIT_ITEM');?>::<?php echo $this->escape($item->title); ?>">
 					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_languages&task=language.edit&id='.(int) $item->lang_id); ?>">
-							<?php echo $item->title; ?></a>
+						<a href="<?php echo JRoute::_('index.php?option=com_languages&task=language.edit&lang_id='.(int) $item->lang_id); ?>">
+							<?php echo $this->escape($item->title); ?></a>
 					<?php else : ?>
-							<?php echo $item->title; ?>
+							<?php echo $this->escape($item->title); ?>
 					<?php endif; ?>
 					</span>
 				</td>
 				<td class="center">
-					<?php echo $item->title_native; ?>
+					<?php echo $this->escape($item->title_native); ?>
 				</td>
 				<td class="center">
-					<?php echo $item->lang_code; ?>
+					<?php echo $this->escape($item->lang_code); ?>
 				</td>
 				<td class="center">
-					<?php echo $item->sef; ?>
+					<?php echo $this->escape($item->sef); ?>
 				</td>
 				<td class="center">
-					<?php echo $item->image; ?>
+					<?php echo $this->escape($item->image); ?>
 				</td>
 				<td class="center">
 					<?php echo JHtml::_('jgrid.published', $item->published, $i, 'languages.', $canChange);?>
 				</td>
 				<td class="center">
-					<?php echo $item->lang_id; ?>
+					<?php echo $this->escape($item->lang_id); ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>
@@ -129,9 +129,11 @@ $listDirn	= $this->state->get('list.direction');
 
 	<?php echo $this->pagination->getListFooter(); ?>
 
-	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="boxchecked" value="0" />
-	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
-	<?php echo JHtml::_('form.token'); ?>
+	<div>
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="boxchecked" value="0" />
+		<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
+		<?php echo JHtml::_('form.token'); ?>
+	</div>
 </form>

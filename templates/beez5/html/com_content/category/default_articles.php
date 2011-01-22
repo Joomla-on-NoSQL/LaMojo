@@ -3,7 +3,7 @@
  * @version		$Id: default_articles.php 17298 2010-05-27 14:58:59Z infograf768 $
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -30,7 +30,9 @@ $listDirn	= $this->state->get('list.direction');
 
 <?php if (empty($this->items)) : ?>
 
-<p><?php echo JText::_('COM_CONTENT_NO_ARTICLES'); ?></p>
+	<?php if ($this->params->get('show_no_articles',1)) : ?>
+		<p><?php echo JText::_('COM_CONTENT_NO_ARTICLES'); ?></p>
+	<?php endif; ?>
 
 <?php else : ?>
 
@@ -93,7 +95,7 @@ $listDirn	= $this->state->get('list.direction');
 			<?php foreach ($this->items as $i => &$article) : ?>
 			<tr class="cat-list-row<?php echo $i % 2; ?>">
 
-				<?php if (in_array($article->access, $this->user->authorisedLevels())) : ?>
+				<?php if (in_array($article->access, $this->user->getAuthorisedViewLevels())) : ?>
 
 					<td class="list-title">
 						<a href="<?php echo JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catid)); ?>">
@@ -107,11 +109,20 @@ $listDirn	= $this->state->get('list.direction');
 					</td>
 					<?php endif; ?>
 
-					<?php if ($this->params->get('list_show_author',1)) : ?>
-					<td class="list-author">
-						<?php echo $this->params->get('link_author', 0) ? JHTML::_('link',JRoute::_('index.php?option=com_users&view=profile&member_id='.$article->created_by),$article->author) : $article->author; ?>
-					</td>
-					<?php endif; ?>
+				<?php if ($this->params->get('list_show_author',1) && !empty($article->author )) : ?>	
+							<td class="createdby"> 
+								<?php $author =  $article->author ?>
+								<?php $author = ($article->created_by_alias ? $article->created_by_alias : $author);?>
+				
+									<?php if (!empty($article->contactid ) &&  $this->params->get('link_author') == true):?>
+										<?php 	echo 
+										 JHTML::_('link',JRoute::_('index.php?option=com_contact&view=contact&id='.$article->contactid),$author); ?>
+						
+									<?php else :?>
+										<?php echo JText::sprintf('COM_CONTENT_WRITTEN_BY', $author); ?>
+									<?php endif; ?>
+							</td>
+					<?php endif; ?>	
 
 					<?php if ($this->params->get('list_show_hits',1)) : ?>
 					<td class="list-hits">

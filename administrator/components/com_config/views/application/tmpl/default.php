@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_config
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,10 +20,10 @@ $this->document->setBuffer($this->loadTemplate('navigation'), 'modules', 'submen
 
 ?>
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'application.cancel' || document.formvalidator.isValid(document.id('application-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('application-form'));
 		}
 	}
 </script>

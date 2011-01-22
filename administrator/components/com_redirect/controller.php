@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,8 +38,22 @@ class RedirectController extends JController
 		require_once JPATH_COMPONENT.'/helpers/redirect.php';
 
 		// Load the submenu.
-		RedirectHelper::addSubmenu(JRequest::getWord('view', 'links'));
-		
+		RedirectHelper::addSubmenu(JRequest::getCmd('view', 'links'));
+
+		$view		= JRequest::getCmd('view', 'links');
+		$layout 	= JRequest::getCmd('layout', 'default');
+		$id			= JRequest::getInt('id');
+
+		// Check for edit form.
+		if ($view == 'link' && $layout == 'edit' && !$this->checkEditId('com_redirect.edit.link', $id)) {
+			// Somehow the person just went to the form - we don't allow that.
+			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setMessage($this->getError(), 'error');
+			$this->setRedirect(JRoute::_('index.php?option=com_redirect&view=links', false));
+
+			return false;
+		}
+
 		parent::display();
 	}
 }

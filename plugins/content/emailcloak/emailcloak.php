@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 jimport('joomla.plugin.plugin');
 
 /**
- * E-mail cloack plugin class.
+ * Email cloack plugin class.
  *
  * @package		Joomla
  * @subpackage	plg_emailcloak
@@ -38,7 +38,7 @@ class plgContentEmailcloak extends JPlugin
 	/**
 	 * Genarate a search pattern based on link and text.
 	 *
-	 * @param	string	The target of an e-mail link.
+	 * @param	string	The target of an email link.
 	 * @param	string	The text enclosed by the link.
 	 * @return	string	A regular expression that matches a link containing the parameters.
 	 */

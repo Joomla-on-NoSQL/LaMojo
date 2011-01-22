@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Administrator
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -10,13 +10,13 @@
 defined('_JEXEC') or die;
 
 // Include the syndicate functions only once
-require_once JPATH::dirname(__FILE__).'/helper.php';
+require_once dirname(__FILE__).'/helper.php';
 
 $rssurl	= $params->get('rssurl', '');
 $rssrtl	= $params->get('rssrtl', 0);
 
 //check if cache diretory is writable as cache files will be created for the feed
-$cacheDir = JPATH_BASE.'/cache';
+$cacheDir = JPATH_CACHE;
 if (!is_writable($cacheDir))
 {
 	echo '<div>';

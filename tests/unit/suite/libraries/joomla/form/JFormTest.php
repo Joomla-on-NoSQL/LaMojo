@@ -4,7 +4,7 @@
  *
  * @version		$Id$
  * @package	Joomla.UnitTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -191,7 +191,8 @@ class JFormTest extends JoomlaTestCase
 				'categories'	=> array(
 					1,
 					2
-				)
+				),
+			'keywords'	=> array('en-GB'=>'Joomla', 'fr-FR'=>'Joomla')
 			)
 		);
 
@@ -960,6 +961,35 @@ class JFormTest extends JoomlaTestCase
 			),
 			'Line:'.__LINE__.' XML string should load successfully.'
 		);
+
+		// Test translate default
+		$this->assertThat(
+			$form->getInput('translate_default'),
+			$this->equalTo(
+				'<input type="text" name="jform[translate_default]" id="jform_translate_default" value="DEFAULT_KEY"/>'
+			),
+			'Line:'.__LINE__.' The method should return a simple input text field whose value is untranslated since the DEFAULT_KEY does not exist in the language.'
+		);
+
+		$lang = JFactory::getLanguage();
+		$debug = $lang->setDebug(true);
+		$this->assertThat(
+			$form->getInput('translate_default'),
+			$this->equalTo(
+				'<input type="text" name="jform[translate_default]" id="jform_translate_default" value="??DEFAULT_KEY??"/>'
+			),
+			'Line:'.__LINE__.' The method should return a simple input text field whose value is marked untranslated.'
+		);
+
+		$lang->load('form_test', dirname(__FILE__));
+		$this->assertThat(
+			$form->getInput('translate_default'),
+			$this->equalTo(
+				'<input type="text" name="jform[translate_default]" id="jform_translate_default" value="My Default"/>'
+			),
+			'Line:'.__LINE__.' The method should return a simple input text field whose value is translated.'
+		);
+		$lang->setDebug($debug);
 	}
 
 	/**
@@ -977,7 +1007,7 @@ class JFormTest extends JoomlaTestCase
 
 		$this->assertThat(
 			$form->getLabel('title'),
-			$this->equalTo('<label id="title_id-lbl" for="title_id" class="hasTip required" title="Title::The title.">Title</label>'),
+			$this->equalTo('<label id="title_id-lbl" for="title_id" class="hasTip required" title="Title::The title.">Title<span class="star">&#160;*</span></label>'),
 			'Line:'.__LINE__.' The method should return a simple label field.'
 		);
 	}

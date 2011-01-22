@@ -3,7 +3,7 @@
  * @version		$Id: default.php 18062 2010-07-09 02:58:04Z infograf768 $
  * @package		Joomla.Site
  * @subpackage	mod_login
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.keepalive');
 ?>
 <?php if ($type == 'logout') : ?>
-<form action="index.php" method="post" name="form-login" id="form-login">
+<form action="index.php" method="post" id="form-login">
 <?php if ($params->get('greeting')) : ?>
 	<div>
 	<?php if($params->get('name') == 0) : {
@@ -31,18 +31,7 @@ JHtml::_('behavior.keepalive');
 	<input type="hidden" name="return" value="<?php echo $return; ?>" />
 </form>
 <?php else : ?>
-<?php if (JPluginHelper::isEnabled('authentication', 'openid')) :
-		$lang->load('plg_authentication_openid', JPATH_ADMINISTRATOR);
-		$langScript =	'var JLanguage = {};'.
-						' JLanguage.WHAT_IS_OPENID = \''.JText::_('WHAT_IS_OPENID').'\';'.
-						' JLanguage.LOGIN_WITH_OPENID = \''.JText::_('LOGIN_WITH_OPENID').'\';'.
-						' JLanguage.NORMAL_LOGIN = \''.JText::_('NORMAL_LOGIN').'\';'.
-						' var modlogin = 1;';
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration($langScript);
-		JHTML::_('script','openid.js');
-endif; ?>
-<form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="form-login" id="form-login" >
+<form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" id="form-login" >
 	<?php echo $params->get('pretext'); ?>
 	<fieldset class="input">
 	<p id="form-login-username">

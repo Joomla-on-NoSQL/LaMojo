@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -18,9 +18,18 @@ Joomla.editors.instances = {};
  */
 Joomla.submitform = function(task, form) {
 	if (typeof(form) === 'undefined') {
-		form = document.adminForm;
+		form = document.getElementById('adminForm');
+		/**
+		 * Added to ensure Joomla 1.5 compatibility
+		 */
+		if(!form){
+			form = document.adminForm;
+		}
 	}
-	form.task.value = task;
+
+	if (typeof(task) !== 'undefined') {
+		form.task.value = task;
+	}
 
 	// Submit the form.
 	if (typeof form.onsubmit == 'function') {
@@ -31,6 +40,13 @@ Joomla.submitform = function(task, form) {
 	}
 	form.submit();
 };
+
+/**
+ * Default function. Usually would be overriden by the component
+ */
+Joomla.submitbutton = function(pressbutton) {
+	Joomla.submitform(pressbutton);
+}
 
 /**
  * Custom behavior for JavaScript I18N in Joomla! 1.6
@@ -219,12 +235,15 @@ function getSelectedValue(frmName, srcListName) {
  * @param	string	An alternative field name
  */
 function checkAll(checkbox, stub) {
+	if (!stub) {
+			stub = 'cb';
+	}
 	if (checkbox.form) {
 		var c = 0;
 		for (var i = 0, n = checkbox.form.elements.length; i < n; i++) {
 			var e = checkbox.form.elements[i];
 			if (e.type == checkbox.type) {
-				if ((stub && e.name.indexOf(stub) == 0) || !stub) {
+				if ((stub && e.id.indexOf(stub) == 0) || !stub) {
 					e.checked = checkbox.checked;
 					c += (e.checked == true ? 1 : 0);
 				}
@@ -234,12 +253,8 @@ function checkAll(checkbox, stub) {
 			checkbox.form.boxchecked.value = c;
 		}
 		return true;
-	}
-	else {
+	} else {
 		// The old way of doing it
-		if (!stub) {
-			stub = 'cb';
-		}
 		var f = document.adminForm;
 		var c = f.toggle.checked;
 		var n = checkbox;

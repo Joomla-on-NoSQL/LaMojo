@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -17,13 +17,22 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHTML::_('behavior.modal');
+$canDo		= MenusHelper::getActions();
 ?>
 
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task, type)
 	{
-		if (task == 'item.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
-			submitform(task);
+		if (task == 'item.setType' || task == 'item.setMenuType') {
+			if(task == 'item.setType') {
+				document.id('item-form').elements['jform[type]'].value = type;
+				document.getElementById('fieldtype').value = 'type';
+			} else {
+				document.id('item-form').elements['jform[menutype]'].value = type;
+			}
+			Joomla.submitform('item.setType', document.getElementById('item-form'));
+		} else if (task == 'item.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
+			Joomla.submitform(task, document.getElementById('item-form'));
 		} else {
 			// special case for modal popups validation response
 			$$('#item-form .modal-value.invalid').each(function(field){
@@ -38,17 +47,17 @@ JHTML::_('behavior.modal');
 
 <div class="menuitem-edit">
 
-<form action="<?php JRoute::_('index.php?option=com_menus'); ?>" method="post" name="adminForm" id="item-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_menus&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="item-form" class="form-validate">
 
 <div class="col main-section">
 	<fieldset class="adminform">
 		<legend><?php echo JText::_('COM_MENUS_ITEM_DETAILS');?></legend>
-			<ul class="adminformlist">
-				<li><?php echo $this->form->getLabel('title'); ?>
-				<?php echo $this->form->getInput('title'); ?></li>
+			<ul class="adminformlist">				
 
 				<li><?php echo $this->form->getLabel('type'); ?>
 				<?php echo $this->form->getInput('type'); ?></li>
+                <li><?php echo $this->form->getLabel('title'); ?>
+				<?php echo $this->form->getInput('title'); ?></li>
 
 				<?php if ($this->item->type =='url'): ?>
 					<?php $this->form->setFieldAttribute('link','readonly','false');?>
@@ -66,10 +75,12 @@ JHTML::_('behavior.modal');
 					<li><?php echo $this->form->getLabel('link'); ?>
 					<?php echo $this->form->getInput('link'); ?></li>
 				<?php endif ?>
-
-				<li><?php echo $this->form->getLabel('published'); ?>
-				<?php echo $this->form->getInput('published'); ?></li>
-
+				
+				<?php if ($canDo->get('core.edit.state')) : ?>	
+					<li><?php echo $this->form->getLabel('published'); ?>
+					<?php echo $this->form->getInput('published'); ?></li>
+				<?php endif ?>
+				
 				<li><?php echo $this->form->getLabel('access'); ?>
 				<?php echo $this->form->getInput('access'); ?></li>
 
@@ -81,10 +92,14 @@ JHTML::_('behavior.modal');
 
 				<li><?php echo $this->form->getLabel('browserNav'); ?>
 				<?php echo $this->form->getInput('browserNav'); ?></li>
-
-				<li><?php echo $this->form->getLabel('home'); ?>
-				<?php echo $this->form->getInput('home'); ?></li>
-
+				
+				<?php if ($canDo->get('core.edit.state')) : ?>
+					<?php if ($this->item->type == 'component') : ?>
+					<li><?php echo $this->form->getLabel('home'); ?>
+					<?php echo $this->form->getInput('home'); ?></li>
+					<?php endif ?>
+				<?php endif ?>
+				
 				<li><?php echo $this->form->getLabel('language'); ?>
 				<?php echo $this->form->getInput('language'); ?></li>
 
@@ -117,8 +132,8 @@ JHTML::_('behavior.modal');
 	<input type="hidden" name="task" value="" />
 	<?php echo $this->form->getInput('component_id'); ?>
 	<?php echo JHtml::_('form.token'); ?>
+	<input type="hidden" id="fieldtype" name="fieldtype" value="" />
 </form>
 
 <div class="clr"></div>
 </div>
-

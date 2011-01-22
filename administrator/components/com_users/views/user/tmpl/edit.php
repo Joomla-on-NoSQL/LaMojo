@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,21 +15,22 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 // Load the tooltip behavior.
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
+$canDo = UsersHelper::getActions();
 
 // Get the form fieldsets.
 $fieldsets = $this->form->getFieldsets();
 ?>
 
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (task == 'user.cancel' || document.formvalidator.isValid(document.id('user-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('user-form'));
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_users'); ?>" method="post" name="adminForm" id="user-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_users&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="user-form" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_USERS_USER_ACCOUNT_DETAILS'); ?></legend>
@@ -41,13 +42,12 @@ $fieldsets = $this->form->getFieldsets();
 			</ul>
 		</fieldset>
 
+		<?php if ($this->grouplist) :?>
 		<fieldset id="user-groups" class="adminform">
 			<legend><?php echo JText::_('COM_USERS_ASSIGNED_GROUPS'); ?></legend>
-				<?php if ($this->grouplist) :
-					echo $this->loadTemplate('groups');
-				endif; ?>
+			<?php echo $this->loadTemplate('groups');?>
 		</fieldset>
-
+		<?php endif; ?>
 	</div>
 
 	<div class="width-40 fltrt">

@@ -3,12 +3,13 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
 defined('JPATH_BASE') or die;
+jimport('joomla.event.dispatcher');
 
 /**
  * Base class for a Joomla! application.
@@ -104,7 +105,7 @@ class JApplication extends JObject
 		}
 
 		// Create the configuration object.
-		$this->_createConfiguration(JPATH_CONFIGURATION.'/'.$config['config_file']);
+		$this->_createConfiguration(JPATH_CONFIGURATION.DS.$config['config_file']);
 
 		// Create the session if a session name is passed.
 		if ($config['session'] !== false) {
@@ -139,7 +140,7 @@ class JApplication extends JObject
 			jimport('joomla.application.helper');
 			$info = JApplicationHelper::getClientInfo($client, true);
 
-			$path = $info->path.'/includes/application.php';
+			$path = $info->path.DS.'includes'.DS.'application.php';
 			if (file_exists($path)) {
 				require_once $path;
 
@@ -179,7 +180,13 @@ class JApplication extends JObject
 		// Set user specific editor.
 		$user	= JFactory::getUser();
 		$editor	= $user->getParam('editor', $this->getCfg('editor'));
-		$editor	= JPluginHelper::isEnabled('editors', $editor) ? $editor : $this->getCfg('editor');
+		if (!JPluginHelper::isEnabled('editors', $editor)) {
+			$editor	= $this->getCfg('editor');
+			if (!JPluginHelper::isEnabled('editors', $editor)) {
+				$editor	= 'none';
+			}
+		}
+		
 		$config->set('editor', $editor);
 
 		// Trigger the onAfterInitialise event.
@@ -350,14 +357,22 @@ class JApplication extends JObject
 			echo "<script>document.location.href='$url';</script>\n";
 		}
 		else {
-			if (!$moved && strstr(strtolower($_SERVER['HTTP_USER_AGENT']),'webkit') !== false) {
-				// WebKit browser - Do not use 303, as it causes subresources reload (https://bugs.webkit.org/show_bug.cgi?id=38690)
-				echo '<html><head><meta http-equiv="refresh" content="0;'. $url .'" /></head><body></body></html>';
+			$document = JFactory::getDocument();
+			jimport('joomla.environment.browser');
+			$navigator = JBrowser::getInstance();
+			if ($navigator->isBrowser('msie')) {
+				// MSIE type browser and/or server cause issues when url contains utf8 character,so use a javascript redirect method
+ 				echo '<html><head><meta http-equiv="content-type" content="text/html; charset='.$document->getCharset().'" /><script>document.location.href=\''.$url.'\';</script></head><body></body></html>';
+			}
+			elseif (!$moved and $navigator->isBrowser('konqueror')) {
+				// WebKit browser (identified as konqueror by Joomla!) - Do not use 303, as it causes subresources reload (https://bugs.webkit.org/show_bug.cgi?id=38690)
+				echo '<html><head><meta http-equiv="refresh" content="0; url='. $url .'" /><meta http-equiv="content-type" content="text/html; charset='.$document->getCharset().'" /></head><body></body></html>';
 			}
 			else {
 				// All other browsers, use the more efficient HTTP header method
 				header($moved ? 'HTTP/1.1 301 Moved Permanently' : 'HTTP/1.1 303 See other');
 				header('Location: '.$url);
+				header('Content-Type: text/html; charset='.$document->getCharset());
 			}
 		}
 		$this->close();
@@ -861,7 +876,7 @@ class JApplication extends JObject
 
 		// Remove expired sessions from the database.
 		$time = time();
-		if ($time % 3) {
+		if ($time % 2) {
 			// The modulus introduces a little entropy, making the flushing less accurate
 			// but fires the query less than half the time.
 			$db->setQuery(
@@ -870,35 +885,68 @@ class JApplication extends JObject
 			);
 			$db->query();
 		}
-
+		
 		// Check to see the the session already exists.
-		$db->setQuery(
-			'SELECT `session_id`' .
-			' FROM `#__session`' .
-			' WHERE `session_id` = '.$db->quote($session->getId())
-		);
-		$exists = $db->loadResult();
-
-		// If the session doesn't exist initialise it.
-		if (!$exists) {
-			$db->setQuery(
-				'INSERT INTO `#__session` (`session_id`, `client_id`, `time`)' .
-				' VALUES ('.$db->quote($session->getId()).', '.(int) $this->getClientId().', '.(int) time().')'
-			);
-
-			// If the insert failed, exit the application.
-			if (!$db->query()) {
-				jexit($db->getErrorMSG());
-			}
-
-			//Session doesn't exist yet, initalise and store it in the session table
-			$session->set('registry',	new JRegistry('session'));
-			$session->set('user',		new JUser());
+		if (($this->getCfg('session_handler') != 'database' && ($time % 2 || $session->isNew()))
+			|| 
+			($this->getCfg('session_handler') == 'database' && $session->isNew())
+		)
+		{
+			$this->checkSession();
 		}
 
 		return $session;
 	}
 
+	/**
+	 * Checks the user session.
+	 *
+	 * If the session record doesn't exist, initialise it.
+	 * If session is new, create session variables
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+	public function checkSession()
+	{
+		$db 		= JFactory::getDBO();
+		$session 	= JFactory::getSession();
+		$user		= JFactory::getUser();
+		
+		$db->setQuery(
+			'SELECT `session_id`' .
+			' FROM `#__session`' .
+			' WHERE `session_id` = '.$db->quote($session->getId()), 0, 1
+		);
+		$exists = $db->loadResult();
+		
+		// If the session record doesn't exist initialise it.
+		if (!$exists) {
+			if ($session->isNew()) {
+				$db->setQuery(
+					'INSERT INTO `#__session` (`session_id`, `client_id`, `time`)' .
+					' VALUES ('.$db->quote($session->getId()).', '.(int) $this->getClientId().', '.(int) time().')'
+				);
+			} 
+			else {
+				$db->setQuery(
+					'INSERT INTO `#__session` (`session_id`, `client_id`, `guest`, `time`, `userid`, `username`)' .
+					' VALUES ('.$db->quote($session->getId()).', '.(int) $this->getClientId().', '.(int) $user->get('guest').', '.(int) $session->get('session.timer.start').', '.(int) $user->get('id').', '.$db->quote($user->get('username')).')'
+				);
+			}
+			
+			// If the insert failed, exit the application.
+			if (!$db->query()) {
+				jexit($db->getErrorMSG());
+			}
+	
+			//Session doesn't exist yet, create session variables
+			if ($session->isNew()) {
+				$session->set('registry',	new JRegistry('session'));
+				$session->set('user',		new JUser());
+			}
+		}
+	}
 
 	/**
 	 * Gets the client id of the current running application.

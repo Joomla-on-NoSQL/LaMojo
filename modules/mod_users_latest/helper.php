@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_users_latest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,8 +13,7 @@ defined('_JEXEC') or die;
 class modUsersLatestHelper
 {
 	// get users sorted by activation date
-
-	function getUsers($params)
+	static function getUsers($params)
 	{
 		$db		= JFactory::getDbo();
 		$result	= null;

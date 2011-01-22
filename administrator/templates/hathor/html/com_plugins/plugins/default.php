@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -26,26 +26,18 @@ $saveOrder	= $listOrder == 'ordering';
 	<legend class="element-invisible"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></legend>
 		<div class="filter-search">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->state->get('filter.search'); ?>" title="<?php echo JText::_('COM_PLUGINS_SEARCH_IN_TITLE'); ?>" />
+			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_PLUGINS_SEARCH_IN_TITLE'); ?>" />
 			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
 			<button type="button" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 		<div class="filter-select">
-			
+
 			<label class="selectlabel" for="filter_state">
 				<?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?>
 			</label>
 			<select name="filter_state" id="filter_state" class="inputbox">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED');?></option>
 				<?php echo JHtml::_('select.options', PluginsHelper::stateOptions(), 'value', 'text', $this->state->get('filter.state'), true);?>
-			</select>
-            
-            <label class="selectlabel" for="filter_access">
-				<?php echo JText::_('JOPTION_SELECT_ACCESS'); ?>
-			</label>
-			<select name="filter_access" id="filter_access" class="inputbox">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
 			</select>
 
 			<label class="selectlabel" for="filter_folder">
@@ -54,6 +46,13 @@ $saveOrder	= $listOrder == 'ordering';
 			<select name="filter_folder" id="filter_folder" class="inputbox">
 				<option value=""><?php echo JText::_('COM_PLUGINS_OPTION_FOLDER');?></option>
 				<?php echo JHtml::_('select.options', PluginsHelper::folderOptions(), 'value', 'text', $this->state->get('filter.folder'));?>
+			</select>
+            <label class="selectlabel" for="filter_access">
+				<?php echo JText::_('JOPTION_SELECT_ACCESS'); ?>
+			</label>
+			<select name="filter_access" id="filter_access" class="inputbox">
+				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>
+				<?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
 			</select>
 
 			<button type="button" id="filter-go" onclick="this.form.submit();">
@@ -81,14 +80,15 @@ $saveOrder	= $listOrder == 'ordering';
 						<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'plugins.saveorder'); ?>
 					<?php endif; ?>
 				</th>
-				<th class="title access-col">
-					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
-				</th>
+
 				<th class="nowrap width-10">
 					<?php echo JHTML::_('grid.sort', 'COM_PLUGINS_FOLDER_HEADING', 'folder', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap width-10">
 					<?php echo JHTML::_('grid.sort', 'COM_PLUGINS_ELEMENT_HEADING', 'element', $listDirn, $listOrder); ?>
+				</th>
+                <th class="title access-col">
+					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ACCESS', 'access', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap id-col">
 					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'extension.id', $listDirn, $listOrder); ?>
@@ -104,7 +104,7 @@ $saveOrder	= $listOrder == 'ordering';
 			$canChange	= $user->authorise('core.edit.state',	'com_plugins') && $canCheckin;
 			// $lang = JFactory::getLanguage();
 			// $lang->load($item->name, JPATH_ADMINISTRATOR)
-			// || $lang->load ($item->name, JPATH_PLUGINS.'/'.$item->folder.'/'.$item->element);
+			// || $lang->load ($item->name, JPATH_PLUGINS.DS.$item->folder.DS.$item->element);
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
 				<td class="center">
@@ -115,7 +115,7 @@ $saveOrder	= $listOrder == 'ordering';
 						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'plugins.', $canCheckin); ?>
 					<?php endif; ?>
 					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_plugins&task=plugin.edit&id='.(int) $item->extension_id); ?>">
+						<a href="<?php echo JRoute::_('index.php?option=com_plugins&task=plugin.edit&extension_id='.(int) $item->extension_id); ?>">
 							<?php echo $item->name; ?></a>
 					<?php else : ?>
 							<?php echo $item->name; ?>
@@ -141,14 +141,15 @@ $saveOrder	= $listOrder == 'ordering';
 						<?php echo $item->ordering; ?>
 					<?php endif; ?>
 				</td>
-				<td class="center">
-					<?php echo $this->escape($item->access_level); ?>
-				</td>
+
 				<td class="nowrap center">
 					<?php echo $this->escape($item->folder);?>
 				</td>
 				<td class="nowrap center">
 					<?php echo $this->escape($item->element);?>
+				</td>
+                <td class="center">
+					<?php echo $this->escape($item->access_level); ?>
 				</td>
 				<td class="center">
 					<?php echo (int) $item->extension_id;?>

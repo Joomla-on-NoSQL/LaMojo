@@ -9,9 +9,13 @@
 			class="inputbox"
 			label="COM_CONTENT_ID_LABEL"
 			size="10"
-			default="0"
-			required="true"
+			default="0"			
 			readonly="true" />
+
+		<field 
+			name="asset_id" 
+			type="hidden" 
+			filter="unset" />	
 
 		<field
 			id="title"
@@ -32,31 +36,17 @@
 			class="inputbox"
 			size="45"
 			filter="unset" />
-		<!-- this is for rendering -->
+
 		<field
-			name="text"
+			name="articletext"
 			type="editor"
 			buttons="true"
-			label="Content_Text_Label"
-			description="Content_Text_Desc"
+			label="CONTENT_TEXT_LABEL"
+			description="CONTENT_TEXT_DESC"
 			class="inputbox"
-			filter="unset"
+			filter="ContentHelper::filterText"
+			asset_id="com_content"
 		/>
-
-		<!-- and these two are for saving -->
-		<field
-			id="introtext"
-			name="introtext"
-			label="COM_CONTENT_INTROTEXT"
-			type="editor"
-			filter="safehtml"
-			required="true" />
-
-		<field
-			id="fulltext"
-			name="fulltext"
-			type="editor"
-			filter="safehtml" />
 
 		<field
 			id="state"
@@ -80,7 +70,20 @@
 				value="-2">
 				JTRASHED</option>
 		</field>
-
+		
+		<field 
+			id="featured"
+			name="featured" 
+			type="list"
+			label="JGLOBAL_FIELD_FEATURED_LABEL"
+			description="JGLOBAL_FIELD_FEATURED_DESC"
+			class="inputbox"
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		
 		<field
 			id="catid"
 			name="catid"
@@ -90,8 +93,6 @@
 			description="JFIELD_CATEGORY_DESC"
 			class="inputbox"
 			required="true">
-			<option
-				value="0">JOPTION_SELECT_CATEGORY</option>
 		</field>
 
 		<field
@@ -122,7 +123,7 @@
 			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
 			class="inputbox"
 			format="%Y-%m-%d %H:%M:%S"
-			size="20"
+			size="22"
 			filter="user_utc" />
 
 		<field
@@ -133,7 +134,7 @@
 			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
 			class="inputbox"
 			format="%Y-%m-%d %H:%M:%S"
-			size="20"
+			size="22"
 			filter="user_utc" />
 
 		<field

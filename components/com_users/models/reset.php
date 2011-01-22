@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -85,9 +85,9 @@ class UsersModelReset extends JModelForm
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = 'user')
 	{
-		parent::preprocessForm($form, $data, 'user');
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
@@ -100,8 +100,7 @@ class UsersModelReset extends JModelForm
 	protected function populateState()
 	{
 		// Get the application object.
-		$app	= JFactory::getApplication();
-		$params	= $app->getParams('com_users');
+		$params	= JFactory::getApplication()->getParams('com_users');
 
 		// Load the parameters.
 		$this->setState('params', $params);
@@ -192,7 +191,7 @@ class UsersModelReset extends JModelForm
 	function processResetConfirm($data)
 	{
 		jimport('joomla.user.helper');
-		
+
 		// Get the form.
 		$form = $this->getResetConfirmForm();
 
@@ -257,8 +256,8 @@ class UsersModelReset extends JModelForm
 		{
 			$this->setError(JText::_('COM_USERS_USER_NOT_FOUND'));
 			return false;
-		}		
-		
+		}
+
 		// Make sure the user isn't blocked.
 		if ($user->block) {
 			$this->setError(JText::_('COM_USERS_USER_BLOCKED'));
@@ -310,7 +309,7 @@ class UsersModelReset extends JModelForm
 
 		jimport('joomla.user.helper');
 
-		// Find the user id for the given e-mail address.
+		// Find the user id for the given email address.
 		$db	= $this->getDbo();
 		$query	= $db->getQuery(true);
 		$query->select('id');
@@ -342,11 +341,17 @@ class UsersModelReset extends JModelForm
 			return false;
 		}
 
+		// Make sure the user isn't a Super Admin.
+		if ($user->authorise('core.admin')) {
+			$this->setError(JText::_('COM_USERS_REMIND_SUPERADMIN_ERROR'));
+			return false;
+		}
+
 		// Set the confirmation token.
 		$token = JUtility::getHash(JUserHelper::genRandomPassword());
 		$salt = JUserHelper::getSalt('crypt-md5');
 		$hashedToken = md5($token.$salt).':'.$salt;
-		
+
 		$user->activation = $hashedToken;
 
 		// Save the user to the database.
@@ -360,7 +365,7 @@ class UsersModelReset extends JModelForm
 		$itemid = $itemid !== null ? '&Itemid='.$itemid : '';
 		$link = 'index.php?option=com_users&view=reset&layout=confirm'.$itemid;
 
-		// Put together the e-mail template data.
+		// Put together the email template data.
 		$data = $user->getProperties();
 		$data['fromname']	= $config->get('fromname');
 		$data['mailfrom']	= $config->get('mailfrom');
@@ -381,7 +386,7 @@ class UsersModelReset extends JModelForm
 			$data['link_text']
 		);
 
-		// Send the password reset request e-mail.
+		// Send the password reset request email.
 		$return = JUtility::sendMail($data['mailfrom'], $data['fromname'], $user->email, $subject, $body);
 		// Check for an error.
 		if ($return !== true) {

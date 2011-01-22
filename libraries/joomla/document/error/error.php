@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Document
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -86,7 +86,7 @@ class JDocumentError extends JDocument
 		$directory	= isset($params['directory']) ? $params['directory'] : 'templates';
 		$template	= isset($params['template']) ? JFilterInput::getInstance()->clean($params['template'], 'cmd') : 'system';
 
-		if (!file_exists($directory.'/'.$template.'/'.$file)) {
+		if (!file_exists($directory.DS.$template.DS.$file)) {
 			$template = 'system';
 		}
 
@@ -97,7 +97,7 @@ class JDocumentError extends JDocument
 		$this->error	= $this->_error;
 
 		// load
-		$data = $this->_loadTemplate($directory.'/'.$template, $file);
+		$data = $this->_loadTemplate($directory.DS.$template, $file);
 
 		parent::render();
 		return $data;
@@ -115,14 +115,14 @@ class JDocumentError extends JDocument
 		$contents = '';
 
 		//Check to see if we have a valid template file
-		if (file_exists($directory.'/'.$filename))
+		if (file_exists($directory.DS.$filename))
 		{
 			//store the file path
-			$this->_file = $directory.'/'.$filename;
+			$this->_file = $directory.DS.$filename;
 
 			//get the file content
 			ob_start();
-			require_once $directory.'/'.$filename;
+			require_once $directory.DS.$filename;
 			$contents = ob_get_contents();
 			ob_end_clean();
 		}
@@ -140,7 +140,7 @@ class JDocumentError extends JDocument
 			$j	=	1;
 			echo	'<table border="0" cellpadding="0" cellspacing="0" class="Table">';
 			echo	'	<tr>';
-			echo	'		<td colspan="3" align="left" class="TD"><strong>Call stack</strong></td>';
+			echo	'		<td colspan="3" class="TD"><strong>Call stack</strong></td>';
 			echo	'	</tr>';
 			echo	'	<tr>';
 			echo	'		<td class="TD"><strong>#</strong></td>';

@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * Creates test group and assigns priviledges with the ACL.
  */
@@ -15,6 +15,113 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		$this->setUp();
 		$this->gotoAdmin();
 		$this->doAdminLogin();
+		echo "Check starting condition as Super Admin user\n";
+			try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@class=''][@href='#']"), 'User manager should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-groups']"), 'Groups should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@class=''][@href='#'][contains(text(), 'Menus')]"), 'Menus should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-banners']"), 'Banners should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-contacts']"), 'Contacts should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-messaging']"), 'Messaging should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-newsfeeds']"), 'Newsfeeds should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@href='index.php?option=com_search']"), 'Search should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-weblinks']"), 'Weblinks should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@href='index.php?option=com_redirect']"), 'Redirect should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@href='index.php?option=com_installer']"), 'Extensions should be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//ul[@id='menu-menu-manager']"), 'Menu Manager should not be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
+		try
+		{
+			$this->assertTrue($this->isElementPresent("//a[@href='index.php?option=com_modules']"), 'Module Manager should not be visible');
+		}
+			catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			array_push($this->verificationErrors, $this->getTraceFiles($e));
+		}
 
 		$saltGroup = mt_rand();
 		$groupName = 'Test Administrator Group'.$saltGroup;
@@ -23,54 +130,34 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		$levelName = 'Special';
         $this->changeAccessLevel($levelName,$groupName);
         echo "Change " . $groupName . " article permissions.\n";
-		$this->jClick('Article Manager');
-		$this->jClick('Options');
-		$this->click("//dt[contains(span,'Permissions')]");
-		$i=1;
-		while($i<=6)
-  		{
-			$this->select("//tr[contains(th,'$groupName')]/td[$i]/select", "label=Allow");
-  			$i++;
-  		}
-		echo "Saving Article Administrator article permissions\n";
-		$this->click("//button[contains(text(),'Save')]");
-
-		//
-		//	---- No confirmation message exists ----
-		//
+        echo "Grant allow for all actions in article manager\n";
+        $actions = array('Configure', 'Access Component', 'Create', 'Delete', 'Edit', 'Edit State');
+        $permissions = array('Allowed', 'Allowed', 'Allowed', 'Allowed', 'Allowed', 'Allowed');
+        $this->setPermissions('Article Manager', $groupName, $actions, $permissions);
 
 		echo "Allow" . $groupName . " back end access, deny admin access\n";
-		$this->jClick('Global Configuration');
-		$this->click("permissions");
-		$this->select("//tr[contains(th,'$groupName')]/td[1]/select", "label=...");
-		$this->select("//tr[contains(th,'$groupName')]/td[2]/select", "label=Allow");
-		$this->select("//tr[contains(th,'$groupName')]/td[3]/select", "label=Deny");
-		$this->select("//tr[contains(th,'$groupName')]/td[4]/select", "label=...");
-		$this->select("//tr[contains(th,'$groupName')]/td[5]/select", "label=...");
-		$this->select("//tr[contains(th,'$groupName')]/td[6]/select", "label=...");
-		$this->select("//tr[contains(th,'$groupName')]/td[7]/select", "label=...");
-		$this->select("//tr[contains(th,'$groupName')]/td[8]/select", "label=...");
-		sleep(2);
-		$this->jClick('Save & Close');
+		$actions = array('Site Login', 'Admin Login', 'Configure', 'Access Component', 'Create', 'Delete', 'Edit', 'Edit State');
+		$permissions = array('Inherited', 'Allowed', 'Denied', 'Inherited', 'Inherited', 'Inherited', 'Inherited', 'Inherited');
+		$this->setPermissions('Global Configuration', $groupName, $actions, $permissions);
 
 		$group = $groupName;
-		$userName = 'Test User' . $saltGroup;
+		$username = 'Test User' . $saltGroup;
 		$login = 'TestUser' . $saltGroup;
 		$email = $login . '@test.com';
-		$this->createUser($userName, $login, 'password' , $email, $group);
+		$this->createUser($username, $login, 'password' , $email, $group);
 		$this->gotoAdmin();
 		$this->doAdminLogout();
 		sleep(3);
 
-		echo("Log in to back end as " . $userName . ".\n");
+		echo("Log in to back end as " . $username . ".\n");
 		$this->type("mod-login-username", $login);
 		$this->type("mod-login-password", 'password');
 		$this->click("link=Log in");
 		$this->waitForPageToLoad("30000");
-		echo("Testing " .  $userName . " access.\n");
+		echo("Testing " .  $username . " access.\n");
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=User Manager"),'User Manager Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//a[@class=''][@href='#'][contains(text(), 'Users')]"), 'Users menu should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -78,7 +165,8 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Users"),'Users Access Test Failed');
+			
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-groups']"), 'Groups should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -86,7 +174,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Menus"),'Menus Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//a[@class=''][@href='#'][contains(text(), 'Menus')]"), 'Menus option should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -94,7 +182,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Banner"),'Banner Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-banners']"), 'Banners should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -102,7 +190,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Contacts"),'Contacts Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-contacts']"), 'Contacts should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -110,7 +198,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Messaging"),'Messaging Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-messaging']"), 'Messaging should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -118,7 +206,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=News Feeds"),'News Feeds Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-newsfeeds']"), 'Newsfeeds should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -126,7 +214,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Search"),'Search Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//a[@href='index.php?option=com_search']"), 'Search should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -134,7 +222,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Web Links"),'Web Links Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-weblinks']"), 'Weblinks should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -143,7 +231,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Redirect",'Redirect Access Test Failed'));
+			$this->assertFalse($this->isElementPresent("//a[@href='index.php?option=com_redirect']"), 'Redirect should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -151,7 +239,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Extensions"),'Extensions Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//a[@href='index.php?option=com_installer']"), 'Extensions should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -159,7 +247,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Menu Manager"),'Menu Manager Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//ul[@id='menu-menu-manager']"), 'Menu Manager should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -167,7 +255,7 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		}
 		try
 		{
-			$this->assertFalse($this->isElementPresent("link=Module Manager"),'Module Manager Access Test Failed');
+			$this->assertFalse($this->isElementPresent("//a[@href='index.php?option=com_modules']"), 'Module Manager should not be visible');
 		}
 			catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -193,6 +281,8 @@ class Acl0001Test extends SeleniumJoomlaTestCase
 		$this->deleteGroup();
 		$this->doAdminLogout();
 		$this->countErrors();
+
+		$this->deleteAllVisibleCookies();
 	}
 }
-?>
+

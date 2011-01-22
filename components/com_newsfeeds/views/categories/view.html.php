@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -44,17 +44,20 @@ class NewsfeedsViewCategories extends JView
 
 		if($items === false)
 		{
-			return JError::raiseWarning(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
+			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
 		if($parent == false)
 		{
-			return JError::raiseWarning(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
+			return JError::raiseError(404, JText::_('JGLOBAL_CATEGORY_NOT_FOUND'));
 		}
 
 		$params = &$state->params;
 
 		$items = array($parent->id => $items);
+		
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
 		$this->assign('maxLevelcat',	$params->get('maxLevelcat', -1));
 		$this->assignRef('params',		$params);
@@ -86,10 +89,10 @@ class NewsfeedsViewCategories extends JView
 		}
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
+			$title = $app->getCfg('sitename');
 		}
 		elseif ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 		$this->document->setTitle($title);
 	}

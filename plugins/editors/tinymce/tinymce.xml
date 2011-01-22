@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install version="1.6" type="plugin" group="editors" method="upgrade">
+<extension version="1.6" type="plugin" group="editors" method="upgrade">
 	<name>plg_editors_tinymce</name>
-	<version>3.3.8</version>
+	<version>3.3.9.3</version>
 	<creationDate>2005-2010</creationDate>
 	<author>Moxiecode Systems AB</author>
 	<authorEmail>N/A</authorEmail>
@@ -200,6 +200,24 @@
 					description="PLG_TINY_FIELD_HTMLWIDTH_DESC"
 					label="PLG_TINY_FIELD_HTMLWIDTH_LABEL"
 				/>
+				
+				<field name="resizing" type="radio"
+					default="true"
+					description="PLG_TINY_FIELD_RESIZING_DESC"
+					label="PLG_TINY_FIELD_RESIZING_LABEL"
+				>
+					<option value="false">JOFF</option>
+					<option value="true">JON</option>
+				</field>
+				
+				<field name="resize_horizontal" type="radio"
+					default="false"
+					description="PLG_TINY_FIELD_RESIZE_HORIZONTAL_DESC"
+					label="PLG_TINY_FIELD_RESIZE_HORIZONTAL_LABEL"
+				>
+					<option value="false">JOFF</option>
+					<option value="true">JON</option>
+				</field>
 
 				<field name="element_path" type="radio"
 					default="1"
@@ -210,7 +228,7 @@
 					<option value="1">JON</option>
 				</field>
 
-				<field name="subslider" type="spacer"
+				<field name="spacer" type="spacer" class="text"
 					label="PLG_TINY_FIELD_NAME_EXTENDED_LABEL"
 				/>
 
@@ -479,4 +497,4 @@
 
 		</fields>
 	</config>
-</install>
+</extension>

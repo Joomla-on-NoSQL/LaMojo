@@ -2007,7 +2007,7 @@ class PHPMailer {
         // do not change urls for absolute images (thanks to corvuscorax)
         if (!preg_match('#^[A-z]+://#',$url)) {
           $filename = basename($url);
-          $directory = JPATH::dirname($url);
+          $directory = dirname($url);
           ($directory == '.')?$directory='':'';
           $cid = 'cid:' . md5($filename);
           $ext = pathinfo($filename, PATHINFO_EXTENSION);

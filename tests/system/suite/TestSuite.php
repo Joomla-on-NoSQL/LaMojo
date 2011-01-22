@@ -20,7 +20,10 @@ require_once 'control_panel/control_panel0003Test.php';
 require_once 'control_panel/control_panel0004Test.php';
 require_once 'control_panel/control_panel0005Test.php';
 require_once 'menus/menu0001Test.php';
+require_once 'menus/menu0002Test.php';
 require_once 'articles/article0001Test.php';
+require_once 'articles/article0002Test.php';
+require_once 'articles/article0003Test.php';
 require_once 'articles/featured0001Test.php';
 require_once 'articles/featured0002Test.php';
 require_once 'com_users/user0001Test.php';
@@ -33,6 +36,8 @@ require_once 'sample_data/sample_data0001Test.php';
 require_once 'acl/acl0001Test.php';
 require_once 'acl/acl0002Test.php';
 require_once 'acl/acl0003Test.php';
+require_once 'acl/acl0004Test.php';
+require_once 'acl/acl0005Test.php';
 require_once 'language/language0001Test.php';
 
 
@@ -53,7 +58,10 @@ class TestSuite
 		$suite->addTestSuite('ControlPanel0004');
 		$suite->addTestSuite('ControlPanel0005');
 		$suite->addTestSuite('Menu0001');
+		$suite->addTestSuite('Menu0002');
 		$suite->addTestSuite('Article0001');
+		$suite->addTestSuite('Article0002');
+		$suite->addTestSuite('Article0003');
 		$suite->addTestSuite('Featured0001Test');
 		$suite->addTestSuite('Featured0002Test');
 		$suite->addTestSuite('User0001Test');
@@ -66,9 +74,10 @@ class TestSuite
 		$suite->addTestSuite('Acl0001Test');
 		$suite->addTestSuite('Acl0002Test');
 		$suite->addTestSuite('DoInstall');
-		$suite->addTestSuite('Acl0003Test');				
+		$suite->addTestSuite('Acl0003Test');
+		$suite->addTestSuite('Acl0004Test');
+		$suite->addTestSuite('Acl0005Test');
 		$suite->addTestSuite('Language0001Test');
-
 		return $suite;
 	}
 }

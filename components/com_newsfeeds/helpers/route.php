@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla
  * @subpackage	Newsfeeds
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -49,71 +49,87 @@ abstract class NewsfeedsHelperRoute
 			}
 		}
 
-		if ($item = NewsfeedsHelperRoute::_findItem($needles)) {
+		if ($item = self::_findItem($needles)) {
 			$link .= '&Itemid='.$item;
-		};
+		}
+		elseif ($item = self::_findItem()) {
+			$link .= '&Itemid='.$item;
+		}
 
 		return $link;
 	}
 
 	public static function getCategoryRoute($catid)
 	{
-		if ((int) $catid < 1) {
-			return;
-		}
-
-		if ($catid instanceof JCategoryNode) {
-			$catids = array_reverse($catid->getPath());
+		if ($catid instanceof JCategoryNode)
+		{
 			$id = $catid->id;
-
-			// Create the link
-			$link = 'index.php?option=com_newsfeeds&view=category&id='.$id;
+			$category = $catid;
 		}
-		else {
-			$id = (int)$catid;
-			//Create the link
-			$link = 'index.php?option=com_newsfeeds&view=category&id='.$id;
-			$categories = JCategories::getInstance('Newsfeeds');
-			$category = $categories->get((int)$catid);
+		else
+		{
+			$id = (int) $catid;
+			$category = JCategories::getInstance('Newsfeeds')->get($id);
+		}
 
-			if (!$category) {
-				return $link;
+		if($id < 1)
+		{
+			$link = '';
+		}
+		else
+		{
+			$needles = array(
+				'category' => array($id)
+			);
+
+			if ($item = self::_findItem($needles))
+			{
+				$link = 'index.php?Itemid='.$item;
 			}
-
-			$catids = array_reverse($category->getPath());
+			else
+			{
+				//Create the link
+				$link = 'index.php?option=com_newsfeeds&view=category&id='.$id;
+				if($category)
+				{
+					$catids = array_reverse($category->getPath());
+					$needles = array(
+						'category' => $catids,
+						'categories' => $catids
+					);
+					if ($item = self::_findItem($needles)) {
+						$link .= '&Itemid='.$item;
+					}
+					elseif ($item = self::_findItem()) {
+						$link .= '&Itemid='.$item;
+					}
+				}
+			}
 		}
-
-		$needles = array(
-			'category' => $catids
-		);
-
-		if ($item = NewsfeedsHelperRoute::_findItem($needles)) {
-			$link .= '&Itemid='.$item;
-		};
 
 		return $link;
 	}
 
-	protected static function _findItem($needles)
+	protected static function _findItem($needles = null)
 	{
+		$app		= JFactory::getApplication();
+		$menus		= $app->getMenu('site');
+
 		// Prepare the reverse lookup array.
-		if (self::$lookup === null) {
+		if (self::$lookup === null)
+		{
 			self::$lookup = array();
 
 			$component	= JComponentHelper::getComponent('com_newsfeeds');
-			$app		= JFactory::getApplication();
-			$menus		= $app->getMenu('site');
 			$items		= $menus->getItems('component_id', $component->id);
-
 			foreach ($items as $item)
 			{
-				if (isset($item->query) && isset($item->query['view'])) {
+				if (isset($item->query) && isset($item->query['view']))
+				{
 					$view = $item->query['view'];
-
 					if (!isset(self::$lookup[$view])) {
 						self::$lookup[$view] = array();
 					}
-
 					if (isset($item->query['id'])) {
 						self::$lookup[$view][$item->query['id']] = $item->id;
 					}
@@ -121,15 +137,26 @@ abstract class NewsfeedsHelperRoute
 			}
 		}
 
-		foreach ($needles as $view => $ids)
+		if ($needles)
 		{
-			if (isset(self::$lookup[$view])) {
-				foreach($ids as $id)
+			foreach ($needles as $view => $ids)
+			{
+				if (isset(self::$lookup[$view]))
 				{
-					if (isset(self::$lookup[$view][(int)$id])) {
-						return self::$lookup[$view][(int)$id];
+					foreach($ids as $id)
+					{
+						if (isset(self::$lookup[$view][(int)$id])) {
+							return self::$lookup[$view][(int)$id];
+						}
 					}
 				}
+			}
+		}
+		else
+		{
+			$active = $menus->getActive();
+			if ($active) {
+				return $active->id;
 			}
 		}
 

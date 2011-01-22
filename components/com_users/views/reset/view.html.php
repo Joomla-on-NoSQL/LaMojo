@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,10 +33,10 @@ class UsersViewReset extends JView
 	function display($tpl = null)
 	{
 		// Get the view data.
-                if ($this->_layout == 'default') {
+                if ($this->getLayout() == 'default') {
                     $formname = "Form";
                 } else {
-                    $formname = ucfirst($this->_name).ucfirst($this->_layout)."Form";
+                    $formname = ucfirst($this->_name).ucfirst($this->getLayout())."Form";
                 }
 
 		$this->form	= $this->get($formname);
@@ -48,6 +48,9 @@ class UsersViewReset extends JView
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
 		}
+
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx'));
 
 		$this->prepareDocument();
 
@@ -77,10 +80,10 @@ class UsersViewReset extends JView
 
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
+			$title = $app->getCfg('sitename');
 		}
 		elseif ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 		$this->document->setTitle($title);
 	}

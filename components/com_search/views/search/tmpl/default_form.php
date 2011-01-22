@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_search
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,13 +11,13 @@
 defined('_JEXEC') or die;
 ?>
 
-<form id="searchForm" action="<?php echo JRoute::_('index.php?option=com_search');?>" method="post" name="searchForm">
+<form id="searchForm" action="<?php echo JRoute::_('index.php?option=com_search');?>" method="post">
 
 	<fieldset class="word">
-		<label for="search_searchword">
+		<label for="search-searchword">
 			<?php echo JText::_('COM_SEARCH_SEARCH_KEYWORD'); ?>
 		</label>
-		<input type="text" name="searchword" id="search_searchword" size="30" maxlength="20" value="<?php echo $this->escape($this->searchword); ?>" class="inputbox" />
+		<input type="text" name="searchword" id="search-searchword" size="30" maxlength="20" value="<?php echo $this->escape($this->searchword); ?>" class="inputbox" />
 		<button name="Search" onclick="this.form.submit()" class="button"><?php echo JText::_('COM_SEARCH_SEARCH');?></button>
 	</fieldset>
 
@@ -47,8 +47,8 @@ defined('_JEXEC') or die;
 		<?php foreach ($this->searchareas['search'] as $val => $txt) :
 			$checked = is_array($this->searchareas['active']) && in_array($val, $this->searchareas['active']) ? 'checked="checked"' : '';
 		?>
-		<input type="checkbox" name="areas[]" value="<?php echo $val;?>" id="area_<?php echo $val;?>" <?php echo $checked;?> />
-			<label for="area_<?php echo $val;?>">
+		<input type="checkbox" name="areas[]" value="<?php echo $val;?>" id="area-<?php echo $val;?>" <?php echo $checked;?> />
+			<label for="area-<?php echo $val;?>">
 				<?php echo JText::_($txt); ?>
 			</label>
 		<?php endforeach; ?>
@@ -57,7 +57,7 @@ defined('_JEXEC') or die;
 
 <?php if ($this->total > 0) : ?>
 
-	<div class="form_limit">
+	<div class="form-limit">
 		<label for="limit">
 			<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>
 		</label>

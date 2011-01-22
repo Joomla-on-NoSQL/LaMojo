@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -43,7 +43,7 @@ abstract class JHtmlLanguages {
 	 */
 	public static function id($rowNum,$language)
 	{
-		return '<input type="radio" id="cb'.$rowNum.'" name="cid" value="'.$language.'" onclick="isChecked(this.checked);" title="'.($rowNum+1).'"/>';
+		return '<input type="radio" id="cb'.$rowNum.'" name="cid" value="'.htmlspecialchars($language).'" onclick="isChecked(this.checked);" title="'.($rowNum+1).'"/>';
 	}
 
 	public static function clients()

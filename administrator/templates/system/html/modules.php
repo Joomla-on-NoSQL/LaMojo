@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Administrator
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -23,7 +23,7 @@ function modChrome_none($module, &$params, &$attribs)
 function modChrome_xhtml($module, &$params, &$attribs)
 {
 	if (!empty ($module->content)) : ?>
-		<div class="module<?php echo $params->get('moduleclass_sfx'); ?>">
+		<div class="module<?php echo htmlspecialchars($params->get('moduleclass_sfx')); ?>">
 		<?php if ($module->showtitle != 0) : ?>
 			<h3><?php echo $module->title; ?></h3>
 		<?php endif; ?>

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage		HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -48,7 +48,7 @@ abstract class JHtmlContentLanguage
 			$db->setQuery($query);
 			self::$items = $db->loadObjectList();
 			if ($all) {
-				array_unshift(self::$items, new JObject(array('value'=>'*','text'=>$translate ? JText::_('JALL') : 'JALL')));
+				array_unshift(self::$items, new JObject(array('value'=>'*','text'=>$translate ? JText::alt('JALL','language') : 'JALL_LANGUAGE')));
 			}
 
 			// Detect errors

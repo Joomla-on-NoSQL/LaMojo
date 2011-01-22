@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.5
  */
@@ -9,7 +9,7 @@
 // no direct access
 defined('_JEXEC') or die;
 
-include_once JPATH::dirname(__FILE__).'/../default/view.php';
+include_once dirname(__FILE__).'/../default/view.php';
 
 /**
  * Extension Manager Install View
@@ -27,9 +27,10 @@ class InstallerViewInstall extends InstallerViewDefault
 	{
 		$paths = new stdClass();
 		$paths->first = '';
+		$state = $this->get('state');
 
 		$this->assignRef('paths', $paths);
-		$this->assignRef('state', $this->get('state'));
+		$this->assignRef('state', $state);
 
 		parent::display($tpl);
 	}

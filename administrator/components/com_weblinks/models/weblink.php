@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -38,7 +38,8 @@ class WeblinksModelWeblink extends JModelAdmin
 
 		if ($record->catid) {
 			return $user->authorise('core.delete', 'com_weblinks.category.'.(int) $record->catid);
-		} else {
+		}
+		else {
 			return parent::canDelete($record);
 		}
 	}
@@ -54,9 +55,10 @@ class WeblinksModelWeblink extends JModelAdmin
 	{
 		$user = JFactory::getUser();
 
-		if ($record->catid) {
+		if (!empty($record->catid)) {
 			return $user->authorise('core.edit.state', 'com_weblinks.category.'.(int) $record->catid);
-		} else {
+		}
+		else {
 			return parent::canEditState($record);
 		}
 	}
@@ -102,6 +104,22 @@ class WeblinksModelWeblink extends JModelAdmin
 			$form->setFieldAttribute('catid', 'action', 'core.create');
 		}
 
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data)) {
+			// Disable fields for display.
+			$form->setFieldAttribute('ordering', 'disabled', 'true');
+			$form->setFieldAttribute('state', 'disabled', 'true');
+			$form->setFieldAttribute('publish_up', 'disabled', 'true');
+			$form->setFieldAttribute('publish_down', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('ordering', 'filter', 'unset');
+			$form->setFieldAttribute('state', 'filter', 'unset');
+			$form->setFieldAttribute('publish_up', 'filter', 'true');
+			$form->setFieldAttribute('publish_down', 'filter', 'true');
+		}
+
 		return $form;
 	}
 
@@ -118,6 +136,12 @@ class WeblinksModelWeblink extends JModelAdmin
 
 		if (empty($data)) {
 			$data = $this->getItem();
+
+			// Prime some default values.
+			if ($this->getState('weblink.id') == 0) {
+				$app = JFactory::getApplication();
+				$data->set('catid', JRequest::getInt('catid', $app->getUserState('com_weblinks.weblinks.filter.category_id')));
+			}
 		}
 
 		return $data;
@@ -163,7 +187,6 @@ class WeblinksModelWeblink extends JModelAdmin
 
 		if (empty($table->id)) {
 			// Set the values
-			//$table->created	= $date->toMySQL();
 
 			// Set ordering to the last item if not set
 			if (empty($table->ordering)) {
@@ -176,8 +199,6 @@ class WeblinksModelWeblink extends JModelAdmin
 		}
 		else {
 			// Set the values
-			//$table->modified	= $date->toMySQL();
-			//$table->modified_by	= $user->get('id');
 		}
 	}
 
@@ -188,7 +209,7 @@ class WeblinksModelWeblink extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'catid = '.(int) $table->catid;

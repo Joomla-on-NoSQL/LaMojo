@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	Weblinks
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,7 +24,7 @@ class SearchViewSearch extends JView
 {
 	function display($tpl = null)
 	{
-		require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/search.php';
+		require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'search.php';
 
 		// Initialise some variables
 		$app	= JFactory::getApplication();
@@ -54,13 +54,14 @@ class SearchViewSearch extends JView
 			if (!$menu_params->get('page_title')) {
 				$params->set('page_title',	JText::_('COM_SEARCH_SEARCH'));
 			}
-		} else {
+		}
+		else {
 			$params->set('page_title',	JText::_('COM_SEARCH_SEARCH'));
 		}
 
 		$title = $params->get('page_title');
 		if ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 		$this->document->setTitle($title);
 
@@ -102,25 +103,22 @@ class SearchViewSearch extends JView
 		// put the filtered results back into the model
 		// for next release, the checks should be done in the model perhaps...
 		$state->set('keyword', $searchword);
-		if ($error==null)
-		{
+		if ($error == null) {
 			$results	= $this->get('data');
 			$total		= $this->get('total');
 			$pagination	= $this->get('pagination');
 
-			require_once JPATH_SITE.'/components/com_content/helpers/route.php';
+			require_once JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php';
 
 			for ($i=0; $i < count($results); $i++)
 			{
 				$row = &$results[$i]->text;
 
-				if ($state->get('match') == 'exact')
-				{
+				if ($state->get('match') == 'exact') {
 					$searchwords = array($searchword);
 					$needle = $searchword;
 				}
-				else
-				{
+				else {
 					$searchwords = preg_split("/\s+/u", $searchword);
 					$needle = $searchwords[0];
 				}
@@ -129,6 +127,7 @@ class SearchViewSearch extends JView
 				$searchwords = array_unique($searchwords);
 				$searchRegex = '#(';
 				$x = 0;
+
 				foreach ($searchwords as $k => $hlword)
 				{
 					$searchRegex .= ($x == 0 ? '' : '|');
@@ -147,10 +146,14 @@ class SearchViewSearch extends JView
 					$created = '';
 				}
 
+				$result->text		= JHtml::_('content.prepare', $result->text);
 				$result->created	= $created;
 				$result->count		= $i + 1;
 			}
 		}
+
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
 		$this->assignRef('pagination',  $pagination);
 		$this->assignRef('results',		$results);

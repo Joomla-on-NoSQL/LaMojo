@@ -4,7 +4,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_newsfeeds
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -36,7 +36,7 @@ if ($lang->isRTL() && $myrtl == 0) {
 						$direction = " redirect-rtl";
 					}
 ?>
-<div class="newsfeed<?php echo $this->params->get('pageclass_sfx')?><?php echo $direction; ?>">
+<div class="newsfeed<?php echo $this->pageclass_sfx?><?php echo $direction; ?>">
 <?php if ($this->params->get('show_page_heading', 1)) : ?>
 <h1 class="<?php echo $direction; ?>">
 	<?php echo $this->escape($this->params->get('page_heading')); ?>

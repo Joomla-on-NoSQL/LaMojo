@@ -1,9 +1,9 @@
 <?php
 /**
- * @version		$Id$
+ * @version		$Id: edit_options.php 18296 2010-07-30 13:01:25Z infograf768 $
  * @package		Joomla.Administrator
- * @subpackage	com_modules
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @subpackage	templates.hathor
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
 			endif;
 			?>
 		<fieldset class="panelform">
-		<legend class="element-invisible"><?php echo JText::_($label) ?></legend>
+		<legend class="element-invisible"><?php echo JText::_($label); ?></legend>
 		<?php $hidden_fields = ''; ?>
 		<ul class="adminformlist">
 			<?php foreach ($this->form->getFieldset($name) as $field) : ?>

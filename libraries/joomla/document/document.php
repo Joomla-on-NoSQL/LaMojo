@@ -3,14 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Document
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
 //Register the renderer class with the loader
-JLoader::register('JDocumentRenderer', str_replace('\\','/',(dirname(__FILE__)).'/renderer.php'));
+JLoader::register('JDocumentRenderer', dirname(__FILE__).DS.'renderer.php');
 
 /**
  * Document class, provides an easy interface to parse and display a document
@@ -258,7 +258,7 @@ class JDocument extends JObject
 		if (empty($instances[$signature]))
 		{
 			$type	= preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
-			$path	= str_replace('\\','/',dirname(__FILE__)).'/'.$type.'/'.$type.'.php';
+			$path	= dirname(__FILE__).DS.$type.DS.$type.'.php';
 			$ntype	= null;
 
 			// Check if the document type exists
@@ -273,7 +273,7 @@ class JDocument extends JObject
 			$class = 'JDocument'.$type;
 			if (!class_exists($class))
 			{
-				$path	= str_replace('\\','/',dirname(__FILE__)).'/'.$type.'/'.$type.'.php';
+				$path	= dirname(__FILE__).DS.$type.DS.$type.'.php';
 				if (file_exists($path)) {
 					require_once $path;
 				} else {
@@ -766,7 +766,7 @@ class JDocument extends JObject
 
 		if (!class_exists($class))
 		{
-			$path = JPATH::dirname(__FILE__).'/'.$this->_type.'/renderer/'.$type.'.php';
+			$path = dirname(__FILE__).DS.$this->_type.DS.'renderer'.DS.$type.'.php';
 			if (file_exists($path)) {
 				require_once $path;
 			} else {

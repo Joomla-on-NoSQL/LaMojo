@@ -3,14 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
-require_once JPATH::dirname(__FILE__) . '/articles.php';
+require_once dirname(__FILE__) . DS . 'articles.php';
 
 /**
  * Frontpage Component Model
@@ -35,9 +35,9 @@ class ContentModelFeatured extends ContentModelArticles
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
-		parent::populateState();
+		parent::populateState($ordering, $direction);
 
 		// List state information
 		$limitstart = JRequest::getVar('limitstart', 0, '', 'int');

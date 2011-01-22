@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -32,7 +32,7 @@ function modChrome_xhtmlid($module, &$params, &$attribs)
 {
 	if ($module->content) {
 		?>
-		<div id="<?php echo $attribs['id'] ?>">
+		<div id="<?php echo (int)$attribs['id'] ?>">
 
 				<?php echo $module->content; ?>
 				<div class="clr"></div>

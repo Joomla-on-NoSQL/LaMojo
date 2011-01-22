@@ -3,7 +3,7 @@
  * @version		$Id: default.php 17780 2010-06-20 09:03:02Z dextercowley $
  * @package		Joomla.Site
  * @subpackage	mod_search
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 <form action="<?php echo JRoute::_('index.php');?>" method="post" class="inline">
 	<div class="search<?php echo $params->get('moduleclass_sfx') ?>">
 		<?php
-			$output = '<input name="searchword" id="mod_search_searchword" maxlength="'.$maxlength.'" class="inputbox'.$moduleclass_sfx.'" type="text" size="'.$width.'" value="'.$text.'"  onblur="if (this.value==\'\') this.value=\''.$text.'\';" onfocus="if (this.value==\''.$text.'\') this.value=\'\';" />';
+			$output = '<input name="searchword" id="mod-search-searchword" maxlength="'.$maxlength.'" class="inputbox'.$moduleclass_sfx.'" type="text" size="'.$width.'" value="'.$text.'"  onblur="if (this.value==\'\') this.value=\''.$text.'\';" onfocus="if (this.value==\''.$text.'\') this.value=\'\';" />';
 
 			if ($button) :
 				if ($imagebutton) :

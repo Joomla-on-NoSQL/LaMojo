@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * Basic test of add, edit, and delete Content Category from back end.
  */
@@ -62,7 +62,7 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->click("//li[@id='toolbar-save']/a/span");
 		$this->waitForPageToLoad("30000");
 		print("Check that new category is not shown." . "\n");
-		$this->assertFalse($this->isTextPresent("Functional Test Category"));
+		$this->assertFalse($this->isElementPresent("link=Functional Test Category"));
 		print("Filter Trashed categories." . "\n");
 		$this->select("filter_published", "label=Trash");
 		$this->clickGo();
@@ -72,15 +72,17 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->click("//li[@id='toolbar-delete']/a/span");
 		$this->waitForPageToLoad("30000");
 		print("Check that new category is not shown." . "\n");
-		$this->assertFalse($this->isTextPresent("Functional Test Category"));
+		$this->assertFalse($this->isElementPresent("link=Functional Test Category"));
 		print("Change filter to Select State." . "\n");
 		$this->click("//button[@type='button']");
 		$this->waitForPageToLoad("30000");
 		$this->select("filter_published", "label=- Select State -");
-		$this->clickGo();
 		$this->waitForPageToLoad("30000");
 		print("Check that new category is not shown." . "\n");
-		$this->assertFalse($this->isTextPresent("Functional Test Category"));
+		$this->assertFalse($this->isElementPresent("link=Functional Test Category"));
+		print("Change filter to Select State." . "\n");
+		$this->click("//button[@type='button']");
+		$this->waitForPageToLoad("30000");
 		print("Check that reordering still works." . "\n");
 		print("Move Modules category down one." . "\n");
 		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Modules')]/../../td//a[@title='Move Down']");
@@ -91,13 +93,12 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Beez 20", $this->getTable("//table[@class='adminlist'].6.1"));
 		$this->assertContains("Beez5", $this->getTable("//table[@class='adminlist'].7.1"));
 		$this->assertContains("Atomic", $this->getTable("//table[@class='adminlist'].8.1"));
-		$this->assertContains("Milky Way", $this->getTable("//table[@class='adminlist'].9.1"));
-		$this->assertContains("Modules", $this->getTable("//table[@class='adminlist'].10.1"));
-		$this->assertContains("Content Modules", $this->getTable("//table[@class='adminlist'].11.1"));
-		$this->assertContains("User Modules", $this->getTable("//table[@class='adminlist'].12.1"));
-		$this->assertContains("Display Modules", $this->getTable("//table[@class='adminlist'].13.1"));
-		$this->assertContains("Utility Modules", $this->getTable("//table[@class='adminlist'].14.1"));
-		$this->assertContains("Menu Module", $this->getTable("//table[@class='adminlist'].15.1"));
+		$this->assertContains("Modules", $this->getTable("//table[@class='adminlist'].9.1"));
+		$this->assertContains("Content Modules", $this->getTable("//table[@class='adminlist'].10.1"));
+		$this->assertContains("User Modules", $this->getTable("//table[@class='adminlist'].11.1"));
+		$this->assertContains("Display Modules", $this->getTable("//table[@class='adminlist'].12.1"));
+		$this->assertContains("Utility Modules", $this->getTable("//table[@class='adminlist'].13.1"));
+		$this->assertContains("Navigation Module", $this->getTable("//table[@class='adminlist'].14.1"));
 		print("Move Modules category up one." . "\n");
 		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Modules')]/../../td//a[@title='Move Up']");
 		$this->waitForPageToLoad("30000");
@@ -107,16 +108,15 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Beez 20", $this->getTable("//table[@class='adminlist'].12.1"));
 		$this->assertContains("Beez5", $this->getTable("//table[@class='adminlist'].13.1"));
 		$this->assertContains("Atomic", $this->getTable("//table[@class='adminlist'].14.1"));
-		$this->assertContains("Milky Way", $this->getTable("//table[@class='adminlist'].15.1"));
 		$this->assertContains("Modules", $this->getTable("//table[@class='adminlist'].5.1"));
 		$this->assertContains("Content Modules", $this->getTable("//table[@class='adminlist'].6.1"));
 		$this->assertContains("User Modules", $this->getTable("//table[@class='adminlist'].7.1"));
 		$this->assertContains("Display Modules", $this->getTable("//table[@class='adminlist'].8.1"));
 		$this->assertContains("Utility Modules", $this->getTable("//table[@class='adminlist'].9.1"));
-		$this->assertContains("Menu Module", $this->getTable("//table[@class='adminlist'].10.1"));
+		$this->assertContains("Navigation Module", $this->getTable("//table[@class='adminlist'].10.1"));
 		$this->doAdminLogout();
 		print("Finished control_panel0004Test.php/testCreateRemoveCategory." . "\n");
-
+		$this->deleteAllVisibleCookies();
 	}
 
 	function testCategorySaveOrder()
@@ -161,15 +161,15 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Components", $this->getTable("//table[@class=\"adminlist\"].4.1"));
 		$this->assertContains("Modules", $this->getTable("//table[@class=\"adminlist\"].5.1"));
 		$this->assertContains("Templates", $this->getTable("//table[@class=\"adminlist\"].11.1"));
-		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].16.1"));
-		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].17.1"));
+		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].15.1"));
+		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].16.1"));
 
 		echo "change the order of categories and click Save Order\n";
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[4]/td[4]/input", "5");
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[5]/td[4]/input", "4");
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[11]/td[4]/input", "3");
-		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[16]/td[4]/input", "2");
-		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[17]/td[4]/input", "1");
+		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[15]/td[4]/input", "2");
+		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[16]/td[4]/input", "1");
 		$this->click("//a[contains(@href, 'saveorder')][@class = 'saveorder']");
 		$this->waitForPageToLoad("30000");
 
@@ -177,16 +177,16 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Plugins ", $this->getTable("//table[@class=\"adminlist\"].4.1"));
 		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].5.1"));
 		$this->assertContains("Templates", $this->getTable("//table[@class=\"adminlist\"].6.1"));
-		$this->assertContains("Modules", $this->getTable("//table[@class=\"adminlist\"].11.1"));
-		$this->assertContains("Components", $this->getTable("//table[@class=\"adminlist\"].17.1"));
+		$this->assertContains("Modules", $this->getTable("//table[@class=\"adminlist\"].10.1"));
+		$this->assertContains("Components", $this->getTable("//table[@class=\"adminlist\"].16.1"));
 		$this->assertTrue($this->isElementPresent("//dl[@id='system-message'][contains(., 'success')]"));
 
 		echo "put the categories back in the original order and click Save Order\n";
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[4]/td[4]/input", "5");
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[5]/td[4]/input", "4");
 		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[6]/td[4]/input", "3");
-		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[11]/td[4]/input", "2");
-		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[17]/td[4]/input", "1");
+		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[10]/td[4]/input", "2");
+		$this->type("//div[@id='element-box']/div[2]/form/table/tbody/tr[16]/td[4]/input", "1");
 		$this->click("//a[contains(@href, 'saveorder')][@class = 'saveorder']");
 		$this->waitForPageToLoad("30000");
 
@@ -195,8 +195,8 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Components", $this->getTable("//table[@class=\"adminlist\"].4.1"));
 		$this->assertContains("Modules", $this->getTable("//table[@class=\"adminlist\"].5.1"));
 		$this->assertContains("Templates", $this->getTable("//table[@class=\"adminlist\"].11.1"));
-		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].16.1"));
-		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].17.1"));
+		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].15.1"));
+		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].16.1"));
 
 		echo "Try pressing save order with no form changes\n";
 		$this->click("//a[contains(@href, 'saveorder')][@class = 'saveorder']");
@@ -206,10 +206,11 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Components", $this->getTable("//table[@class=\"adminlist\"].4.1"));
 		$this->assertContains("Modules", $this->getTable("//table[@class=\"adminlist\"].5.1"));
 		$this->assertContains("Templates", $this->getTable("//table[@class=\"adminlist\"].11.1"));
-		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].16.1"));
-		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].17.1"));
+		$this->assertContains("Languages", $this->getTable("//table[@class=\"adminlist\"].15.1"));
+		$this->assertContains("Plugins", $this->getTable("//table[@class=\"adminlist\"].16.1"));
 		$this->doAdminLogout();
 		print("Finished control_panel0004Test.php/testCategorySaveOrder." . "\n");
+		$this->deleteAllVisibleCookies();
 	}
 
 	function testMenuItemSaveOrder()
@@ -301,6 +302,7 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Article Category List", $this->getTable("//table[@class='adminlist'].9.1"));
 		echo "Done with control_panel0004Test/testMenuItemSaveOrder\n";
 		$this->doAdminLogout();
+		$this->deleteAllVisibleCookies();
 	}
 
 	function testMenuItemOrderUpDown()
@@ -361,19 +363,19 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 		$this->assertContains("Featured Articles", $this->getTable("//table[@class='adminlist'].10.1"));
 
 		echo "Move Getting Started menu item down one\n";
-		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Getting started')]/../../td//a[@title='Move Down']");
+		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Getting Started')]/../../td//a[@title='Move Down']");
 		$this->waitForPageToLoad("30000");
 		$this->assertTrue($this->isElementPresent("//dl[@id='system-message'][contains(., 'success')]"));
 		echo "Check that Using Joomla! is now in first row\n";
 		$this->assertContains("Using Joomla!", $this->getTable("//table[@class='adminlist'].1.1"));
-		echo "Move Gettingi Started back up one\n";
+		echo "Move Getting Started back up one\n";
 		$this->select("limit", "label=All");
 		$this->waitForPageToLoad("30000");
-		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Getting started')]/../../td//a[@title='Move Up']");
+		$this->click("//table[@class='adminlist']/tbody//tr//td/a[contains(text(), 'Getting Started')]/../../td//a[@title='Move Up']");
 		$this->waitForPageToLoad("30000");
 		$this->assertTrue($this->isElementPresent("//dl[@id='system-message'][contains(., 'success')]"));
-		echo "Check that Getting started is now in first row\n";
-		$this->assertContains("Getting started", $this->getTable("//table[@class='adminlist'].1.1"));
+		echo "Check that Getting Started is now in first row\n";
+		$this->assertContains("Getting Started", $this->getTable("//table[@class='adminlist'].1.1"));
 		$this->select("limit", "label=20");
 		$this->waitForPageToLoad("30000");
 
@@ -393,6 +395,7 @@ class ControlPanel0004 extends SeleniumJoomlaTestCase
 
 		echo "Done with control_panel0004Test/testMenuItemOrderUpDown\n";
 		$this->doAdminLogout();
+		$this->deleteAllVisibleCookies();
 	}
 }
-?>
+

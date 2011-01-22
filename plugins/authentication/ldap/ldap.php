@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla
  * @subpackage	JFramework
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -71,9 +71,14 @@ class plgAuthenticationLdap extends JPlugin
 			{
 				// Bind using Connect Username/password
 				// Force anon bind to mitigate misconfiguration like [#7119]
-				if (strlen($this->params->get('username'))) $bindtest = $ldap->bind();
-				else $bindtest = $ldap->anonymous_bind();
-
+				if (strlen($this->params->get('username'))) 
+				{
+					$bindtest = $ldap->bind();
+				}
+				else 
+				{
+					$bindtest = $ldap->anonymous_bind();
+				}
 
 				if ($bindtest)
 				{

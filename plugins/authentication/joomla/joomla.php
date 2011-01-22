@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla
  * @subpackage	JFramework
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -67,6 +67,12 @@ class plgAuthenticationJoomla extends JPlugin
 				$user = JUser::getInstance($result->id); // Bring this in line with the rest of the system
 				$response->email = $user->email;
 				$response->fullname = $user->name;
+				if (JFactory::getApplication()->isAdmin()) {
+					$response->language = $user->getParam('admin_language');
+				}
+				else {
+					$response->language = $user->getParam('language');
+				}
 				$response->status = JAUTHENTICATE_STATUS_SUCCESS;
 				$response->error_message = '';
 			} else {

@@ -1,14 +1,14 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('JPATH_BASE') or die;
 
-require_once JPATH::dirname(__FILE__).'/list.php';
+require_once dirname(__FILE__).DS.'list.php';
 
 /**
  * Parameter to display a list of the layouts for a component view from the extension or default template overrides.
@@ -44,8 +44,8 @@ class JElementComponentLayouts extends JElementList
 		{
 			$view	= preg_replace('#\W#', '', $view);
 			$extn	= preg_replace('#\W#', '', $extn);
-			$path1	= JPATH_SITE.'/components/'.$extn.'/views/'.$view.'/tmpl';
-			$path2	= JPATH_SITE.'/templates/'.$template.'/html/'.$extn.'/'.$view;
+			$path1	= JPATH_SITE.DS.'components'.DS.$extn.DS.'views'.DS.$view.DS.'tmpl';
+			$path2	= JPATH_SITE.DS.'templates'.DS.$template.DS.'html'.DS.$extn.DS.$view;
 			$options[]	= JHTML::_('select.option', '', JText::_('JOPTION_USE_MENU_REQUEST_SETTING'));
 		}
 

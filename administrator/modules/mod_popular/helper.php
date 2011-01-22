@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -9,6 +9,8 @@
 defined('_JEXEC') or die;
 
 JModel::addIncludePath(JPATH_ADMINISTRATOR.'/components/com_content/models');
+
+jimport('joomla.application.categories');
 
 /**
  * @package		Joomla.Administrator
@@ -80,5 +82,32 @@ abstract class modPopularHelper
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Get the alternate title for the module
+	 *
+	 * @param	JObject	The module parameters.
+	 * @return	string	The alternate title for the module.
+	 */
+	public static function getTitle($params)
+	{
+		$who = $params->get('user_id');
+		$catid = (int)$params->get('catid');
+		if ($catid)
+		{
+			$category = JCategories::getInstance('Content')->get($catid);
+			if ($category) {
+				$title = $category->title;
+			}
+			else {
+				$title = JText::_('MOD_POPULAR_UNEXISTING');
+			}
+		}
+		else
+		{
+			$title = '';
+		}
+		return JText::plural('MOD_POPULAR_TITLE'.($catid ? "_CATEGORY" : '').($who!='0' ? "_$who" : ''), (int)$params->get('count'), $title);
 	}
 }

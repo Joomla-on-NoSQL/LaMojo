@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id:file.php 6961 2010-03-15 16:06:53Z infograf768 $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
@@ -32,7 +32,7 @@ class JInstallerFile extends JAdapterInstance
 	public function loadLanguage($path)
 	{
 		$this->manifest = $this->parent->getManifest();
-		$extension = 'fil_'. strtolower(JFilterInput::getInstance()->clean((string)$this->manifest->name, 'cmd'));
+		$extension = 'files_'. str_replace('files_','',strtolower(JFilterInput::getInstance()->clean((string)$this->manifest->name, 'cmd')));
 		$lang = JFactory::getLanguage();
 		$source = $path;
 			$lang->load($extension . '.sys', $source, null, false, false)
@@ -40,6 +40,7 @@ class JInstallerFile extends JAdapterInstance
 		||	$lang->load($extension . '.sys', $source, $lang->getDefault(), false, false)
 		||	$lang->load($extension . '.sys', JPATH_SITE, $lang->getDefault(), false, false);
 	}
+	
 	/**
 	 * Custom install method
 	 *
@@ -47,7 +48,7 @@ class JInstallerFile extends JAdapterInstance
 	 * @return	boolean	True on success
 	 * @since	1.5
 	 */
-	function install()
+	public function install()
 	{
 		// Get the extension manifest object
 		$this->manifest = $this->parent->getManifest();
@@ -63,8 +64,8 @@ class JInstallerFile extends JAdapterInstance
 		$this->set('name', $name);
 
 		// Set element
-		$manifestPath = $this->parent->getPath('manifest');
-		$element = split(DS,$manifestPath);
+		$manifestPath = JPath::clean($this->parent->getPath('manifest'));
+		$element = explode('/',$manifestPath);
 		$element = $element[count($element) - 1];
 		$element = preg_replace('/\.xml/', '', $element);
 		$this->set('element', $element);
@@ -79,10 +80,20 @@ class JInstallerFile extends JAdapterInstance
 
 
 		//Check if the extension by the same name is already installed
-		if ($this->extensionExistsInSystem($name)) {
+		if ($this->extensionExistsInSystem($element)) 
+		{
 			// Package with same name already exists
-			$this->parent->abort(JText::_('JLIB_INSTALLER_ABORT_FILE_SAME_NAME'));
-			return false;
+			if(!$this->parent->getOverwrite()) 
+			{
+				// we're not overwriting so abort
+				$this->parent->abort(JText::_('JLIB_INSTALLER_ABORT_FILE_SAME_NAME'));
+				return false;
+			}
+			else
+			{
+				// swap to the update route
+				$this->route = 'update';
+			}
 		}
 
 
@@ -132,39 +143,101 @@ class JInstallerFile extends JAdapterInstance
 		 * Finalization and Cleanup Section
 		 * ---------------------------------------------------------------------------------------------
 		 */
+		 
+		// Get a database connector object
+		$db = $this->parent->getDbo();
 
-		// Add an entry to the extension table with a whole heap of defaults
-		$row = JTable::getInstance('extension');
-		$row->set('name', $this->get('name'));
-		$row->set('type', 'file');
-		$row->set('element', $this->get('element'));
-		$row->set('folder', ''); // There is no folder for files so leave it blank
-		$row->set('enabled', 1);
-		$row->set('protected', 0);
-		$row->set('access', 0);
-		$row->set('client_id', 0);
-		$row->set('params', '');
-		$row->set('system_data', '');
-		$row->set('manifest_cache', '');
-		if (!$row->store())
+		// Check to see if a module by the same name is already installed
+		// If it is, then update the table because if the files aren't there
+		// we can assume that it was (badly) uninstalled
+		// If it isn't, add an entry to extensions
+		$query = 'SELECT `extension_id`' .
+				' FROM `#__extensions` ' .
+				' WHERE type = '. $db->Quote('file') .' AND element = '.$db->Quote($element);
+		$db->setQuery($query);
+		try {
+			$db->Query();
+		}
+		catch(JException $e)
 		{
 			// Install failed, roll back changes
-			$this->parent->abort(JText::sprintf('JLIB_INSTALLER_ABORT_FILE_INSTALL_ROLLBACK', $db->stderr(true)));
+			$this->parent->abort(JText::sprintf('JLIB_INSTALLER_ABORT_FILE_ROLLBACK', JText::_('JLIB_INSTALLER_'.$this->route), $db->stderr(true)));
 			return false;
+		}
+		$id = $db->loadResult();
+		$row = JTable::getInstance('extension');
+
+		if ($id)
+		{
+			// load the entry and update the manifest_cache
+			$row->load($id);
+			$row->set('name', $this->get('name')); // update name
+			$row->manifest_cache = $this->parent->generateManifestCache(); // update manifest
+			if (!$row->store()) {
+				// Install failed, roll back changes
+				$this->parent->abort(JText::sprintf('JLIB_INSTALLER_ABORT_FILE_ROLLBACK', JText::_('JLIB_INSTALLER_'.$this->route), $db->stderr(true)));
+				return false;
+			}
+		}
+		else
+		{	
+			// Add an entry to the extension table with a whole heap of defaults
+			$row->set('name', $this->get('name'));
+			$row->set('type', 'file');
+			$row->set('element', $this->get('element'));
+			$row->set('folder', ''); // There is no folder for files so leave it blank
+			$row->set('enabled', 1);
+			$row->set('protected', 0);
+			$row->set('access', 0);
+			$row->set('client_id', 0);
+			$row->set('params', '');
+			$row->set('system_data', '');
+			$row->set('manifest_cache', '');
+		
+			if (!$row->store())
+			{
+				// Install failed, roll back changes
+				$this->parent->abort(JText::sprintf('JLIB_INSTALLER_ABORT_FILE_INSTALL_ROLLBACK', $db->stderr(true)));
+				return false;
+			}
+			
+			// set the insert id
+			$row->set('extension_id', $db->insertid());
+
+			// Since we have created a module item, we add it to the installation step stack
+			// so that if we have to rollback the changes we can undo it.
+			$this->parent->pushStep(array ('type' => 'extension', 'extension_id' => $row->extension_id));			
 		}
 
 
 		// Lastly, we will copy the manifest file to its appropriate place.
 		$manifest = Array();
 		$manifest['src'] = $this->parent->getPath('manifest');
-		$manifest['dest'] = JPATH_MANIFESTS.'/files/'.basename($this->parent->getPath('manifest'));
+		$manifest['dest'] = JPATH_MANIFESTS.DS.'files'.DS.basename($this->parent->getPath('manifest'));
 		if (!$this->parent->copyFiles(array($manifest), true))
 		{
 			// Install failed, rollback changes
 			$this->parent->abort(JText::_('JLIB_INSTALLER_ABORT_FILE_INSTALL_COPY_SETUP'));
 			return false;
 		}
-		return true;
+
+                // Clobber any possible pending updates
+                $update = JTable::getInstance('update');
+                $uid = $update->find(
+                        array(
+                                'element'       => $this->get('element'),
+                                'type'          => 'file',
+                                'client_id'     => '',
+                                'folder'        => ''
+                        )
+                );
+
+                if ($uid) {
+                        $update->delete($uid);
+                }
+
+
+		return $row->get('extension_id');
 	}
 
 	/**
@@ -173,24 +246,13 @@ class JInstallerFile extends JAdapterInstance
 	 * @return boolean True on success
 	 * @since  1.5
 	 */
-	function update()
+	public function update()
 	{
-		// since this is just files, an update removes old files
-		// Get the extension manifest object
-		$manifest = $this->parent->getManifest();
-		$this->manifest = $this->parent->getManifest();
+		// set the overwrite setting
+		$this->parent->setOverwrite(true);
+		$this->parent->setUpgrade(true);		
 		$this->route = 'update';
 
-		/**
-		 * ---------------------------------------------------------------------------------------------
-		 * Manifest Document Setup Section
-		 * ---------------------------------------------------------------------------------------------
-		 */
-
-		// Set the extensions name
-		$name = JFilterInput::getInstance()->clean((string)$this->manifest->name, 'string');
-		$installer = new JInstaller(); // we don't want to compromise this instance!
-		$installer->uninstall('file', $name, 0);
 		// ...and adds new files
 		return $this->install();
 	}
@@ -204,7 +266,7 @@ class JInstallerFile extends JAdapterInstance
 	 * @return	boolean	True on success
 	 * @since	1.5
 	 */
-	function uninstall($id)
+	public function uninstall($id)
 	{
 		// Initialise variables.
 		$row	= JTable::getInstance('extension');
@@ -214,13 +276,13 @@ class JInstallerFile extends JAdapterInstance
 		}
 
 		$retval = true;
-		$manifestFile = JPATH_MANIFESTS.'/files/' . $row->element .'.xml';
+		$manifestFile = JPATH_MANIFESTS.DS.'files' . DS . $row->element .'.xml';
 
 		// Because files may not have their own folders we cannot use the standard method of finding an installation manifest
 		if (file_exists($manifestFile))
 		{
 			// Set the plugin root path
-			$this->parent->setPath('extension_root', JPATH_ROOT); //.'/files/'.$manifest->filename);
+			$this->parent->setPath('extension_root', JPATH_ROOT); //.DS.'files'.DS.$manifest->filename);
 
 			$xml =JFactory::getXML($manifestFile);
 
@@ -256,7 +318,7 @@ class JInstallerFile extends JAdapterInstance
 					}
 					else
 					{
-						$targetFolder = JPATH_ROOT.'/'.$target;
+						$targetFolder = JPATH_ROOT.DS.$target;
 					}
 
 					$folderList = array();
@@ -267,10 +329,10 @@ class JInstallerFile extends JAdapterInstance
 						foreach ($eFiles->children() as $eFileName)
 						{
 							if ($eFileName->getName() == 'folder') {
-								$folderList[] = $targetFolder.'/'.$eFileName;
+								$folderList[] = $targetFolder.DS.$eFileName;
 
 							} else {
-								$fileName = $targetFolder.'/'.$eFileName;
+								$fileName = $targetFolder.DS.$eFileName;
 								JFile::delete($fileName);
 							}
 						}
@@ -306,12 +368,12 @@ class JInstallerFile extends JAdapterInstance
 	 * function used to check if extension is already installed
 	 *
 	 * @access	private
-	 * @param	string	$name	The name of the extension to install
+	 * @param	string	$element The element name of the extension to install
 	 * @return	boolean	True if extension exists
 	 * @since	1.6
 	 */
 
-	private function extensionExistsInSystem($name = null)
+	private function extensionExistsInSystem($extension = null)
 	{
 
 		// Get a database connector object
@@ -319,7 +381,7 @@ class JInstallerFile extends JAdapterInstance
 
 		$query = 'SELECT `extension_id`' .
 				' FROM `#__extensions`' .
-				' WHERE name = '.$db->Quote($name) .
+				' WHERE element = '.$db->Quote($extension) .
 				' AND type = "file"';
 
 		$db->setQuery($query);
@@ -370,14 +432,14 @@ class JInstallerFile extends JAdapterInstance
 
 			//Split folder names into array to get folder names. This will
 			// help in creating folders
-			$arrList = split("/|\\/", $target);
+			$arrList = preg_split("#/|\\/#", $target);
 
 			$folderName = $jRootPath;
 			foreach ($arrList as $dir)
 			{
 				if(empty($dir)) continue ;
 
-				$folderName .= '/'.$dir;
+				$folderName .= DS.$dir;
 				// Check if folder exists, if not then add to the array for folder creation
 				if (!JFolder::exists($folderName)) {
 					array_push($this->folderList, $folderName);
@@ -386,8 +448,8 @@ class JInstallerFile extends JAdapterInstance
 
 
 			//Create folder path
-			$sourceFolder = empty($folder)?$packagePath:$packagePath.'/'.$folder;
-			$targetFolder = empty($target)?$jRootPath:$jRootPath.'/'.$target;
+			$sourceFolder = empty($folder)?$packagePath:$packagePath.DS.$folder;
+			$targetFolder = empty($target)?$jRootPath:$jRootPath.DS.$target;
 
 			//Check if source folder exists
 			if (! JFolder::exists($sourceFolder)) {
@@ -403,11 +465,11 @@ class JInstallerFile extends JAdapterInstance
 				// loop through all filenames elements
 				foreach ($eFiles->children() as $eFileName)
 				{
-					$path['src'] = $sourceFolder.'/'.$eFileName;
-					$path['dest'] = $targetFolder.'/'.$eFileName;
+					$path['src'] = $sourceFolder.DS.$eFileName;
+					$path['dest'] = $targetFolder.DS.$eFileName;
 					$path['type'] = 'file';
 					if ($eFileName->getName() == 'folder') {
-						$folderName = $targetFolder.'/'.$eFileName;
+						$folderName = $targetFolder.DS.$eFileName;
 						array_push($this->folderList, $folderName);
 						$path['type'] = 'folder';
 					}
@@ -417,13 +479,38 @@ class JInstallerFile extends JAdapterInstance
 			} else {
 				$files = JFolder::files($sourceFolder);
 				foreach ($files as $file) {
-					$path['src'] = $sourceFolder.'/'.$file;
-					$path['dest'] = $targetFolder.'/'.$file;
+					$path['src'] = $sourceFolder.DS.$file;
+					$path['dest'] = $targetFolder.DS.$file;
 
 					array_push($this->fileList, $path);
 				}
 
 			}
+		}
+	}
+	
+	/**
+	 * Refreshes the extension table cache
+	 * @return  boolean result of operation, true if updated, false on failure
+	 * @since	1.6
+	 */
+	public function refreshManifestCache()
+	{
+		// Need to find to find where the XML file is since we don't store this normally
+		$manifestPath = JPATH_MANIFESTS.DS.'files'. DS.$this->parent->extension->element.'.xml';
+		$this->parent->manifest = $this->parent->isManifest($manifestPath);
+		$this->parent->setPath('manifest', $manifestPath);
+
+		$manifest_details = JApplicationHelper::parseXMLInstallFile($this->parent->getPath('manifest'));
+		$this->parent->extension->manifest_cache = json_encode($manifest_details);
+		$this->parent->extension->name = $manifest_details['name'];
+
+		try {
+			return $this->parent->extension->store();
+		}
+		catch(JException $e) {
+			JError::raiseWarning(101, JText::_('JLIB_INSTALLER_ERROR_PACK_REFRESH_MANIFEST_CACHE'));
+			return false;
 		}
 	}
 }

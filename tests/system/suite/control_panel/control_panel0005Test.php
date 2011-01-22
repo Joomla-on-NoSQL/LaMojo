@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * checks that all menu choices are shown in back end
  */
@@ -27,6 +27,7 @@ class ControlPanel0005 extends SeleniumJoomlaTestCase
 		$this->assertTrue($this->isElementPresent("link=Extensions"));
 		$this->assertTrue($this->isElementPresent("link=Help"));
 		$this->doAdminLogout();
+		$this->deleteAllVisibleCookies();
 	}
 
 	function testMenuDetailHelp()
@@ -57,7 +58,7 @@ class ControlPanel0005 extends SeleniumJoomlaTestCase
 		$this->click("//li[@id='toolbar-cancel']/a/span");
 		$this->waitForPageToLoad("30000");
 		echo "Open Most Read Module and check that help links to detailed help\n";
-		$this->click("link=Most Read Content");
+		$this->click("link=Articles Most Read");
 		$this->waitForPageToLoad("30000");
 		$this->assertTrue($this->isElementPresent("//li/a[contains(@onclick, 'Help16:Extensions_Module_Manager_Most_Read')]"));
 		$this->click("//li[@id='toolbar-cancel']/a/span");
@@ -74,5 +75,6 @@ class ControlPanel0005 extends SeleniumJoomlaTestCase
 		$this->waitForPageToLoad("30000");
 		$this->doAdminLogout();
 		echo "finished with control_panel0005Test/testMenuDetailHelp\n";
+		$this->deleteAllVisibleCookies();
 	}
 }

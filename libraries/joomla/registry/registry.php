@@ -3,14 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Registry
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('JPATH_BASE') or die;
 
-JLoader::register('JRegistryFormat', str_replace('\\','/',(dirname(__FILE__))).'/format.php');
+JLoader::register('JRegistryFormat', dirname(__FILE__).'/format.php');
 
 /**
  * JRegistry class
@@ -40,14 +40,11 @@ class JRegistry
 		$this->data = new stdClass();
 
 		// Optionally load supplied data.
-		if (is_array($data)) {
-			$this->loadArray($data);
-		}
-		elseif (is_object($data)) {
-			$this->loadObject($data);
+		if (is_array($data) || is_object($data)) {
+			$this->bindData($this->data, $data);
 		}
 		elseif (!empty($data) && is_string($data)) {
-			$this->loadJSON($data);
+			$this->loadString($data);
 		}
 	}
 
@@ -87,11 +84,10 @@ class JRegistry
 	 * Check if a registry path exists.
 	 *
 	 * @param	string	Registry path (e.g. joomla.content.showauthor)
-	 * @param	mixed	Optional default value, returned if the internal value is null.
 	 * @return	boolean
 	 * @since	1.6
 	 */
-	public function exists($path, $default = null)
+	public function exists($path)
 	{
 		// Explode the registry path into an array
 		if ($nodes = explode('.', $path)) {
@@ -191,16 +187,7 @@ class JRegistry
 	 */
 	public function loadArray($array)
 	{
-		// Load the variables into the registry's data object.
-		foreach ($array as $k => $v) {
-			if ((is_array($v) && JArrayHelper::isAssociative($v)) || is_object($v)) {
-				$this->data->$k = new stdClass();
-				$this->bindData($this->data->$k, $v);
-			}
-			else {
-				$this->data->$k = $v;
-			}
-		}
+		$this->bindData($this->data, $array);
 
 		return true;
 	}
@@ -215,16 +202,7 @@ class JRegistry
 	 */
 	public function loadObject($object)
 	{
-		if (is_object($object)) {
-			foreach (get_object_vars($object) as $k => $v) {
-				if (is_scalar($v) || (is_array($v) && !JArrayHelper::isAssociative($v))) {
-					$this->data->$k = $v;
-				} elseif (is_object($v) || (is_array($v) && JArrayHelper::isAssociative($v))) {
-					$this->data->$k = new stdClass();
-					$this->bindData($this->data->$k, $v);
-				}
-			}
-		}
+		$this->bindData($this->data, $object);
 
 		return true;
 	}
@@ -234,77 +212,34 @@ class JRegistry
 	 *
 	 * @param	string	Path to file to load
 	 * @param	string	Format of the file [optional: defaults to JSON]
-	 * @param	string	Namespace to load the JSON string into [optional]
+	 * @param	mixed	Options used by the formatter
 	 * @return	boolean	True on success
 	 * @since	1.5
 	 */
-	public function loadFile($file, $format = 'JSON')
+	public function loadFile($file, $format = 'JSON', $options = array())
 	{
-		// Load a file into the given namespace [or default namespace if not given]
-		$handler = JRegistryFormat::getInstance($format);
-
 		// Get the contents of the file
 		jimport('joomla.filesystem.file');
 		$data = JFile::read($file);
 
-		$obj = $handler->stringToObject($data);
-		$this->loadObject($obj);
-
-		return true;
+		return $this->loadString($data, $format, $options);
 	}
 
 	/**
-	 * Load an XML string into the registry into the given namespace [or default if a namespace is not given]
+	 * Load a string into the registry
 	 *
-	 * @param	string	XML formatted string to load into the registry
-	 * @param	string	Namespace to load the XML string into [optional]
+	 * @param	string	string to load into the registry
+	 * @param	string	format of the string
+	 * @param	mixed	Options used by the formatter
 	 * @return	boolean	True on success
 	 * @since	1.5
 	 */
-	public function loadXML($data, $namespace = null)
+	public function loadString($data, $format = 'JSON', $options = array())
 	{
 		// Load a string into the given namespace [or default namespace if not given]
-		$handler = JRegistryFormat::getInstance('XML');
-
-		$obj = $handler->stringToObject($data);
-		$this->loadObject($obj);
-
-		return true;
-	}
-
-	/**
-	 * Load an INI string into the registry into the given namespace [or default if a namespace is not given]
-	 *
-	 * @param	string	INI formatted string to load into the registry
-	 * @param	string	Namespace to load the INI string into [optional]
-	 * @param	mixed	An array of options for the formatter, or boolean to process sections.
-	 * @return	boolean True on success
-	 * @since	1.5
-	 */
-	public function loadINI($data, $namespace = null, $options = array())
-	{
-		// Load a string into the given namespace [or default namespace if not given]
-		$handler = JRegistryFormat::getInstance('INI');
+		$handler = JRegistryFormat::getInstance($format);
 
 		$obj = $handler->stringToObject($data, $options);
-		$this->loadObject($obj);
-
-		return true;
-	}
-
-	/**
-	 * Load an JSON string into the registry into the given namespace [or default if a namespace is not given]
-	 *
-	 * @param	string	JSON formatted string to load into the registry
-	 * @return	boolean True on success
-	 * @since	1.5
-	 */
-	public function loadJSON($data)
-	{
-		// Load a string into the given namespace [or default namespace if not given]
-		$handler = JRegistryFormat::getInstance('JSON');
-
-		$obj = $handler->stringToObject($data);
 		$this->loadObject($obj);
 
 		return true;
@@ -391,17 +326,16 @@ class JRegistry
 	 * Get a namespace in a given string format
 	 *
 	 * @param	string	Format to return the string in
-	 * @param	string	Namespace to return [optional: null returns the default namespace]
 	 * @param	mixed	Parameters used by the formatter, see formatters for more info
 	 * @return	string	Namespace in string format
 	 * @since	1.5
 	 */
-	public function toString($format = 'JSON', $namespace = null, $params = null)
+	public function toString($format = 'JSON', $options = array())
 	{
 		// Return a namespace in a given format
 		$handler = JRegistryFormat::getInstance($format);
-
-		return $handler->objectToString($this->data, $params);
+		
+		return $handler->objectToString($this->data, $options);
 	}
 
 	/**
@@ -416,14 +350,17 @@ class JRegistry
 	protected function bindData(& $parent, $data)
 	{
 		// Ensure the input data is an array.
-		$data = (array) $data;
+		if(is_object($data)) {
+			$data = get_object_vars($data);
+		} else {
+			$data = (array) $data;
+		}
 
 		foreach ($data as $k => $v) {
 			if ((is_array($v) && JArrayHelper::isAssociative($v)) || is_object($v)) {
 				$parent->$k = new stdClass();
 				$this->bindData($parent->$k, $v);
-			}
-			else {
+			} else {
 				$parent->$k = $v;
 			}
 		}
@@ -456,6 +393,48 @@ class JRegistry
 	// Following methods are deprecated
 	//
 
+	/**
+	 * Load an XML string into the registry into the given namespace [or default if a namespace is not given]
+	 *
+	 * @param	string	XML formatted string to load into the registry
+	 * @param	string	Namespace to load the XML string into [optional]
+	 * @return	boolean	True on success
+	 * @since	1.5
+	 * @deprecated 1.6 - Oct 25, 2010
+	 */
+	public function loadXML($data, $namespace = null)
+	{
+		return $this->loadString($data, 'XML');
+	}
+
+	/**
+	 * Load an INI string into the registry into the given namespace [or default if a namespace is not given]
+	 *
+	 * @param	string	INI formatted string to load into the registry
+	 * @param	string	Namespace to load the INI string into [optional]
+	 * @param	mixed	An array of options for the formatter, or boolean to process sections.
+	 * @return	boolean True on success
+	 * @since	1.5
+	 * @deprecated 1.6 - Oct 25, 2010
+	 */
+	public function loadINI($data, $namespace = null, $options = array())
+	{
+		return $this->loadString($data, 'INI', $options);
+	}
+
+	/**
+	 * Load an JSON string into the registry into the given namespace [or default if a namespace is not given]
+	 *
+	 * @param	string	JSON formatted string to load into the registry
+	 * @return	boolean True on success
+	 * @since	1.5
+	 * @deprecated 1.6 - Oct 25, 2010
+	 */
+	public function loadJSON($data)
+	{
+		return $this->loadString($data, 'JSON');
+	}
+	
 	/**
 	 * Create a namespace
 	 *

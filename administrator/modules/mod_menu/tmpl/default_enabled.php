@@ -3,7 +3,7 @@
  * @version		$Id:mod_menu.php 2463 2006-02-18 06:05:38Z webImagery $
  * @package		Joomla.Administrator
  * @subpackage	mod_menu
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -25,18 +25,21 @@ new JMenuNode(JText::_('MOD_MENU_CONTROL_PANEL'), 'index.php', 'class:cpanel')
 
 $menu->addSeparator();
 
+$menu->addChild(new JMenuNode(JText::_('MOD_MENU_USER_PROFILE'), 'index.php?option=com_admin&task=profile.edit', 'class:profile'));
+$menu->addSeparator();
+
 if ($user->authorise('core.admin')) {
 	$menu->addChild(new JMenuNode(JText::_('MOD_MENU_CONFIGURATION'), 'index.php?option=com_config', 'class:config'));
 	$menu->addSeparator();
 }
 
-$chm = $user->authorise('core.manage', 'com_checkin');
+$chm = $user->authorise('core.admin', 'com_checkin');
 $cam = $user->authorise('core.manage', 'com_cache');
 
 if ($chm || $cam )
 {
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_SITE_MAINTENANCE'), '#', 'class:maintenance'), true
+	new JMenuNode(JText::_('MOD_MENU_MAINTENANCE'), 'index.php?option=com_checkin', 'class:maintenance'), true
 	);
 
 	if ($chm)
@@ -54,10 +57,12 @@ if ($chm || $cam )
 }
 
 $menu->addSeparator();
-$menu->addChild(
-new JMenuNode(JText::_('MOD_MENU_SYSTEM_INFORMATION'), 'index.php?option=com_admin&view=sysinfo', 'class:info')
-);
-$menu->addSeparator();
+if ($user->authorise('core.admin')) {
+	$menu->addChild(
+		new JMenuNode(JText::_('MOD_MENU_SYSTEM_INFORMATION'), 'index.php?option=com_admin&view=sysinfo', 'class:info')
+	);
+	$menu->addSeparator();
+}
 
 $menu->addChild(new JMenuNode(JText::_('MOD_MENU_LOGOUT'), 'index.php?option=com_login&task=logout', 'class:logout'));
 
@@ -72,32 +77,41 @@ if ($user->authorise('core.manage', 'com_users'))
 	$menu->addChild(
 	new JMenuNode(JText::_('MOD_MENU_COM_USERS_USERS'), '#'), true
 	);
+	$createUser = $shownew && $user->authorise('core.create', 'com_users');
+	$createGrp	= $createUser &&  $user->authorise('core.admin', 'com_users');
+
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_COM_USERS_USER_MANAGER'), 'index.php?option=com_users&view=users', 'class:user'), $shownew
+		new JMenuNode(JText::_('MOD_MENU_COM_USERS_USER_MANAGER'), 'index.php?option=com_users&view=users', 'class:user'),
+		$createUser
 	);
-	if ($shownew == true) {
+	if ($createUser) {
 		$menu->addChild(
-		new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_USER'), 'index.php?option=com_users&task=user.add', 'class:newarticle')
+			new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_USER'), 'index.php?option=com_users&task=user.add', 'class:newarticle')
 		);
 		$menu->getParent();
 	}
-	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_COM_USERS_GROUPS'), 'index.php?option=com_users&view=groups', 'class:groups'), $shownew
-	);
-	if ($shownew == true) {
+
+	if ($createGrp) {
 		$menu->addChild(
-		new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_GROUP'), 'index.php?option=com_users&task=group.add', 'class:newarticle')
+			new JMenuNode(JText::_('MOD_MENU_COM_USERS_GROUPS'), 'index.php?option=com_users&view=groups', 'class:groups'),
+			$createUser
 		);
-		$menu->getParent();
-	}
-	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_COM_USERS_LEVELS'), 'index.php?option=com_users&view=levels', 'class:levels'), $shownew
-	);
-	if ($shownew == true) {
+		if ($createUser) {
+			$menu->addChild(
+				new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_GROUP'), 'index.php?option=com_users&task=group.add', 'class:newarticle')
+			);
+			$menu->getParent();
+		}
 		$menu->addChild(
-		new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_LEVEL'), 'index.php?option=com_users&task=level.add', 'class:newarticle')
+			new JMenuNode(JText::_('MOD_MENU_COM_USERS_LEVELS'), 'index.php?option=com_users&view=levels', 'class:levels'),
+			$createUser
 		);
-		$menu->getParent();
+		if ($createUser) {
+			$menu->addChild(
+			new JMenuNode(JText::_('MOD_MENU_COM_USERS_ADD_LEVEL'), 'index.php?option=com_users&task=level.add', 'class:newarticle')
+			);
+			$menu->getParent();
+		}
 	}
 
 	$menu->addSeparator();
@@ -116,10 +130,12 @@ if ($user->authorise('core.manage', 'com_menus'))
 	$menu->addChild(
 	new JMenuNode(JText::_('MOD_MENU_MENUS'), '#'), true
 	);
+	$createMenu = $shownew && $user->authorise('core.create', 'com_menus');
+
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_MENU_MANAGER'), 'index.php?option=com_menus&view=menus', 'class:menumgr'), $shownew
+	new JMenuNode(JText::_('MOD_MENU_MENU_MANAGER'), 'index.php?option=com_menus&view=menus', 'class:menumgr'), $createMenu
 	);
-	if ($shownew == true) {
+	if ($createMenu) {
 		$menu->addChild(
 		new JMenuNode(JText::_('MOD_MENU_MENU_MANAGER_NEW_MENU'), 'index.php?option=com_menus&view=menu&layout=edit', 'class:newarticle')
 		);
@@ -129,13 +145,13 @@ if ($user->authorise('core.manage', 'com_menus'))
 
 	// Menu Types
 	foreach (ModMenuHelper::getMenus() as $menuType)
-	{	
+	{
 		$titleicon = $menuType->home ? ' <span>'.JHTML::_('image','menu/icon-16-default.png', NULL, NULL, true).'</span>' : '';
 		$menu->addChild(
-		new JMenuNode($menuType->title,	'index.php?option=com_menus&view=items&menutype='.$menuType->menutype, 'class:menu', null, null, $titleicon), $shownew
+		new JMenuNode($menuType->title,	'index.php?option=com_menus&view=items&menutype='.$menuType->menutype, 'class:menu', null, null, $titleicon), $createMenu
 				);
 
-		if ($shownew == true) {
+		if ($createMenu) {
 				$menu->addChild(
 				new JMenuNode(JText::_('MOD_MENU_MENU_MANAGER_NEW_MENU_ITEM'), 'index.php?option=com_menus&view=item&layout=edit&menutype='.$menuType->menutype, 'class:newarticle')
 				);
@@ -153,10 +169,11 @@ if ($user->authorise('core.manage', 'com_content'))
 	$menu->addChild(
 	new JMenuNode(JText::_('MOD_MENU_COM_CONTENT'), '#'), true
 	);
+	$createContent =  $shownew && $user->authorise('core.create', 'com_content');
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_ARTICLE_MANAGER'), 'index.php?option=com_content', 'class:article'), $shownew
+	new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_ARTICLE_MANAGER'), 'index.php?option=com_content', 'class:article'), $createContent
 	);
-	if ($shownew == true) {
+	if ($createContent) {
 		$menu->addChild(
 		new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_NEW_ARTICLE'), 'index.php?option=com_content&task=article.add', 'class:newarticle')
 		);
@@ -164,9 +181,9 @@ if ($user->authorise('core.manage', 'com_content'))
 	}
 
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_CATEGORY_MANAGER'), 'index.php?option=com_categories&extension=com_content', 'class:category'), $shownew
+	new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_CATEGORY_MANAGER'), 'index.php?option=com_categories&extension=com_content', 'class:category'), $createContent
 	);
-	if ($shownew == true) {
+	if ($createContent) {
 		$menu->addChild(
 		new JMenuNode(JText::_('MOD_MENU_COM_CONTENT_NEW_CATEGORY'), 'index.php?option=com_categories&task=category.add&extension=com_content', 'class:newarticle')
 		);
@@ -186,31 +203,29 @@ if ($user->authorise('core.manage', 'com_content'))
 //
 // Components Submenu
 //
-$menu->addChild(new JMenuNode(JText::_('MOD_MENU_COMPONENTS'), '#'), true);
 
 // Get the authorised components and sub-menus.
 $components = ModMenuHelper::getComponents( true );
 
-foreach ($components as &$component)
-{
-	$text = $lang->hasKey($component->title) ? JText::_($component->title) : $component->alias;
+// Check if there are any components, otherwise, don't render the menu
+if ($components) {
+	$menu->addChild(new JMenuNode(JText::_('MOD_MENU_COMPONENTS'), '#'), true);
 
-	if (!empty($component->submenu))
-	{
-		// This component has a db driven submenu.
-		$menu->addChild(new JMenuNode($text, $component->link, $component->img), true);
-		foreach ($component->submenu as $sub)
-		{
-			$text = $lang->hasKey($sub->title) ? JText::_($sub->title) : $sub->alias;
-			$menu->addChild(new JMenuNode($text, $sub->link, $sub->img));
+	foreach ($components as &$component) {
+		if (!empty($component->submenu)) {
+			// This component has a db driven submenu.
+			$menu->addChild(new JMenuNode($component->text, $component->link, $component->img), true);
+			foreach ($component->submenu as $sub) {
+				$menu->addChild(new JMenuNode($sub->text, $sub->link, $sub->img));
+			}
+			$menu->getParent();
 		}
-		$menu->getParent();
+		else {
+			$menu->addChild(new JMenuNode($component->text, $component->link, $component->img));
+		}
 	}
-	else {
-		$menu->addChild(new JMenuNode($text, $component->link, $component->img));
-	}
+	$menu->getParent();
 }
-$menu->getParent();
 
 //
 // Extensions Submenu
@@ -265,7 +280,7 @@ if ($showhelp == 1) {
 	);
 	$menu->addSeparator();
 	$menu->addChild(
-	new JMenuNode(JText::_('MOD_MENU_HELP_LINKS'), '#', 'class:weblinks', false, '_blank'), true
+	new JMenuNode(JText::_('MOD_MENU_HELP_LINKS'), '#', 'class:weblinks'), true
 	);
 	$menu->addChild(
 	new JMenuNode(JText::_('MOD_MENU_HELP_EXTENSIONS'), 'http://extensions.joomla.org', 'class:help-jed', false, '_blank')

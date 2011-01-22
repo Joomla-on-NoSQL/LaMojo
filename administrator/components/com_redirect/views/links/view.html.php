@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -83,12 +83,12 @@ class RedirectViewLinks extends JView
 			JToolBarHelper::deleteList('', 'links.delete','JTOOLBAR_EMPTY_TRASH');
 		} else if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('links.trash','JTOOLBAR_TRASH');
+			JToolBarHelper::divider();			
 		}
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_redirect');
+			JToolBarHelper::divider();
 		}
-		JToolBarHelper::divider();
 		JToolBarHelper::help('JHELP_COMPONENTS_REDIRECT_MANAGER');
 	}
 }

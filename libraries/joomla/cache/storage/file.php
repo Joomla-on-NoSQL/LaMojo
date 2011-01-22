@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Cache
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -47,7 +47,7 @@ class JCacheStorageFile extends JCacheStorage
 	 * @return	mixed	Boolean false on failure or a cached data string
 	 * @since	1.5
 	 */
-	public function get($id, $group, $checkTime=true)
+	public function get($id, $group, $checkTime = true)
 	{
 		$data = false;
 
@@ -84,11 +84,11 @@ class JCacheStorageFile extends JCacheStorage
 
 		foreach ($folders as $folder) {
 			$files 	= array();
-			$files 	= $this->_filesInFolder($path.'/'.$folder);
+			$files 	= $this->_filesInFolder($path.DS.$folder);
 			$item 	= new JCacheStorageHelper($folder);
 
 			foreach ($files as $file) {
-				$item->updateSize(filesize($path.'/'.$folder.'/'.$file) / 1024);
+				$item->updateSize(filesize($path.DS.$folder.DS.$file) / 1024);
 			}
 			$data[$folder] = $item;
 		}
@@ -158,7 +158,7 @@ class JCacheStorageFile extends JCacheStorage
 	 * @return	boolean	True on success, false otherwise
 	 * @since	1.5
 	 */
-	public function clean($group, $mode)
+	public function clean($group, $mode = null)
 	{
 		$return = true;
 		$folder	= $group;
@@ -172,14 +172,14 @@ class JCacheStorageFile extends JCacheStorage
 				$folders = $this->_folders($this->_root);
 				for ($i=0, $n=count($folders); $i<$n; $i++) {
 					if ($folders[$i] != $folder) {
-						$return |= $this->_deleteFolder($this->_root.'/'.$folders[$i]);
+						$return |= $this->_deleteFolder($this->_root.DS.$folders[$i]);
 					}
 				}
 				break;
 			case 'group':
 			default:
-				if (is_dir($this->_root.'/'.$folder)) {
-					$return = $this->_deleteFolder($this->_root.'/'.$folder);
+				if (is_dir($this->_root.DS.$folder)) {
+					$return = $this->_deleteFolder($this->_root.DS.$folder);
 				}
 				break;
 		}
@@ -215,7 +215,7 @@ class JCacheStorageFile extends JCacheStorage
 	public static function test()
 	{
 		$conf = JFactory::getConfig();
-		return is_writable($conf->get('cache_path', JPATH_ROOT.'/cache'));
+		return is_writable($conf->get('cache_path', JPATH_CACHE));
 	}
 
 	/**
@@ -275,7 +275,7 @@ class JCacheStorageFile extends JCacheStorage
 	 * @return	boolean	True on success, false otherwise.
 	 * @since	1.6
 	 */
-	public function unlock($id,$group)
+	public function unlock($id, $group = null)
 	{
 		$path = $this->_getFilePath($id, $group);
 
@@ -325,7 +325,7 @@ class JCacheStorageFile extends JCacheStorage
 	private function _getFilePath($id, $group)
 	{
 		$name	= $this->_getCacheId($id, $group);
-		$dir	= $this->_root.'/'.$group;
+		$dir	= $this->_root.DS.$group;
 
 		// If the folder doesn't exist try to create it
 		if (!is_dir($dir)) {
@@ -339,7 +339,7 @@ class JCacheStorageFile extends JCacheStorage
 		if (!is_dir($dir)) {
 			return false;
 		}
-		return $dir.'/'.$name.'.php';
+		return $dir.DS.$name.'.php';
 	}
 
 	/**
@@ -482,7 +482,7 @@ class JCacheStorageFile extends JCacheStorage
 		while (($file = readdir($handle)) !== false)
 		{
 			if (($file != '.') && ($file != '..') && (!in_array($file, $exclude)) && (!$excludefilter || !preg_match($excludefilter, $file))) {
-				$dir = $path . '/' . $file;
+				$dir = $path . DS . $file;
 				$isDir = is_dir($dir);
 				if ($isDir) {
 					if ($recurse) {
@@ -497,7 +497,7 @@ class JCacheStorageFile extends JCacheStorage
 				} else {
 					if (preg_match("/$filter/", $file)) {
 						if ($fullpath) {
-							$arr[] = $path . '/' . $file;
+							$arr[] = $path . DS . $file;
 						} else {
 							$arr[] = $file;
 						}
@@ -550,7 +550,7 @@ class JCacheStorageFile extends JCacheStorage
 		while (($file = readdir($handle)) !== false)
 		{
 			if (($file != '.') && ($file != '..') && (!in_array($file, $exclude)) && (empty($excludefilter_string) || !preg_match($excludefilter_string, $file))) {
-				$dir = $path . '/' . $file;
+				$dir = $path . DS . $file;
 				$isDir = is_dir($dir);
 				if ($isDir) {
 					// Removes filtered directories

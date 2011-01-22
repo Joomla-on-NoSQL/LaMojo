@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -20,24 +20,23 @@ $params = $this->state->get('params');
 ?>
 
 <script type="text/javascript">
-	function submitbutton(task) {
+	Joomla.submitbutton = function(task) {
 		if (task == 'article.cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			<?php echo $this->form->getField('text')->save(); ?>
-			submitform(task);
-		}
-		else {
+			<?php echo $this->form->getField('articletext')->save(); ?>
+			Joomla.submitform(task);
+		} else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
-<div class="edit item-page<?php echo $this->escape($params->get('pageclass_sfx')); ?>">
+<div class="edit item-page<?php echo $this->pageclass_sfx; ?>">
 <?php if ($params->get('show_page_heading', 1)) : ?>
 <h1>
 	<?php echo $this->escape($params->get('page_heading')); ?>
 </h1>
 <?php endif; ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_content'); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_content&a_id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
 	<fieldset>
 		<legend><?php echo JText::_('JEDITOR'); ?></legend>
 
@@ -53,17 +52,16 @@ $params = $this->state->get('params');
 			</div>
 		<?php endif; ?>
 
-			<div class="formelm_buttons">
-			<button type="button" onclick="submitbutton('article.save')">
+			<div class="formelm-buttons">
+			<button type="button" onclick="Joomla.submitbutton('article.save')">
 				<?php echo JText::_('JSAVE') ?>
 			</button>
-			<button type="button" onclick="submitbutton('article.cancel')">
+			<button type="button" onclick="Joomla.submitbutton('article.cancel')">
 				<?php echo JText::_('JCANCEL') ?>
 			</button>
 			</div>
 
-
-			<?php echo $this->form->getInput('text'); ?>
+			<?php echo $this->form->getInput('articletext'); ?>
 
 	</fieldset>
 
@@ -78,11 +76,17 @@ $params = $this->state->get('params');
 		<?php echo $this->form->getInput('created_by_alias'); ?>
 		</div>
 
-	<?php if ($this->user->authorise('core.edit.state', 'com_content.article.'.$this->item->id)): ?>
+	<?php if ($this->item->params->get('access-change')): ?>
 		<div class="formelm">
 		<?php echo $this->form->getLabel('state'); ?>
 		<?php echo $this->form->getInput('state'); ?>
 		</div>
+
+		<div class="formelm">
+		<?php echo $this->form->getLabel('featured'); ?>
+		<?php echo $this->form->getInput('featured'); ?>
+		</div>
+
 		<div class="formelm">
 		<?php echo $this->form->getLabel('publish_up'); ?>
 		<?php echo $this->form->getInput('publish_up'); ?>
@@ -106,7 +110,7 @@ $params = $this->state->get('params');
 
 	<fieldset>
 		<legend><?php echo JText::_('JFIELD_LANGUAGE_LABEL'); ?></legend>
-		<div class="formelm_area">
+		<div class="formelm-area">
 		<?php echo $this->form->getLabel('language'); ?>
 		<?php echo $this->form->getInput('language'); ?>
 		</div>
@@ -114,19 +118,18 @@ $params = $this->state->get('params');
 
 	<fieldset>
 		<legend><?php echo JText::_('COM_CONTENT_METADATA'); ?></legend>
-		<div class="formelm_area">
+		<div class="formelm-area">
 		<?php echo $this->form->getLabel('metadesc'); ?>
 		<?php echo $this->form->getInput('metadesc'); ?>
 		</div>
-		<div class="formelm_area">
+		<div class="formelm-area">
 		<?php echo $this->form->getLabel('metakey'); ?>
 		<?php echo $this->form->getInput('metakey'); ?>
 		</div>
-	</fieldset>
 
-	<div>
 		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="return" value="<?php echo $this->return_page;?>" />
 		<?php echo JHTML::_( 'form.token' ); ?>
-	</div>
+	</fieldset>
 </form>
 </div>

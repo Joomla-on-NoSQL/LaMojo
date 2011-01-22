@@ -8,6 +8,14 @@
 // configuration. If you specify such an object before loading this
 // file, the values you put into it will override the defaults given
 // below. You can also assign to it after loading.
+function createHTMLElement(el) {
+	if ((document.createElementNS) && (document.documentElement.namespaceURI !== null)) {
+		return document.createElementNS("http://www.w3.org/1999/xhtml", el)
+	} else {
+		return document.createElement(el)
+	}
+}
+
 var CodeMirrorConfig = window.CodeMirrorConfig || {};
 
 var CodeMirror = (function(){
@@ -53,9 +61,9 @@ var CodeMirror = (function(){
 
   function wrapLineNumberDiv(place) {
 	return function(node) {
-	  var container = document.createElement("DIV"),
-		  nums = document.createElement("DIV"),
-		  scroller = document.createElement("DIV");
+	  var container = createHTMLElement("div"),
+		  nums = createHTMLElement("div"),
+		  scroller = createHTMLElement("div");
 	  container.style.position = "relative";
 	  nums.style.position = "absolute";
 	  nums.style.height = "100%";
@@ -86,7 +94,7 @@ var CodeMirror = (function(){
 	  var diff = 20 + Math.max(doc.body.offsetHeight, frame.offsetHeight) - scroller.offsetHeight;
 	  for (var n = Math.ceil(diff / 10); n > 0; n--) {
 		scroller.appendChild(document.createTextNode(nextNum++));
-		scroller.appendChild(document.createElement("BR"));
+		scroller.appendChild(createHTMLElement("br"));
 	  }
 	  nums.scrollTop = doc.body.scrollTop || doc.documentElement.scrollTop || 0;
 	}
@@ -105,7 +113,7 @@ var CodeMirror = (function(){
 	this.options = options = options || {};
 	setDefaults(options, CodeMirrorConfig);
 
-	var frame = this.frame = document.createElement("IFRAME");
+	var frame = this.frame = createHTMLElement("iframe");
 	frame.frameBorder = 0;
 	frame.src = "javascript:false;";
 	frame.style.border = "0";
@@ -139,7 +147,7 @@ var CodeMirror = (function(){
 	forEach(options.basefiles.concat(options.parserfile), function(file) {
 	  html.push("<script type=\"text/javascript\" src=\"" + options.path + file + "\"></script>");
 	});
-	html.push("</head><body style=\"border-width: 0;\" class=\"editbox\" spellcheck=\"" +
+	html.push("</head><body class=\"editbox\" spellcheck=\"" +
 			  (options.disableSpellcheck ? "false" : "true") + "\"></body></html>");
 
 	var doc = this.win.document;

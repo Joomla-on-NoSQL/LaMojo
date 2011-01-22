@@ -3,23 +3,22 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_content
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers');
-$pageClass = $this->params->get('pageclass_sfx');
+JHtml::addIncludePath(JPATH_COMPONENT.DS.'helpers');
 ?>
-<div class="archive<?php echo $pageClass;?>">
+<div class="archive<?php echo $this->pageclass_sfx;?>">
 <?php if ($this->params->get('show_page_heading', 1)) : ?>
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
 <?php endif; ?>
-<form id="jForm" action="<?php JRoute::_('index.php')?>" method="post">
+<form id="adminForm" action="<?php echo JRoute::_('index.php')?>" method="post">
 	<fieldset class="filters">
 	<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
 	<div class="filter-search">

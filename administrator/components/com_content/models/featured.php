@@ -1,14 +1,14 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-require_once JPATH::dirname(__FILE__).'/articles.php';
+require_once dirname(__FILE__).DS.'articles.php';
 
 /**
  * About Page Model
@@ -18,6 +18,40 @@ require_once JPATH::dirname(__FILE__).'/articles.php';
  */
 class ContentModelFeatured extends ContentModelArticles
 {
+	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'title', 'a.title',
+				'alias', 'a.alias',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'catid', 'a.catid', 'category_title',
+				'state', 'a.state',
+				'access', 'a.access', 'access_level',
+				'created', 'a.created',
+				'created_by', 'a.created_by',
+				'ordering', 'a.ordering',
+				'featured', 'a.featured',
+				'language', 'a.language',
+				'hits', 'a.hits',
+				'publish_up', 'a.publish_up',
+				'publish_down', 'a.publish_down',
+				'fp.ordering',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
 	/**
 	 * @param	boolean	True to join selected foreign information
 	 *
@@ -34,7 +68,7 @@ class ContentModelFeatured extends ContentModelArticles
 			$this->getState(
 				'list.select',
 				'a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid, a.state, a.access, a.created, a.hits,' .
-				'a.language'
+				'a.language, a.publish_up, a.publish_down'
 			)
 		);
 		$query->from('#__content AS a');

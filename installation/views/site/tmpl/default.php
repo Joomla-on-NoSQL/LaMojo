@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -17,18 +17,17 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('script', 'installation/template/js/installation.js', true, false, false, false);
 ?>
-
-<script type="text/javascript">
 <?php if ($this->sample_installed) : ?>
-
+<script type="text/javascript">
 	window.addEvent('domready', function() {
-		var el = document.getElementById('theDefault').children[0];
-		el.setAttribute('disabled','disabled');
-		el.setAttribute('value','<?php echo JText::_('INSTL_SITE_SAMPLE_LOADED', true); ?>');
+		var select = document.getElementById('jform_sample_file');
+		var button = document.getElementById('theDefault').children[0];
+		button.setAttribute('disabled','disabled');
+		button.setAttribute('value','<?php echo JText::_('INSTL_SITE_SAMPLE_LOADED', true); ?>');
+		select.setAttribute('disabled','disabled');
 	});
-<?php endif; ?>
 </script>
-
+<?php endif; ?>
 <div id="stepbar">
 	<div class="t">
 		<div class="t">
@@ -57,11 +56,11 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 			<div class="m">
 				<div class="far-right">
 <?php if ($this->document->direction == 'ltr') : ?>
-					<div class="button1-right"><div class="prev"><a href="index.php?view=filesystem" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
-					<div class="button1-left"><div class="next"><a onclick="validateForm(document.getElementById('adminForm'), 'setup.saveconfig');" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
+					<div class="button1-right"><div class="prev"><a href="index.php?view=filesystem" rel="prev" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
+					<div class="button1-left"><div class="next"><a href="javascript:void(0);" onclick="Install.submitform('setup.saveconfig');" rel="next" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
 <?php elseif ($this->document->direction == 'rtl') : ?>
-					<div class="button1-right"><div class="prev"><a onclick="validateForm(document.getElementById('adminForm'), 'setup.saveconfig');" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
-					<div class="button1-left"><div class="next"><a href="index.php?view=filesystem" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
+					<div class="button1-right"><div class="prev"><a href="javascript:void(0);" onclick="Install.submitform('setup.saveconfig');" rel="next" title="<?php echo JText::_('JNext'); ?>"><?php echo JText::_('JNext'); ?></a></div></div>
+					<div class="button1-left"><div class="next"><a href="index.php?view=filesystem" rel="prev" title="<?php echo JText::_('JPrevious'); ?>"><?php echo JText::_('JPrevious'); ?></a></div></div>
 <?php endif; ?>
 				</div>
 				<span class="step"><?php echo JText::_('INSTL_SITE'); ?></span>
@@ -91,7 +90,10 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 						</div>
 					</div>
 					<div class="m">
-						<fieldset>
+						<h3 class="title-smenu" title="<?php echo JText::_('INSTL_BASIC_SETTINGS'); ?>">
+							<?php echo JText::_('INSTL_BASIC_SETTINGS'); ?>
+						</h3>
+						<div class="section-smenu">
 							<table class="content2">
 								<tr>
 									<td class="item">
@@ -100,9 +102,32 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 									<td>
 										<?php echo $this->form->getInput('site_name'); ?>
 									</td>
+								</tr></table>
+								</div>
+
+						<h3 class="title-smenu moofx-toggler" title="<?php echo JText::_('INSTL_SITE_META_ADVANCED_SETTINGS'); ?>">
+							<a href="#"><?php echo JText::_('INSTL_SITE_META_ADVANCED_SETTINGS'); ?></a>
+						</h3>
+						<div class="section-smenu moofx-slider">
+								<table class="content2">
+								<tr>
+									<td title="<?php echo JText::_('INSTL_SITE_METADESC_TITLE_LABEL'); ?>">
+										<?php echo $this->form->getLabel('site_metadesc'); ?>
+									</td>
+									<td>
+										<?php echo $this->form->getInput('site_metadesc'); ?>
+									</td>
+								</tr>
+								<tr>
+									<td title="<?php echo JText::_('INSTL_SITE_METAKEYS_TITLE_LABEL'); ?>">
+										<?php echo $this->form->getLabel('site_metakeys'); ?>
+									</td>
+									<td>
+										<?php echo $this->form->getInput('site_metakeys'); ?>
+									</td>
 								</tr>
 							</table>
-						</fieldset>
+							</div>
 					</div>
 					<div class="b">
 						<div class="b">
@@ -182,7 +207,8 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC1'); ?></p>
 					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC2'); ?></p>
 					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC3'); ?></p>
-					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC7'); ?></p>
+					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC4'); ?></p>
+					<p><?php echo JText::_('INSTL_SITE_LOAD_SAMPLE_DESC8'); ?></p>
 				</div>
 				<div class="install-body">
 				<div class="t">
@@ -192,15 +218,19 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 				</div>
 				<div class="m">
 					<fieldset>
-						<table class="content2">
+						<table class="content2 sample-data">
+
 							<tr>
-								<td class="item"></td>
-								<td></td>
+								<td><?php echo $this->form->getLabel('sample_file'); ?></td>
+								<td><?php echo $this->form->getInput('sample_file'); ?></td>
 							</tr>
 							<tr>
-								<td>
-									<span id="theDefault"><input class="button" type="button" name="instDefault" value="<?php echo JText::_('INSTL_SITE_INSTALL_SAMPLE_LABEL'); ?>" onclick="Install.sampleData(this);"/></span>
+								<td colspan="2">
+									<span id="theDefault"><input class="button" type="button" name="instDefault" value="<?php echo JText::_('INSTL_SITE_INSTALL_SAMPLE_LABEL'); ?>" onclick="Install.sampleData(this, <?php echo $this->form->getField('sample_file')->id;?>);"/></span>
 								</td>
+							</tr>
+							<tr>
+								<td>&#160;</td>
 								<td>
 									<em><?php echo JText::_('INSTL_SITE_INSTALL_SAMPLE_DESC'); ?></em>
 								</td>
@@ -219,6 +249,7 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 						<div class="b"></div>
 					</div>
 				</div>
+				<?php echo $this->form->getInput('type'); ?>
 				<?php echo JHtml::_('form.token'); ?>
 			</div>
 		</form>

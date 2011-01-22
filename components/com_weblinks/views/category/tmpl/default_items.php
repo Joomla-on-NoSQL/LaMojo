@@ -3,21 +3,24 @@
  * @version		$Id: default_items.php 13471 2009-11-12 00:38:49Z eddieajau
  * @package		Joomla.Site
  * @subpackage	com_weblinks
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 // Code to support edit links for weblinks
-
+// Create a shortcut for params.
+$params = &$this->item->params;
+JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+JHtml::_('behavior.tooltip');
+JHtml::core();
 // Get the user object.
 $user = JFactory::getUser();
 // Check if user is allowed to add/edit based on weblinks permissinos.
-$canEdit = $user->authorise('core.edit', 'com_weblinks.weblink.');
+$canEdit = $user->authorise('core.edit', 'com_weblinks');
 $canCreate = $user->authorise('core.create', 'com_weblinks');
-
-JHtml::core();
+$canEditState = $user->authorise('core.edit.state', 'com_weblinks');
 
 $n = count($this->items);
 $listOrder	= $this->state->get('list.ordering');
@@ -29,21 +32,21 @@ $listDirn	= $this->state->get('list.direction');
 <?php else : ?>
 
 <form action="<?php echo JFilterOutput::ampReplace(JFactory::getURI()->toString()); ?>" method="post" name="adminForm" id="adminForm">
-	<fieldset class="filters">
-	<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
 	<?php if ($this->params->get('show_pagination_limit')) : ?>
+		<fieldset class="filters">
+		<legend class="hidelabeltxt"><?php echo JText::_('JGLOBAL_FILTER_LABEL'); ?></legend>
 		<div class="display-limit">
 			<?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>&#160;
 			<?php echo $this->pagination->getLimitBox(); ?>
 		</div>
+		</fieldset>
 	<?php endif; ?>
-	</fieldset>
 
 	<table class="category">
 		<?php if ($this->params->get('show_headings')==1) : ?>
 
 		<thead><tr>
-			
+
 			<th class="title">
 					<?php echo JHtml::_('grid.sort',  'COM_WEBLINKS_GRID_TITLE', 'title', $listDirn, $listOrder); ?>
 			</th>
@@ -57,8 +60,12 @@ $listDirn	= $this->state->get('list.direction');
 	<?php endif; ?>
 	<tbody>
 	<?php foreach ($this->items as $i => $item) : ?>
-		<tr class="<?php echo $i % 2 ? 'odd' : 'even';?>">
-			
+		<?php if ($this->items[$i]->state == 0) : ?>
+			<tr class="system-unpublished cat-list-row<?php echo $i % 2; ?>">
+		<?php else: ?>
+			<tr class="cat-list-row<?php echo $i % 2; ?>" >
+		<?php endif; ?>
+
 			<td class="title">
 			<p>
 				<?php if ($this->params->get('link_icons') <> -1) : ?>
@@ -66,8 +73,15 @@ $listDirn	= $this->state->get('list.direction');
 				<?php endif; ?>
 				<?php
 					// Compute the correct link
-					$menuclass = 'category'.$this->params->get('pageclass_sfx');
+					$menuclass = 'category'.$this->pageclass_sfx;
 					$link = $item->link;
+					$width	= $item->params->get('width');
+					$height	= $item->params->get('height');
+					if ($width == null || $height == null) {
+						$width	= 600;
+						$height	= 500;
+					}
+
 					switch ($item->params->get('target', $this->params->get('target')))
 					{
 						case 1:
@@ -78,14 +92,15 @@ $listDirn	= $this->state->get('list.direction');
 
 						case 2:
 							// open in a popup window
-							echo "<a href=\"#\" onclick=\"javascript: window.open('". $link ."', '', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=550'); return false\" class=\"$menuclass\">".
-								$this->escape($item->title) ."</a>\n";
+							$attribs = 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width='.$this->escape($width).',height='.$this->escape($height).'';
+							echo "<a href=\"$link\" onclick=\"window.open(this.href, 'targetWindow', '".$attribs."'); return false;\">".
+								$this->escape($item->title).'</a>';
 							break;
 						case 3:
-							// TODO: open in a modal window
+							// open in a modal window
 							JHtml::_('behavior.modal', 'a.modal'); ?>
-							<a class="modal" title="<?php  echo $this->escape($item->title) ?> " href="<?php echo $link;?>"  rel="{handler: 'iframe', size: {x: 500, y: 506}}\"></a>
-							<?php echo $this->escape($item->title). ' </a>' ;
+							<a class="modal" href="<?php echo $link;?>"  rel="{handler: 'iframe', size: {x:<?php echo $this->escape($width);?>, y:<?php echo $this->escape($height);?>}}">
+								<?php echo $this->escape($item->title). ' </a>' ;
 							break;
 
 						default:
@@ -96,10 +111,14 @@ $listDirn	= $this->state->get('list.direction');
 					}
 				?>
 				<?php // Code to add the edit link for the weblink. ?>
-				<?php if ($canEdit) : ?>
-					<span class="hasTip" title="<?php echo JText::_('COM_WEBLINKS_EDIT'); ?>"><a href="<?php echo JRoute::_(WeblinksHelperRoute::getFormRoute($item->id));?>">
-							<img src="media/system/images/edit.png" alt="Edit"></img></a></span>
-				<?php endif; ?>				
+
+						<?php if ($canEdit) : ?>
+							<ul class="actions">
+								<li class="edit-icon">
+									<?php echo JHtml::_('icon.edit',$item, $params); ?>
+								</li>
+							</ul>
+						<?php endif; ?>
 			</p>
 
 			<?php if (($this->params->get('show_link_description')) AND ($item->description !='')): ?>
@@ -119,10 +138,9 @@ $listDirn	= $this->state->get('list.direction');
 </table>
 
 	<?php // Code to add a link to submit a weblink. ?>
-	<?php if ($canCreate) : ?>
-		<span class="hasTip" title="<?php echo JText::_('COM_WEBLINKS_FORM_EDIT_WEBLINK'); ?>"><a href="<?php echo JRoute::_(WeblinksHelperRoute::getFormRoute(0));?>">
-		<img src="media/system/images/edit.png" alt="Edit"></img></a></span>
-	<?php  endif; ?>
+	<?php /* if ($canCreate) : // TODO This is not working due to some problem in the router, I think. Ref issue #23685 ?>
+		<?php echo JHtml::_('icon.create', $item, $item->params); ?>
+ 	<?php  endif; */ ?>
 		<?php if ($this->params->get('show_pagination')) : ?>
 		 <div class="pagination">
 			<?php if ($this->params->def('show_pagination_results', 1)) : ?>

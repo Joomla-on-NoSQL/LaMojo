@@ -5,7 +5,6 @@
 		name="id"
 		type="text"
 		default="0"
-		required="true"
 		label="JGLOBAL_FIELD_ID_LABEL"
 		description ="JGLOBAL_FIELD_ID_DESC"
 		class="readonly"
@@ -49,12 +48,7 @@
 
 	<field
 		name="extension"
-		type="text"
-		label="COM_CATEGORIES_FIELD_EXTENSION_LABEL"
-		description="COM_CATEGORIES_FIELD_EXTENSION_DESC"
-		class="readonly"
-		size="40"
-		readonly="true"/>
+		type="hidden"/>
 
 	<field
 		name="title"
@@ -112,7 +106,11 @@
 			value="-2">
 			JTRASHED</option>
 	</field>
-
+	<field
+		name="buttonspacer"
+		label="JGLOBAL_ACTION_PERMISSIONS_LABEL" 
+		description="JGLOBAL_ACTION_PERMISSIONS_DESCRIPTION"
+		type="spacer" />
 	<field
 		name="checked_out"
 		type="hidden"
@@ -148,34 +146,34 @@
 
 	<field
 		name="created_user_id"
-		type="hidden"
-		filter="unset"/>
+		type="user"
+		label="JGLOBAL_FIELD_CREATED_BY_LABEL"
+		desc="JGLOBAL_FIELD_CREATED_BY_DESC"
+		/>
 
 	<field
 		name="created_time"
 		type="text"
-		label="JGLOBAL_CREATED"
+		label="JGLOBAL_CREATED_DATE"
 		class="readonly"
 		filter="unset"
 		readonly="true" />
 
 	<field
 		name="modified_user_id"
-		type="hidden"
+		type="user"
+		label="JGLOBAL_FIELD_MODIFIED_BY_LABEL"
+		class="readonly"
+		readonly="true"
 		filter="unset"/>
 
 	<field
 		name="modified_time"
 		type="text"
-		label="JGLOBAL_MODIFIED"
+		label="JGLOBAL_MODIFIED_DATE"
 		class="readonly"
 		filter="unset"
 		readonly="true" />
-
-	<field
-		name="hits"
-		type="hidden"
-		filter="unset"/>
 
 	<field
 		name="language"
@@ -191,8 +189,9 @@
 		name="rules"
 		type="rules"
 		label="JFIELD_RULES_LABEL"
-		description="JFIELD_RULES_DESC"
+		translate_label="false"
 		filter="rules"
+		validate="rules"
 		class="inputbox"
 		component="com_content"
 		section="category"/>
@@ -202,11 +201,12 @@
 			name="basic">
 
 			<field
-				name="target"
+				name="category_layout"
 				type="componentlayout"
 				label="JFIELD_ALT_LAYOUT_LABEL"
 				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
-				view="categories"
+				view="category"
+				useglobal="true"
 				/>
 
 			<field
@@ -218,13 +218,7 @@
 	</fields>
 
 	<fields name="metadata">
-		<field
-			name="page_title"
-			type="text"
-			label="JFIELD_ALT_PAGE_TITLE_LABEL"
-			description="JFIELD_ALT_PAGE_TITLE_DESC"
-			size="30"/>
-
+		
 		<field
 			name="author"
 			type="text"

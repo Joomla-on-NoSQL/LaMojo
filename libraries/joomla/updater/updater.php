@@ -5,7 +5,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Updater
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License, see LICENSE.php
  */
 
@@ -29,7 +29,7 @@ class JUpdater extends JAdapter {
 	 */
 	public function __construct() {
 		// adapter base path, class prefix
-		parent::__construct(JPATH::dirname(__FILE__),'JUpdater');
+		parent::__construct(dirname(__FILE__),'JUpdater');
 	}
 
 	/**
@@ -39,12 +39,12 @@ class JUpdater extends JAdapter {
 	 * @static
 	 * @return	object	An installer object
 	 */
-	public function &getInstance()
+	public static function &getInstance()
 	{
 		static $instance;
 
 		if (!isset ($instance)) {
-			$instance = new JUpdater();
+			$instance = new JUpdater;
 		}
 		return $instance;
 	}
@@ -104,7 +104,7 @@ class JUpdater extends JAdapter {
 							{
 								// we have an installed extension, check the update is actually newer
 								$extension->load($eid);
-								$data = unserialize($extension->manifest_cache);
+								$data = json_decode($extension->manifest_cache, true);
 								if(version_compare($current_update->version, $data['version'], '>') == 1)
 								{
 									$current_update->extension_id = $eid;

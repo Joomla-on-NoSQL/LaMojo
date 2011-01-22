@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -52,6 +52,19 @@ abstract class JHtml
 	 */
 	private static $registry = array();
 
+	protected static function extract($key)
+	{
+		$key = preg_replace('#[^A-Z0-9_\.]#i', '', $key);
+
+		// Check to see if we need to load a helper file
+		$parts = explode('.', $key);
+
+		$prefix = (count($parts) == 3 ? array_shift($parts) : 'JHtml');
+		$file	= (count($parts) == 2 ? array_shift($parts) : '');
+		$func	= array_shift($parts);
+
+		return array(strtolower($prefix.'.'.$file.'.'.$func), $prefix, $file, $func);
+	}
 	/**
 	 * Class loader method
 	 *
@@ -62,19 +75,9 @@ abstract class JHtml
 	 *					prefix and class are optional and can be used to load custom
 	 *					html helpers.
 	 */
-	public static function _($type)
+	public static function _($key)
 	{
-		$type = preg_replace('#[^A-Z0-9_\.]#i', '', $type);
-
-		// Check to see if we need to load a helper file
-		$parts = explode('.', $type);
-
-		$prefix = (count($parts) == 3 ? array_shift($parts) : 'JHtml');
-		$file	= (count($parts) == 2 ? array_shift($parts) : '');
-		$func	= array_shift($parts);
-
-		$key = strtolower($prefix.'.'.$file.'.'.$func);
-
+		list($key, $prefix, $file, $func) = self::extract($key);
 		if (array_key_exists($key, self::$registry))
 		{
 			$function = self::$registry[$key];
@@ -130,20 +133,12 @@ abstract class JHtml
 	 */
 	public static function register($key, $function)
 	{
-		$parts = explode('.', $key);
-
-		$prefix = (count($parts) == 3 ? array_shift($parts) : 'JHtml');
-		$file	= (count($parts) == 2 ? array_shift($parts) : '');
-		$func	= array_shift($parts);
-
-		$key = strtolower($prefix.'.'.$file.'.'.$func);
-
+		list($key) = self::extract($key);
 		if (is_callable($function))
 		{
 			self::$registry[$key] = $function;
 			return true;
 		}
-
 		return false;
 	}
 
@@ -154,13 +149,24 @@ abstract class JHtml
 	 */
 	public static function unregister($key)
 	{
-		$key = strtolower($key);
+		list($key) = self::extract($key);
 		if (isset(self::$registry[$key])) {
 			unset(self::$registry[$key]);
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Test if the key is registered.
+	 *
+	 * @param	string	The name of the key
+	 */
+	public static function isRegistered($key)
+	{
+		list($key) = self::extract($key);
+		return isset(self::$registry[$key]);
 	}
 
 	/**
@@ -422,15 +428,23 @@ abstract class JHtml
 	 */
 	public static function stylesheet($file, $attribs = array(), $relative = false, $path_only = false, $detect_browser = true)
 	{
-		if (is_array($attribs)) {
-			$attribs = JArrayHelper::toString($attribs);
+		// Need to adjust for the change in API from 1.5 to 1.6.
+		// function stylesheet($filename, $path = 'media/system/css/', $attribs = array())
+		if (is_string($attribs)) {
+			// Assume this was the old $path variable.
+			$file = $attribs.$file;
+		}
+
+		if (is_array($relative)) {
+			// Assume this was the old $attribs variable.
+			$attribs	= $relative;
+			$relative	= false;
 		}
 
 		$includes = self::_includeRelativeFiles($file, $relative, $detect_browser, 'css');
 
 		// if only path is required
-		if($path_only)
-		{
+		if ($path_only) {
 			if (count($includes)==0) {
 				return null;
 			}
@@ -441,11 +455,11 @@ abstract class JHtml
 				return $includes;
 			}
 		}
-		else
 		// if inclusion is required
-		{
+		else {
 			$document = JFactory::getDocument();
-			foreach ($includes as $include) {
+			foreach ($includes as $include)
+			{
 				$document->addStylesheet($include, 'text/css', null, $attribs);
 			}
 		}
@@ -466,6 +480,14 @@ abstract class JHtml
 	{
 		JHtml::core();
 
+		// Need to adjust for the change in API from 1.5 to 1.6.
+		// function script($filename, $path = 'media/system/js/', $mootools = true)
+		if (is_string($framework)) {
+			// Assume this was the old $path variable.
+			$file		= $framework.$file;
+			$framework	= $relative;
+		}
+
 		// Include mootools framework
 		if ($framework) {
 			JHtml::_('behavior.framework');
@@ -474,8 +496,7 @@ abstract class JHtml
 		$includes = self::_includeRelativeFiles($file, $relative, $detect_browser, 'js');
 
 		// if only path is required
-		if($path_only)
-		{
+		if ($path_only) {
 			if (count($includes)==0) {
 				return null;
 			}
@@ -486,11 +507,11 @@ abstract class JHtml
 				return $includes;
 			}
 		}
-		else
 		// if inclusion is required
-		{
+		else {
 			$document = JFactory::getDocument();
-			foreach ($includes as $include) {
+			foreach ($includes as $include)
+			{
 				$document->addScript($include);
 			}
 		}
@@ -503,9 +524,7 @@ abstract class JHtml
 			$debug = JFactory::getConfig()->get('debug');
 		}
 
-		// TODO NOTE: Here we are checking for Konqueror - If they fix their issue with compressed, we will need to update this
-		$konkcheck		= strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "konqueror");
-		$uncompressed	= ($debug || $konkcheck) ? '-uncompressed' : '';
+		$uncompressed	= $debug ? '-uncompressed' : '';
 
 		$document = JFactory::getDocument();
 		$document->addScript(JURI::root(true).'/media/system/js/core'.$uncompressed.'.js');
@@ -533,7 +552,7 @@ abstract class JHtml
 	/**
 	 * Returns formated date according to a given format and time zone.
 	 *
-	 * @param	string	String in a format accepted by strtotime(), defaults to "now".
+	 * @param	string	String in a format accepted by date(), defaults to "now".
 	 * @param	string	format optional format for strftime
 	 * @param	mixed	Time zone to be used for the date.  Special cases: boolean true for user
 	 *					setting, boolean false for server setting.
@@ -670,11 +689,12 @@ abstract class JHtml
 		}
 
 		$readonly = isset($attribs['readonly']) && $attribs['readonly'] == 'readonly';
+		$disabled = isset($attribs['disabled']) && $attribs['disabled'] == 'disabled';
 		if (is_array($attribs)) {
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
-		if (!$readonly) {
+		if ((!$readonly) && (!$disabled)) {
 			// Load the calendar behavior
 			JHtml::_('behavior.calendar');
 			JHtml::_('behavior.tooltip');
@@ -688,7 +708,8 @@ abstract class JHtml
 				ifFormat: "'.$format.'",	// format of the input field
 				button: "'.$id.'_img",		// trigger for the calendar (button ID)
 				align: "Tl",				// alignment (defaults to "Bl")
-				singleClick: true
+				singleClick: true,
+				firstDay: '.JFactory::getLanguage()->getFirstDay().'
 				});});');
 				$done[] = $id;
 			}

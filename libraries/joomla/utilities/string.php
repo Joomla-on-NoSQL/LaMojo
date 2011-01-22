@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Utilities
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -33,6 +33,7 @@ if (function_exists('iconv') || ((!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' &&
  * Include the utf8 package
  */
 jimport('phputf8.utf8');
+jimport('phputf8.strcasecmp');
 
 /**
  * String handling class for utf-8 data
@@ -191,20 +192,100 @@ abstract class JString
 	}
 
 	/**
-	 * UTF-8 aware alternative to strcasecmp
+	 * UTF-8/LOCALE aware alternative to strcasecmp
 	 * A case insensivite string comparison
 	 *
 	 * @static
 	 * @access public
 	 * @param string string 1 to compare
 	 * @param string string 2 to compare
+	 * @param mixed The locale used by strcoll or false to use classical comparison
 	 * @return int < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
 	 * @see http://www.php.net/strcasecmp
-	*/
-	public static function strcasecmp($str1, $str2)
+	 * @see http://www.php.net/strcoll
+	 * @see http://www.php.net/setlocale
+	 */
+	public static function strcasecmp($str1, $str2, $locale = false)
 	{
-		jimport('phputf8.strcasecmp');
-		return utf8_strcasecmp($str1, $str2);
+		if ($locale)
+		{
+			// get current locale
+			$locale0 = setlocale(LC_COLLATE, 0);
+			if (!$locale = setlocale(LC_COLLATE, $locale)) {
+				$locale = $locale0;
+			}
+
+			// See if we have successfully set locale to UTF-8
+			if(!stristr($locale, 'UTF-8') && stristr($locale, '_') && preg_match('~\.(\d+)$~', $locale, $m)) {
+				$encoding = 'CP' . $m[1];
+			}
+			else if(stristr($locale, 'UTF-8')){
+				$encoding = 'UTF-8';
+			}
+			else {
+				$encoding = 'nonrecodable';
+			}
+
+			// if we sucesfuly set encoding it to utf-8 or encoding is sth weird don't recode
+			if ($encoding == 'UTF-8' || $encoding == 'nonrecodable') {
+				return strcoll(utf8_strtolower($str1), utf8_strtolower($str2));
+			} else {
+				return strcoll(self::transcode(utf8_strtolower($str1),'UTF-8', $encoding), self::transcode(utf8_strtolower($str2),'UTF-8', $encoding));
+			}
+		}
+		else
+		{
+			return utf8_strcasecmp($str1, $str2);
+		}
+	}
+
+	/**
+	 * UTF-8/LOCALE aware alternative to strcmp
+	 * A case sensivite string comparison
+	 *
+	 * @static
+	 * @access public
+	 * @param string string 1 to compare
+	 * @param string string 2 to compare
+	 * @param mixed The locale used by strcoll or false to use classical comparison
+	 * @return int < 0 if str1 is less than str2; > 0 if str1 is greater than str2, and 0 if they are equal.
+	 * @see http://www.php.net/strcmp
+	 * @see http://www.php.net/strcoll
+	 * @see http://www.php.net/setlocale
+	 */
+	public static function strcmp($str1, $str2, $locale = false)
+	{
+		if ($locale)
+		{
+			// get current locale
+			$locale0 = setlocale(LC_COLLATE, 0);
+			if (!$locale = setlocale(LC_COLLATE, $locale)) {
+				$locale = $locale0;
+			}
+
+			// See if we have successfully set locale to UTF-8
+			if(!stristr($locale, 'UTF-8') && stristr($locale, '_') && preg_match('~\.(\d+)$~', $locale, $m)) {
+				$encoding = 'CP' . $m[1];
+			}
+			else if(stristr($locale, 'UTF-8')){
+				$encoding = 'UTF-8';
+			}
+			else {
+				$encoding = 'nonrecodable';
+			}
+
+			// if we sucesfuly set encoding it to utf-8 or encoding is sth weird don't recode
+			if ($encoding == 'UTF-8' || $encoding == 'nonrecodable') {
+				return strcoll($str1, $str2);
+			}
+			else {
+				return strcoll(self::transcode($str1,'UTF-8', $encoding), self::transcode($str2,'UTF-8', $encoding));
+			}
+		}
+		else
+		{
+			return strcmp($str1, $str2);
+		}
 	}
 
 	/**
@@ -605,5 +686,30 @@ abstract class JString
 		// invalid, nothing at all will match, even if the string contains
 		// some valid sequences
 		return (preg_match('/^.{1}/us',$str,$ar) == 1);
+	}
+
+	/**
+	 * Does a UTF-8 safe version of PHP parse_url function
+	 * @see http://us3.php.net/manual/en/function.parse-url.php
+	 * 
+	 * @param string URL to parse
+	 * @return associative array or false if badly formed URL. 
+	 * @since 1.6
+	 */	
+	public static function parse_url($url) {
+		$result = array();
+		// Build arrays of values we need to decode before parsing
+		$entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D');
+		$replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "%", "#", "[", "]");
+		// Create encoded URL with special URL characters decoded so it can be parsed
+		// All other charcters will be encoded
+		$encodedURL = str_replace($entities, $replacements, urlencode($url));
+		// Parse the encoded URL
+		$encodedParts = parse_url($encodedURL);
+		// Now, decode each value of the resulting array
+		foreach ($encodedParts as $key => $value) {
+			$result[$key] = urldecode($value);
+		}
+		return $result;
 	}
 }

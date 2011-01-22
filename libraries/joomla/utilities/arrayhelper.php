@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Utilities
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -104,25 +104,58 @@ class JArrayHelper
 	 */
 	public static function fromObject($p_obj, $recurse = true, $regex = null)
 	{
-		$result = null;
 		if (is_object($p_obj)) {
-			$result = array();
+			return self::_fromObject($p_obj, $recurse, $regex);
+		}
+		else {
+			return null;
+		}
+	}
 
-			foreach (get_object_vars($p_obj) as $k => $v) {
-				if ($regex) {
-					if (!preg_match($regex, $k)) {
-						continue;
+	/**
+	 * Private Utility function to map an object|array to an array
+	 *
+	 * @static
+	 * @param	array|object	The source object|array
+	 * @param	boolean			True to recurve through multi-level objects
+	 * @param	string			An optional regular expression to match on field names
+	 * @return	array			The array mapped from the given object
+	 * @since	1.6
+	 */
+	private static function _fromObject($item, $recurse, $regex)
+	{
+		if (is_object($item))
+		{
+			$result = array();
+			foreach (get_object_vars($item) as $k => $v)
+			{
+				if (!$regex || preg_match($regex, $k))
+				{
+					if ($recurse) {
+						$result[$k] = self::_fromObject($v, $recurse, $regex);
+					}
+					else {
+						$result[$k] = $v;
 					}
 				}
-
-				if (is_object($v)) {
-					if ($recurse) {
-						$result[$k] = JArrayHelper::fromObject($v, $recurse, $regex);
-					}
-				} else {
+			}
+		}
+		elseif (is_array($item))
+		{
+			$result = array();
+			foreach ($item as $k => $v)
+			{
+				if ($recurse) {
+					$result[$k] = self::_fromObject($v, $recurse, $regex);
+				}
+				else {
 					$result[$k] = $v;
 				}
 			}
+		}
+		else
+		{
+			$result = $item;
 		}
 		return $result;
 	}
@@ -249,19 +282,28 @@ class JArrayHelper
 	 * Utility function to sort an array of objects on a given field
 	 *
 	 * @static
-	 * @param	array			$arr		An array of objects
-	 * @param	string|array	$k			The key or a array of key to sort on
-	 * @param	int|array		$direction	Direction or an array of direction to sort in [1 = Ascending] [-1 = Descending]
-	 * @return	array						The sorted array of objects
+	 * @param	array			$arr			An array of objects
+	 * @param	string|array	$k				The key or a array of key to sort on
+	 * @param	int|array		$direction		Direction or an array of direction to sort in [1 = Ascending] [-1 = Descending]
+	 * @param	bool|array		$casesensitive	Let sort occur casesensitive or insensitive
+	 * @param	bool|array		$locale			Let sort occur using the locale language or not
+	 *
+	 * @return	array							The sorted array of objects
 	 * @since	1.5
 	 */
-	public static function sortObjects(&$a, $k, $direction=1)
+	public static function sortObjects(&$a, $k, $direction=1, $casesensitive = true, $locale = false)
 	{
+		if (!is_array($locale) or !is_array($locale[0])) {
+			$locale = array($locale);
+		}
+
 		$GLOBALS['JAH_so'] = array(
-			'key'		=> (array)$k,
-			'direction'	=> (array)$direction
+			'key'			=> (array)$k,
+			'direction'		=> (array)$direction,
+			'casesensitive'	=> (array)$casesensitive,
+			'locale'		=> $locale,
 		);
-		usort($a, array('JArrayHelper', '_sortObjects'));
+		usort($a, array( __CLASS__ , '_sortObjects'));
 		unset($GLOBALS['JAH_so']);
 
 		return $a;
@@ -281,19 +323,42 @@ class JArrayHelper
 	{
 		$params = $GLOBALS['JAH_so'];
 
-		for($i=0,$count=count($params['key']);$i<$count;$i++) {
-			if (array_key_exists($i,$params['direction'])) {
+		for ($i = 0, $count = count($params['key']); $i < $count; $i++)
+		{
+			if (isset($params['direction'][$i])) {
 				$direction = $params['direction'][$i];
 			}
 
-			if ($a->$params['key'][$i] > $b->$params['key'][$i]) {
+			if (isset($params['casesensitive'][$i])) {
+				$casesensitive = $params['casesensitive'][$i];
+			}
+
+			if (isset($params['locale'][$i])) {
+				$locale = $params['locale'][$i];
+			}
+
+			$va = $a->$params['key'][$i];
+			$vb = $b->$params['key'][$i];
+
+			if ((is_bool($va) or is_numeric($va)) and (is_bool($vb) or is_numeric($vb))) {
+				$cmp = $va - $vb;
+			}
+			elseif ($casesensitive) {
+				$cmp = JString::strcmp($va, $vb, $locale);
+			}
+			else {
+				$cmp = JString::strcasecmp($va, $vb, $locale);
+			}
+
+			if ($cmp > 0) {
 				return $direction;
 			}
 
-			if ($a->$params['key'][$i] < $b->$params['key'][$i]) {
-				return -1 * $direction;
+			if ($cmp < 0) {
+				return - $direction;
 			}
 		}
+
 		return 0;
 	}
 }

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	mod_status
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,12 +15,12 @@ $output = array();
 
 // Print the logged in users.
 if ($params->get('show_loggedin_users', 1)) :
-	$output[] = '<span class="loggedin-users">'.$online_num.' '.JText::_('MOD_STATUS_USERS').'</span>';
+	$output[] = '<span class="loggedin-users">'.JText::plural('MOD_STATUS_USERS', $online_num).'</span>';
 endif;
 
 // Print the back-end logged in users.
 if ($params->get('show_loggedin_users_admin', 1)) :
-	$output[] = '<span class="backloggedin-users">'.$count.' '.JText::_('MOD_STATUS_BACKEND_USERS').'</span>';
+	$output[] = '<span class="backloggedin-users">'.JText::plural('MOD_STATUS_BACKEND_USERS', $count).'</span>';
 endif;
 
 //  Print the inbox message.

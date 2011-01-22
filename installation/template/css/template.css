@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -15,6 +15,7 @@ body {
 	background: #fff;
 	height: 100%;
 	padding-bottom: 1px;
+	min-width: 960px;
 }
 
 body, div, p, td, span {
@@ -54,12 +55,28 @@ form {
 	padding: 0;
 }
 
+iframe {
+	border: 0;
+}
+
 td:first-child {
-	width: 100px;
+	width: 180px;
+}
+
+.db-table td:first-child {
+	width: 200px;
+}
+
+.final-table td:first-child {
+	width: auto;
+}
+
+.sample-data td:first-child {
+	/*width: auto;*/
 }
 
 td.item + td {
-	text-align: center;
+	text-align: left;
 }
 
 /* installer */
@@ -131,7 +148,7 @@ td.item + td {
 }
 
 #stepbar div.box {
-	background:  url(../images/j_joomla_box.jpg) 50% 20px no-repeat;
+	background:  url(../images/j_joomla_box.png) 50% 20px no-repeat;
 	height: 140px;
 }
 
@@ -273,13 +290,13 @@ span.step {
 
 .install-text {
 	float: left;
-	width: 40%;
+	width: 30%;
 	color: #444;
 }
 
 .install-body {
 	float: right;
-	width: 58%;
+	width: 68%;
 }
 
 .extra-padding {
@@ -309,7 +326,7 @@ span.step {
 
 .content       { width: 100%; }
 .content .item { width: 50%; }
-.content2 .item { width: 30%; }
+.content2 .item { /*width: 30%; */}
 
 .license {
   padding: 0px;
@@ -516,6 +533,18 @@ div#installer div.b div.b div.b {
    background: url(../images/j_crn_bl_light.png) 0 0 no-repeat;
 }
 
+/* make the radio buttons vertical to make room for long language strings */
+
+fieldset#jform_db_old label {
+	float: left;
+	clear: right;
+}
+
+fieldset#jform_db_old input {
+	float: left;
+	clear: left;
+}
+
 /* error messages and notices */
 
 .invalid {
@@ -579,4 +608,9 @@ div.inlineError {
 
 #system-message dd.message {
 	border-bottom: medium solid red;
+}
+
+/* required field star color */
+.star {
+	color:#cc0000;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -117,7 +117,14 @@ final class JSite extends JApplication
 			}
 		}
 
+		// Execute the parent initialise method.
 		parent::initialise($options);
+
+		// Load Library language
+		$lang = JFactory::getLanguage();
+		$lang->load('lib_joomla', JPATH_SITE)
+		|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR);
+
 	}
 
 	/**
@@ -206,13 +213,17 @@ final class JSite extends JApplication
 				$template	= $this->getTemplate(true);
 				$file		= JRequest::getCmd('tmpl', 'index');
 
+				if (!$this->getCfg('offline') && ($file == 'offline')) {
+					$file = 'index';
+				}
+
 				if ($this->getCfg('offline') && !$user->authorise('core.admin')) {
 					$uri		= JFactory::getURI();
 					$return		= (string)$uri;
 					$this->setUserState('users.login.form.data',array( 'return' => $return ) );
 					$file = 'offline';
 				}
-				if (!is_dir(JPATH_THEMES.'/'.$template->template) && !$this->getCfg('offline')) {
+				if (!is_dir(JPATH_THEMES.DS.$template->template) && !$this->getCfg('offline')) {
 					$file = 'component';
 				}
 				$params = array(
@@ -231,7 +242,7 @@ final class JSite extends JApplication
 		// Trigger the onBeforeRender event.
 		JPluginHelper::importPlugin('system');
 		$this->triggerEvent('onBeforeRender');
-		
+
 		$caching = false;
 		if ($this->getCfg('caching') && $this->getCfg('caching',2) == 2 && !$user->get('id')) {
 			$caching = true;
@@ -334,7 +345,7 @@ final class JSite extends JApplication
 			$lang_code = JFactory::getLanguage()->getTag();
 			$languages = JLanguageHelper::getLanguages('lang_code');
 
-			$title = htmlspecialchars_decode($this->getCfg('sitename'));
+			$title = $this->getCfg('sitename');
 			if (isset($languages[$lang_code]) && $languages[$lang_code]->metadesc) {
 				$description = $languages[$lang_code]->metadesc;
 			} else {
@@ -405,7 +416,13 @@ final class JSite extends JApplication
 
 
 		$cache = JFactory::getCache('com_templates', '');
-		if (!$templates = $cache->get('templates0')) {
+		if ($this->_language_filter) {
+			$tag = JFactory::getLanguage()->getTag();
+		}
+		else {
+			$tag ='';
+		}
+		if (!$templates = $cache->get('templates0'.$tag)) {
 			// Load styles
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
@@ -421,11 +438,11 @@ final class JSite extends JApplication
 				$template->params = $registry;
 
 				// Create home element
-				if ($template->home == 1) {
+				if ($template->home == '1' && !isset($templates[0]) || $this->_language_filter && $template->home == $tag) {
 					$templates[0] = clone $template;
 				}
 			}
-			$cache->store($templates, 'templates0');
+			$cache->store($templates, 'templates0'.$tag);
 		}
 
 		$template = $templates[$id];
@@ -435,10 +452,10 @@ final class JSite extends JApplication
 		$template->template = JFilterInput::getInstance()->clean($template->template, 'cmd'); // need to filter the default value as well
 
 		// Fallback template
-		if (!file_exists(JPATH_THEMES.'/'.$template->template.'/index.php')) {
+		if (!file_exists(JPATH_THEMES.DS.$template->template.DS.'index.php')) {
 			JError::raiseWarning(0, JText::_('JERROR_ALERTNOTEMPLATE'));
 		    $template->template = 'beez_20';
-		    if (!file_exists(JPATH_THEMES.'/beez_20/index.php')) {
+		    if (!file_exists(JPATH_THEMES.DS.'beez_20'.DS.'index.php')) {
 		    	$template->template = '';
 		    }
 		}
@@ -458,7 +475,7 @@ final class JSite extends JApplication
 	 */
 	public function setTemplate($template)
 	{
-		if (is_dir(JPATH_THEMES.'/'.$template)) {
+		if (is_dir(JPATH_THEMES.DS.$template)) {
 			$this->template = new stdClass();
 			$this->template->params = new JRegistry;
 			$this->template->template = $template;
@@ -559,5 +576,31 @@ final class JSite extends JApplication
 		$old = $this->_detect_browser;
 		$this->_detect_browser=$state;
 		return $old;
+	}
+
+	/**
+	 * Redirect to another URL.
+	 *
+	 * Optionally enqueues a message in the system message queue (which will be displayed
+	 * the next time a page is loaded) using the enqueueMessage method. If the headers have
+	 * not been sent the redirect will be accomplished using a "301 Moved Permanently"
+	 * code in the header pointing to the new location. If the headers have already been
+	 * sent this will be accomplished using a JavaScript statement.
+	 *
+	 * @param	string	The URL to redirect to. Can only be http/https URL
+	 * @param	string	An optional message to display on redirect.
+	 * @param	string  An optional message type.
+	 * @param	boolean	True if the page is 301 Permanently Moved, otherwise 303 See Other is assumed.
+	 * @param	boolean	True if the enqueued messages are passed to the redirection, false else.
+	 * @return	none; calls exit().
+	 * @since	1.5
+	 * @see		JApplication::enqueueMessage()
+	 */
+	public function redirect($url, $msg='', $msgType='message', $moved = false, $persistMsg = true)
+	{
+		if (!$persistMsg) {
+			$this->_messageQueue = array();
+		}
+		parent::redirect($url, $msg, $msgType, $moved);
 	}
 }

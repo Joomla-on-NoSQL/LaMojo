@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	com_newsfeeds
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -58,10 +58,14 @@ $listDirn	= $this->state->get('list.direction');
 
 		<tbody>
 			<?php foreach ($this->items as $i => $item) : ?>
-				<tr class="<?php echo $i % 2 ? 'odd' : 'even';?>">
+		<?php if ($this->items[$i]->published == 0) : ?>
+			<tr class="system-unpublished cat-list-row<?php echo $i % 2; ?>">
+		<?php else: ?>
+			<tr class="cat-list-row<?php echo $i % 2; ?>" >
+		<?php endif; ?>
 
 					<td class="item-title">
-						<a href="<?php echo JRoute::_(NewsFeedsHelperRoute::getNewsfeedRoute($item->id, $item->catid)); ?>">
+						<a href="<?php echo JRoute::_(NewsFeedsHelperRoute::getNewsfeedRoute($item->slug, $item->catid)); ?>">
 							<?php echo $item->name; ?></a>
 					</td>
 
@@ -78,7 +82,9 @@ $listDirn	= $this->state->get('list.direction');
 					<?php  endif; ?>
 
 				</tr>
+				
 			<?php endforeach; ?>
+			
 		</tbody>
 	</table>
 

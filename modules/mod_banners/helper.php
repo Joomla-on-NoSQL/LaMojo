@@ -3,16 +3,18 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_banners
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
+jimport('joomla.application.component.model');
+
 class modBannersHelper
 {
-	function &getList(&$params)
+	static function &getList(&$params)
 	{
 		jimport('joomla.application.component.model');
 		JModel::addIncludePath(JPATH_ROOT.'/components/com_banners/models');
@@ -30,7 +32,7 @@ class modBannersHelper
 		$model->setState('filter.keywords', $keywords);
 		$model->setState('filter.language', $app->getLanguageFilter());
 
-		$banners = &$model->getItems();
+		$banners = $model->getItems();
 		$model->impress();
 
 		return $banners;

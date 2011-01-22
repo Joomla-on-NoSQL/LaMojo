@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -243,10 +243,15 @@ class JInstallationModelDatabase extends JModel
 		if ($type == 'mysqli') {
 			$type = 'mysql';
 		}
-		$data = JPATH_INSTALLATION.'/sql/'.$type.'/sample_data.sql';
+		
+		$data = JPATH_INSTALLATION.'/sql/'.$type.'/' . $options->sample_file;
 
 		// Attempt to import the database schema.
-		if (!$this->populateDatabase($db, $data)) {
+		if (!file_exists($data)) {
+			$this->setError(JText::sprintf('INSTL_DATABASE_FILE_DOES_NOT_EXIST', $data));
+			return false;			
+		}
+		elseif (!$this->populateDatabase($db, $data)) {
 			$this->setError(JText::sprintf('INSTL_ERROR_DB', $this->getError()));
 			return false;
 		}

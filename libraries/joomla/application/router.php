@@ -3,7 +3,7 @@
  * @version		$Id:router.php 8876 2007-09-13 22:54:03Z jinx $
  * @package		Joomla.Framework
  * @subpackage	Application
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -81,7 +81,7 @@ class JRouter extends JObject
 			//Load the router object
 			$info = JApplicationHelper::getClientInfo($client, true);
 
-			$path = $info->path.'/includes/router.php';
+			$path = $info->path.DS.'includes'.DS.'router.php';
 			if (file_exists($path)) {
 				require_once $path;
 

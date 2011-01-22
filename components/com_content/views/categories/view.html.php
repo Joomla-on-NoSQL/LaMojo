@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -43,13 +43,13 @@ class ContentViewCategories extends JView
 
 		if ($items === false)
 		{
-			JError::raiseWarning(500, JText::_('COM_CONTENT_ERROR_CATEGORY_NOT_FOUND'));
+			JError::raiseError(404, JText::_('COM_CONTENT_ERROR_CATEGORY_NOT_FOUND'));
 			return false;
 		}
 
 		if ($parent == false)
 		{
-			JError::raiseWarning(500, JText::_('COM_CONTENT_ERROR_PARENT_CATEGORY_NOT_FOUND'));
+			JError::raiseError(404, JText::_('COM_CONTENT_ERROR_PARENT_CATEGORY_NOT_FOUND'));
 			return false;
 		}
 
@@ -57,7 +57,10 @@ class ContentViewCategories extends JView
 
 		$items = array($parent->id => $items);
 
-		$this->assign('maxLevel',	$params->get('maxLevel', -1));
+		//Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
+		$this->assign('maxLevelcat',	$params->get('maxLevelcat', -1));
 		$this->assignRef('params',		$params);
 		$this->assignRef('parent',		$parent);
 		$this->assignRef('items',		$items);
@@ -87,10 +90,10 @@ class ContentViewCategories extends JView
 		}
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
-			$title = htmlspecialchars_decode($app->getCfg('sitename'));
+			$title = $app->getCfg('sitename');
 		}
 		elseif ($app->getCfg('sitename_pagetitles', 0)) {
-			$title = JText::sprintf('JPAGETITLE', htmlspecialchars_decode($app->getCfg('sitename')), $title);
+			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
 		}
 		$this->document->setTitle($title);
 	}

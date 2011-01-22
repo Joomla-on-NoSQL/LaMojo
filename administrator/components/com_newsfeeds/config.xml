@@ -7,6 +7,15 @@
 		description="COM_NEWSFEEDS_FIELD_CONFIG_NEWSFEED_SETTINGS_DESC">
 
 		<field
+			name="newsfeed_layout" type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_newsfeeds"
+			view="newsfeed"
+		/>
+
+		<field
 			id="show_feed_image"
 			name="show_feed_image"
 			type="radio"
@@ -52,8 +61,17 @@
 
 	<fieldset
 		name="category"
-		label="COM_NEWSFEEDS_FIELD_CONFIG_CATEGORY_SETTINGS_LABEL"
+		label="JCATEGORY"
 		description="COM_NEWSFEEDS_FIELD_CONFIG_CATEGORY_SETTINGS_DESC">
+
+		<field 
+			name="category_layout" type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_newsfeeds"
+			view="category"
+		/>
 
 		<field name="show_category_title" type="radio"
 			label="JGLOBAL_SHOW_CATEGORY_TITLE"
@@ -133,7 +151,7 @@
 	</fieldset>
 	
 	<fieldset name="categories"
-		label="COM_NEWSFEEDS_CATEGORIES_LABEL"
+		label="JCATEGORIES"
 		description="COM_NEWSFEEDS_CATEGORIES_DESC">
 		
 		<field name="show_base_description" type="radio"
@@ -189,7 +207,7 @@
 	
 	<fieldset
 		name="listlayout"
-		label="COM_NEWSFEEDS_FIELD_CONFIG_LIST_SETTINGS_LABEL"
+		label="JGLOBAL_LIST_LAYOUT_OPTIONS"
 		description="COM_NEWSFEEDS_FIELD_CONFIG_LIST_SETTINGS_DESC">
 
 		<field
@@ -274,6 +292,7 @@
 			type="rules"
 			label="JCONFIG_PERMISSIONS_LABEL"
 			filter="rules"
+			validate="rules"
 			component="com_newsfeeds"
 			section="component"/>
 	</fieldset>

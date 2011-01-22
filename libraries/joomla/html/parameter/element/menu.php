@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Parameter
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -30,7 +30,7 @@ class JElementMenu extends JElement
 
 	public function fetchElement($name, $value, &$node, $control_name)
 	{
-		require_once JPATH_ADMINISTRATOR.'/components/com_menus/helpers/menus.php';
+		require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_menus'.DS.'helpers'.DS.'menus.php';
 		$menuTypes	= MenusHelper::getMenuTypes();
 
 		foreach ($menuTypes as $menutype) {

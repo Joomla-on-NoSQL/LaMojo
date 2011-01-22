@@ -10,19 +10,20 @@
 // no direct access
 defined('_JEXEC') or die;
 
-require_once JPATH_SITE.'/components/com_weblinks/helpers/route.php';
-JModel::addIncludePath(JPATH_SITE.'/components/com_weblinks/models');
+require_once JPATH_SITE.DS.'components'.DS.'com_weblinks'.DS.'helpers'.DS.'route.php';
+JModel::addIncludePath(JPATH_SITE.DS.'components'.DS.'com_weblinks'.DS.'models');
 
 class modWeblinksHelper
 {
-	function getList($params)
+	static function getList($params)
 	{
 
 		// Get an instance of the generic articles model
 		$model = JModel::getInstance('Category', 'WeblinksModel', array('ignore_request' => true));
 
 		// Set application parameters in model
-		$appParams = JFactory::getApplication()->getParams();
+		$app = JFactory::getApplication();
+		$appParams = $app->getParams();
 		$model->setState('params', $appParams);
 
 		// Set the filters based on the module params
@@ -51,6 +52,9 @@ class modWeblinksHelper
 
 		$model->setState('filter.c.published', 1);
 
+		// Filter by language
+		$model->setState('filter.language',$app->getLanguageFilter());
+
 		$items = $model->getItems();
 
 		/*
@@ -65,7 +69,7 @@ class modWeblinksHelper
 		for ($i =0; $i < count($items); $i++) {
 			$item = &$items[$i];
 			if ($item->params->get('count_clicks', $params->get('count_clicks')) == 1) {
-				$item->link	= JRoute::_('index.php?task=weblink.go&catid='.$item->catslug.'&id='. $item->slug);
+				$item->link	= JRoute::_('index.php?option=com_weblinks&task=weblink.go&catid='.$item->catslug.'&id='. $item->slug);
 			} else {
 				$item->link = $item->url;
 			}

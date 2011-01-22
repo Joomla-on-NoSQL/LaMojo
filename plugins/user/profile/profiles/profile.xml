@@ -73,7 +73,7 @@
 
 			<field
 				name="phone"
-				type="text"
+				type="tel"
 				id="phone"
 				description="PLG_USER_PROFILE_FIELD_PHONE_DESC"
 				filter="string"
@@ -84,7 +84,7 @@
 
 			<field
 				name="website"
-				type="text"
+				type="url"
 				id="website"
 				description="PLG_USER_PROFILE_FIELD_WEB_SITE_DESC"
 				filter="string"
@@ -114,7 +114,6 @@
 			<field
 					name="tos"
 					type="radio"
-					default="0"
 					label="PLG_USER_PROFILE_FIELD_TOS_LABEL"
 					description="PLG_USER_PROFILE_FIELD_TOS_DESC">
 					<option	value="1">PLG_USER_PROFILE_OPTION_AGREE</option>

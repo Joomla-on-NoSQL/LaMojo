@@ -1,6 +1,6 @@
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -70,9 +70,9 @@ var MediaManager = this.MediaManager = {
 		}
 
 		if (node) {
-			this.tree.select(node);
+			this.tree.select(node, true);
 		}
-return;
+
 		$(viewstyle).addClass('active');
 
 		a = this._getUriObject($('uploadForm').getProperty('action'));
@@ -97,7 +97,7 @@ return;
 	{
 		if ($('foldername').value.length) {
 			$('dirpath').value = this.getFolder();
-			submitbutton('createfolder');
+			Joomla.submitbutton('createfolder');
 		}
 	},
 
@@ -179,5 +179,5 @@ window.addEvent('domready', function(){
 	MediaManager.initialize();
 	MediaManager.trace = 'start';
 	document.updateUploader = function() { MediaManager.onloadframe(); };
-	// MediaManager.onloadframe();
+	MediaManager.onloadframe();
 });

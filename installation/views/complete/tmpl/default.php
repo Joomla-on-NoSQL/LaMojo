@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Installation
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -110,7 +110,7 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 											<div>
 												<div class="icon">
 													<p>
-													<a href="http://help.joomla.org/content/view/1651/243/" target="_blank">
+													<a href="http://community.joomla.org/translations/joomla-16-translations.html" target="_blank">
 													<b><?php echo JText::_('INSTL_COMPLETE_LANGUAGE_1'); ?></b>
 													<br />
 													<?php echo JText::_('INSTL_COMPLETE_LANGUAGE_2'); ?>
@@ -127,7 +127,7 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 								<?php if ($this->config) : ?>
 								<tr>
 									<td class="small">
-										<?php echo JText::_('confProblem'); ?>
+										<?php echo JText::_('INSTL_CONFPROBLEM'); ?>
 									</td>
 								</tr>
 								<tr>

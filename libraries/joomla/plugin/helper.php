@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Plugin
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -133,8 +133,8 @@ abstract class JPluginHelper
 		$plugin->type = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->type);
 		$plugin->name = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->name);
 
-		$legacypath	= JPATH_PLUGINS.'/'.$plugin->type.'/'.$plugin->name.'.php';
-		$path = JPATH_PLUGINS.'/'.$plugin->type.'/'.$plugin->name.'/'.$plugin->name.'.php';
+		$legacypath	= JPATH_PLUGINS.DS.$plugin->type.DS.$plugin->name.'.php';
+		$path = JPATH_PLUGINS.DS.$plugin->type.DS.$plugin->name.DS.$plugin->name.'.php';
 
 		if (!isset( $paths[$path] ) || !isset($paths[$legacypath])) {
 			$pathExists = file_exists($path);
@@ -185,7 +185,7 @@ abstract class JPluginHelper
 		$user	= JFactory::getUser();
 		$cache 	= JFactory::getCache('com_plugins', '');
 
-		$levels = implode(',', $user->authorisedLevels());
+		$levels = implode(',', $user->getAuthorisedViewLevels());
 
 		if (!$plugins = $cache->get($levels)) {
 			$db		= JFactory::getDbo();

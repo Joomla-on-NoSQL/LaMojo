@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla.Framework
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,21 +22,21 @@ class JVersion
 	/** @public int Main Release Level */
 	public $RELEASE	= '1.6';
 	/** @public string Development Status */
-	public $DEV_STATUS	= 'Beta8';
+	public $DEV_STATUS	= 'Stable';
 	/** @public int Sub Release Level */
 	public $DEV_LEVEL	= '0';
 	/** @public int build Number */
 	public $BUILD		= '';
 	/** @public string Codename */
-	public $CODENAME	= 'Hope';
+	public $CODENAME	= 'Onward';
 	/** @public string Date */
-	public $RELDATE	= '23-Aug-2010';
+	public $RELDATE	= '10-Jan-2011';
 	/** @public string Time */
 	public $RELTIME	= '23:00';
 	/** @public string Timezone */
 	public $RELTZ		= 'GMT';
 	/** @public string Copyright Text */
-	public $COPYRIGHT	= 'Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.';
+	public $COPYRIGHT	= 'Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.';
 	/** @public string URL */
 	public $URL		= '<a href="http://www.joomla.org">Joomla!</a> is Free Software released under the GNU General Public License.';
 
@@ -83,7 +83,7 @@ class JVersion
 	 * @see		http://www.php.net/version_compare
 	 */
 	public function isCompatible ($minimum) {
-		return (version_compare(JVERSION, $minimum, 'eq') == 1);
+		return (substr(JVERSION,0,4) === substr($minimum,0,4));
 	}
 
 	/**

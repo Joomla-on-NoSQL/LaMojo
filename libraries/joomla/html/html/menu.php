@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage		HTML
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -76,7 +76,7 @@ abstract class JHtmlMenu
 			$query->from('#__menu AS a');
 			$query->where('a.parent_id > 0');
 			$query->where('a.type <> '.$db->quote('url'));
-			$query->where('a.menutype <> '.$db->quote('_adminmenu'));
+			$query->where('a.client_id = 0');
 
 			// Filter on the published state
 			if (isset($config['published'])) {
@@ -109,7 +109,7 @@ abstract class JHtmlMenu
 				self::$items[] = JHtml::_('select.optgroup',	$menu->text);
 
 				// Special "Add to this Menu" option:
-				self::$items[] = JHtml::_('select.option', $menu->value.'.0', JText::_('JLIB_HTML_ADD_TO_THIS_MENU'));
+				self::$items[] = JHtml::_('select.option', $menu->value.'.1', JText::_('JLIB_HTML_ADD_TO_THIS_MENU'));
 
 				// Menu items:
 				if (isset($lookup[$menu->value])) {

@@ -1,27 +1,23 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.html.html');
 jimport('joomla.form.formfield');
-jimport('joomla.form.helper');
-JFormHelper::loadFieldClass('list');
+JFormHelper::loadFieldClass('text');
 
 /**
- * Form field to list the available positions for a module.
- *
- * TODO: This needs to be converted back into a combobox.
+ * Supports a modal article picker.
  *
  * @package		Joomla.Administrator
- * @subpackage	Modules
+ * @subpackage	com_content
  * @since		1.6
  */
-class JFormFieldModulePosition extends JFormFieldList
+class JFormFieldModulePosition extends JFormFieldText
 {
 	/**
 	 * The form field type.
@@ -32,82 +28,58 @@ class JFormFieldModulePosition extends JFormFieldList
 	protected $type = 'ModulePosition';
 
 	/**
-	 * Method to get the field options.
+	 * Method to get the field input markup.
 	 *
-	 * @return	array	The field option objects.
+	 * @return	string	The field input markup.
 	 * @since	1.6
 	 */
-	protected function getOptions()
+	protected function getInput()
 	{
-		// Initialize variables.
-		$options = array();
-
-		$db			= JFactory::getDbo();
-		$query		= $db->getQuery(true);
-		$clientId	= (int) $this->form->getValue('client_id');
-		$client		= JApplicationHelper::getClientInfo($clientId);
-
-		jimport('joomla.filesystem.folder');
-
-		// template assignment filter
-		$query->select('DISTINCT(template)');
-		$query->from('#__template_styles');
-		$query->where('client_id = '.(int) $clientId);
-
-		$db->setQuery($query);
-		$templates = $db->loadResultArray();
-		if ($error = $db->getErrorMsg()) {
-			JError::raiseWarning(500, $error);
-			return false;
-		}
-
-		$query->clear();
-		$query->select('DISTINCT(position)');
-		$query->from('#__modules');
-		$query->where('`client_id` = '.(int) $clientId);
-
-		$db->setQuery($query);
-		$positions = $db->loadResultArray();
-		if ($error = $db->getErrorMsg()) {
-			JError::raiseWarning(500, $error);
-			return false;
-		}
-
-		// Load the positions from the installed templates.
-		foreach ($templates as $template) {
-			$path = JPath::clean($client->path.'/templates/'.$template.'/templateDetails.xml');
-
-			if (file_exists($path)) {
-				$xml = simplexml_load_file($path);
-				if (isset($xml->positions[0])) {
-					foreach ($xml->positions[0] as $position) {
-						$positions[] = (string) $position;
-					}
-				}
+		// Get the client id.
+		$clientId = $this->element['client_id'];
+		if (!isset($clientId))
+		{
+			$clientName = $this->element['client'];
+			if (isset($clientName))
+			{
+				$client = JApplicationHelper::getClientInfo($clientName, true);
+				$clientId = $client->id;
 			}
 		}
-		$positions = array_unique($positions);
-		sort($positions);
-
-		$options[] = JHtml::_('select.option', '', JText::_('COM_MODULES_OPTION_SELECT_POSITION'));
-
-		foreach ($positions as $position) {
-			$options[]	= JHtml::_('select.option', $position, $position);
+		if (!isset($clientId) && $this->form instanceof JForm) {
+			$clientId = $this->form->getValue('client_id');
 		}
+		$clientId = (int) $clientId;
 
-		// Merge any additional options in the XML definition.
-		$options = array_merge(parent::getOptions(), $options);
+		// Load the modal behavior script.
+		JHtml::_('behavior.modal', 'a.modal');
 
-		// Add javascript for custom position selection
-		JFactory::getDocument()->addScriptDeclaration('
-			function setModulePosition(el) {
-				if ($("jform_custom_position")) {
-					$("jform_custom_position").style.display = (!el.value.length) ? "block" : "none";
-				}
-			}
-			window.addEvent("domready", function() {setModulePosition($("jform_position"))});
-		');
+		// Build the script.
+		$script = array();
+		$script[] = '	function jSelectPosition_'.$this->id.'(name) {';
+		$script[] = '		document.id("'.$this->id.'").value = name;';
+		$script[] = '		SqueezeBox.close();';
+		$script[] = '	}';
 
-		return $options;
+		// Add the script to the document head.
+		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
+
+		// Setup variables for display.
+		$html	= array();
+		$link	= 'index.php?option=com_modules&amp;view=positions&amp;layout=modal&amp;tmpl=component&amp;function=jSelectPosition_'.$this->id.'&amp;client_id='.$clientId;
+
+		// The current user display field.
+		$html[] = '<div class="fltlft">';
+		$html[] = parent::getInput();
+		$html[] = '</div>';
+
+		// The user select button.
+		$html[] = '<div class="button2-left">';
+		$html[] = '  <div class="blank">';
+		$html[] = '	<a class="modal" title="'.JText::_('COM_MODULES_CHANGE_POSITION_TITLE').'"  href="'.$link.'" rel="{handler: \'iframe\', size: {x: 800, y: 450}}">'.JText::_('COM_MODULES_CHANGE_POSITION_BUTTON').'</a>';
+		$html[] = '  </div>';
+		$html[] = '</div>';
+
+		return implode("\n", $html);
 	}
 }

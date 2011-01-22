@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_config
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -17,10 +17,10 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 ?>
 <script type="text/javascript">
-	function submitbutton(task)
+	Joomla.submitbutton = function(task)
 	{
 		if (document.formvalidator.isValid(document.id('component-form'))) {
-			submitform(task);
+			Joomla.submitform(task, document.getElementById('component-form'));
 		}
 	}
 </script>
@@ -29,6 +29,8 @@ JHtml::_('behavior.formvalidation');
 		<div class="fltrt">
 			<button type="button" onclick="Joomla.submitform('component.save', this.form);">
 				<?php echo JText::_('JSAVE');?></button>
+			<button type="button" onclick="Joomla.submitform('component.apply', this.form);">
+				<?php echo JText::_('JAPPLY');?></button>
 			<button type="button" onclick="window.parent.SqueezeBox.close();">
 				<?php echo JText::_('JCANCEL');?></button>
 		</div>

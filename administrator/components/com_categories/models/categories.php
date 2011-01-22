@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_categories
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,6 +22,37 @@ jimport('joomla.application.component.modellist');
 class CategoriesModelCategories extends JModelList
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'id', 'a.id',
+				'title', 'a.title',
+				'alias', 'a.alias',
+				'published', 'a.published',
+				'access', 'a.access', 'access_level',
+				'language', 'a.language',
+				'checked_out', 'a.checked_out',
+				'checked_out_time', 'a.checked_out_time',
+				'created_time', 'a.created_time',
+				'created_user_id', 'a.created_user_id',
+				'lft', 'a.lft',
+				'rgt', 'a.rgt',
+				'level', 'a.level',
+				'path', 'a.path',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -38,29 +69,30 @@ class CategoriesModelCategories extends JModelList
 		$app		= JFactory::getApplication();
 		$context	= $this->context;
 
-		$extension = $app->getUserStateFromRequest($this->context.'.filter.extension', 'extension', 'com_content');
+		$extension = $app->getUserStateFromRequest('com_categories.categories.filter.extension', 'extension', 'com_content');
 
 		$this->setState('filter.extension', $extension);
 		$parts = explode('.',$extension);
+
 		// extract the component name
 		$this->setState('filter.component', $parts[0]);
+
 		// extract the optional section name
 		$this->setState('filter.section', (count($parts) > 1) ? $parts[1] : null);
 
-		if (!empty($extension)) {
-			$context .= '.'.$extension;
-		}
-
-		$search = $app->getUserStateFromRequest($context.'.search', 'filter_search');
+		$search = $this->getUserStateFromRequest($context.'.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
-		$access = $app->getUserStateFromRequest($context.'.filter.access', 'filter_access', 0, 'int');
+		$level = $this->getUserStateFromRequest($context.'.filter.level', 'filter_level', 0, 'int');
+		$this->setState('filter.level', $level);
+
+		$access = $this->getUserStateFromRequest($context.'.filter.access', 'filter_access', 0, 'int');
 		$this->setState('filter.access', $access);
 
-		$published = $app->getUserStateFromRequest($context.'.published', 'filter_published', '');
+		$published = $this->getUserStateFromRequest($context.'.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
 
-		$language = $app->getUserStateFromRequest($this->context.'.filter.language', 'filter_language', '');
+		$language = $this->getUserStateFromRequest($context.'.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
 		// List state information.
@@ -131,6 +163,11 @@ class CategoriesModelCategories extends JModelList
 		// Filter by extension
 		if ($extension = $this->getState('filter.extension')) {
 			$query->where('a.extension = '.$db->quote($extension));
+		}
+
+		// Filter on the level.
+		if ($level = $this->getState('filter.level')) {
+			$query->where('a.level <= '.(int) $level);
 		}
 
 		// Filter by access level.

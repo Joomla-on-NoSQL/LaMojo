@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -124,6 +124,14 @@ abstract class JFormField
 	protected $fieldname;
 
 	/**
+	 * The group of the field.
+	 *
+	 * @var		string
+	 * @since	1.6
+	 */
+	protected $group;
+
+	/**
 	 * The required state for the form field.  If true then there must be a value for the field to
 	 * be considered valid.
 	 *
@@ -156,6 +164,22 @@ abstract class JFormField
 	 * @since	1.6
 	 */
 	protected $value;
+
+	/**
+	 * The count value for generated name field
+	 *
+	 * @var		int
+	 * @since	1.6
+	 */
+	static protected $count = 0;
+
+	/**
+	 * The string used for generated fields names
+	 *
+	 * @var		int
+	 * @since	1.6
+	 */
+	static protected $generated_fieldname = '__field';
 
 	/**
 	 * Method to instantiate the form field object.
@@ -197,6 +221,7 @@ abstract class JFormField
 			case 'validate':
 			case 'value':
 			case 'fieldname':
+			case 'group':
 				return $this->$name;
 				break;
 
@@ -216,6 +241,9 @@ abstract class JFormField
 				}
 
 				return $this->label;
+				break;
+			case 'title':
+				return $this->getTitle();
 				break;
 		}
 
@@ -306,10 +334,13 @@ abstract class JFormField
 		$this->translateLabel = !((string) $this->element['translate_label'] == 'false' || (string) $this->element['translate_label'] == '0');
 		$this->translateDescription = !((string) $this->element['translate_description'] == 'false' || (string) $this->element['translate_description'] == '0');
 
+		// Set the group of the field.
+		$this->group = $group;
+
 		// Set the field name and id.
-		$this->fieldname 	= $name;
-		$this->name			= $this->getName($name, $group);
-		$this->id			= $this->getId($id, $name, $group);
+		$this->fieldname 	= $this->getFieldName($name);
+		$this->name			= $this->getName($this->fieldname);
+		$this->id			= $this->getId($id, $this->fieldname);
 
 		// Set the field default value.
 		$this->value = $value;
@@ -322,15 +353,13 @@ abstract class JFormField
 	 *
 	 * @param	string	$fieldId	The field element id.
 	 * @param	string	$fieldName	The field element name.
-	 * @param	string	$group		The optional name of the group that the field element is a
-	 * 								member of.
 	 *
 	 * @return	string	The id to be used for the field input tag.
 	 * @since	1.6
 	 */
-	protected function getId($fieldId, $fieldName, $group = null)
+	protected function getId($fieldId, $fieldName)
 	{
-		// Initialize variables.
+		// Initialise variables.
 		$id = '';
 
 		// If there is a form control set for the attached form add it first.
@@ -339,13 +368,13 @@ abstract class JFormField
 		}
 
 		// If the field is in a group add the group control to the field id.
-		if ($group) {
+		if ($this->group) {
 			// If we already have an id segment add the group control as another level.
 			if ($id) {
-				$id .= '_'.str_replace('.', '_', $group);
+				$id .= '_'.str_replace('.', '_', $this->group);
 			}
 			else {
-				$id .= str_replace('.', '_', $group);
+				$id .= str_replace('.', '_', $this->group);
 			}
 		}
 
@@ -372,6 +401,27 @@ abstract class JFormField
 	abstract protected function getInput();
 
 	/**
+	 * Method to get the field title.
+	 *
+	 * @return	string	The field title.
+	 * @since	1.6
+	 */
+	protected function getTitle()
+	{
+		// Initialise variables.
+		$title = '';
+
+		if ($this->hidden) {
+			return $title;
+		}
+
+		// Get the label text from the XML element, defaulting to the element name.
+		$title = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
+		$title = $this->translateLabel ? JText::_($title) : $title;
+		return $title;
+	}
+
+	/**
 	 * Method to get the field label markup.
 	 *
 	 * @return	string	The field label markup.
@@ -379,8 +429,12 @@ abstract class JFormField
 	 */
 	protected function getLabel()
 	{
-		// Initialize variables.
+		// Initialise variables.
 		$label = '';
+
+		if ($this->hidden) {
+			return $label;
+		}
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
@@ -399,8 +453,12 @@ abstract class JFormField
 						($this->translateDescription ? JText::_($this->description) : $this->description), ENT_COMPAT, 'UTF-8').'"';
 		}
 
-		// Add the label text and closing tag.
-		$label .= '>'.$text.'</label>';
+	// Add the label text and closing tag.
+		if ($this->required) {
+			$label .= '>'.$text.'<span class="star">&#160;*</span></label>';
+		} else {
+			$label .= '>'.$text.'</label>';
+		}
 
 		return $label;
 	}
@@ -409,15 +467,13 @@ abstract class JFormField
 	 * Method to get the name used for the field input tag.
 	 *
 	 * @param	string	$fieldName	The field element name.
-	 * @param	string	$group		The optional name of the group that the field element is a
-	 * 								member of.
 	 *
 	 * @return	string	The name to be used for the field input tag.
 	 * @since	1.6
 	 */
-	protected function getName($fieldName, $group = null)
+	protected function getName($fieldName)
 	{
-		// Initialize variables.
+		// Initialise variables.
 		$name = '';
 
 		// If there is a form control set for the attached form add it first.
@@ -426,9 +482,9 @@ abstract class JFormField
 		}
 
 		// If the field is in a group add the group control to the field name.
-		if ($group) {
+		if ($this->group) {
 			// If we already have a name segment add the group control as another level.
-			$groups = explode('.', $group);
+			$groups = explode('.', $this->group);
 			if ($name) {
 				foreach ($groups as $group) {
 					$name .= '['.$group.']';
@@ -456,5 +512,23 @@ abstract class JFormField
 		}
 
 		return $name;
+	}
+	/**
+	 * Method to get the field name used.
+	 *
+	 * @param	string	$name	The field element name.
+	 *
+	 * @return	string	The field name
+	 * @since	1.6
+	 */
+	protected function getFieldName($fieldName)
+	{
+		if ($fieldName) {
+			return $fieldName;
+		}
+		else {
+			self::$count = self::$count + 1;
+			return self::$generated_fieldname . self::$count;
+		}
 	}
 }

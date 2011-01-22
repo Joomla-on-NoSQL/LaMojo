@@ -3,7 +3,7 @@
  * @version		$Id: index.php 17268 2010-05-25 20:32:21Z a.radtke $
  * @package		Joomla.Site
  * @subpackage	tpl_beez5
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,7 +19,7 @@ if ($showRightColumn==0 and $showleft==0) {
 	$showno = 0;
 }
 
-JHTML::_('behavior.mootools');
+JHTML::_('behavior.framework', true);
 
 // get params
 $color			= $this->params->get('templatecolor');
@@ -36,6 +36,7 @@ $templateparams	= $app->getTemplate(true)->params;
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->language; ?>" lang="<?php echo $this->language; ?>" dir="<?php echo $this->direction; ?>" >
 	<head>
 		<jdoc:include type="head" />
+		<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/system/css/system.css" type="text/css" />
 		<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez5/css/position.css" type="text/css" media="screen,projection" />
 		<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez5/css/layout.css" type="text/css" media="screen,projection" />
 		<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/beez5/css/print.css" type="text/css" media="Print" />
@@ -62,13 +63,17 @@ $templateparams	= $app->getTemplate(true)->params;
 		<!--[if IE 7]>
 			<link href="<?php echo $this->baseurl ?>/templates/beez5/css/ie7only.css" rel="stylesheet" type="text/css" />
 		<![endif]-->
+<?php if($templateparams->get('html5', 0)) { ?>
+		<!--[if lt IE 9]>
+			<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez5/javascript/html5.js"></script>
+		<![endif]-->
+<?php } ?>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez5/javascript/md_stylechanger.js"></script>
 		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez5/javascript/hide.js"></script>
-		<script type="text/javascript" src="<?php echo $this->baseurl ?>/templates/beez5/javascript/html5.js"></script>
 
 		<script type="text/javascript">
-			var big ='<?php echo $this->params->get('wrapperLarge');?>%';
-			var small='<?php echo $this->params->get('wrapperSmall'); ?>%';
+			var big ='<?php echo (int)$this->params->get('wrapperLarge');?>%';
+			var small='<?php echo (int)$this->params->get('wrapperSmall'); ?>%';
 			var altopen='<?php echo JText::_('TPL_BEEZ5_ALTOPEN',true); ?>';
 			var altclose='<?php echo JText::_('TPL_BEEZ5_ALTCLOSE',true); ?>';
 			var bildauf='<?php echo $this->baseurl ?>/templates/beez5/images/plus.png';
@@ -98,14 +103,13 @@ $templateparams	= $app->getTemplate(true)->params;
 				<div class="logoheader">
 					<h1 id="logo">
 
-					<?php if ($logo != '-1' ): ?>
-					<img src="<?php echo $this->baseurl ?>/<?php echo $logo; ?>" alt="<?php echo $templateparams->get('sitetitle');?>" />
-					<?php endif;?>
-					<?php if ($logo == '-1' ): ?>
-					<?php echo $templateparams->get('sitetitle');?>
+					<?php if ($logo != null ): ?>
+					<img src="<?php echo $this->baseurl ?>/<?php echo htmlspecialchars($logo); ?>" alt="<?php echo htmlspecialchars($templateparams->get('sitetitle'));?>" />
+					<?php else: ?>
+					<?php echo htmlspecialchars($templateparams->get('sitetitle'));?>
 					<?php endif; ?>
 					<span class="header1">
-					<?php echo $templateparams->get('sitedescription');?>
+					<?php echo htmlspecialchars($templateparams->get('sitedescription'));?>
 					</span></h1>
 				</div><!-- end logoheader -->
 
@@ -126,7 +130,7 @@ $templateparams	= $app->getTemplate(true)->params;
 					</div> <!-- end line -->
 		<div id="header-image">
 			<jdoc:include type="modules" name="position-15" />
-			<?php if ($this->countModules('position-01')==0): ?>
+			<?php if ($this->countModules('position-15')==0): ?>
 				<img src="<?php echo $this->baseurl ?>/templates/beez5/images/fruits.jpg"  alt="<?php echo JText::_('TPL_BEEZ5_LOGO'); ?>" />
 			<?php endif; ?>
 		</div>
@@ -137,9 +141,9 @@ $templateparams	= $app->getTemplate(true)->params;
 		<?php endif; ?>
 		<div id="<?php echo $showRightColumn ? 'contentarea2' : 'contentarea'; ?>">
 					<div id="breadcrumbs">
-						<p>
+						
 							<jdoc:include type="modules" name="position-2" />
-						</p>
+					
 					</div>
 
 					<?php if ($navposition=='left' AND $showleft) : ?>
@@ -202,7 +206,7 @@ $templateparams	= $app->getTemplate(true)->params;
 					<aside id="right">
 				<?php endif; ?>
 
-						<a name="additional"></a>
+						<a id="additional"></a>
 						<jdoc:include type="modules" name="position-6" style="beezDivision" headerLevel="3"/>
 						<jdoc:include type="modules" name="position-8" style="beezDivision" headerLevel="3"  />
 						<jdoc:include type="modules" name="position-3" style="beezDivision" headerLevel="3"  />
@@ -270,7 +274,7 @@ $templateparams	= $app->getTemplate(true)->params;
 
 					<jdoc:include type="modules" name="position-14" />
 					<p>
-						<?php echo JText::_('TPL_BEEZ5_POWERED_BY');?> <a href="http://www.joomla.org/">Joomla!</a>
+						<?php echo JText::_('TPL_BEEZ5_POWERED_BY');?> <a href="http://www.joomla.org/">Joomla!&#174;</a>
 					</p>
 
 			<?php if (!$templateparams->get('html5', 0)): ?>

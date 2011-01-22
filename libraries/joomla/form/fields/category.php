@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Form
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -24,9 +24,7 @@ JFormHelper::loadFieldClass('list');
 class JFormFieldCategory extends JFormFieldList
 {
 	/**
-	 * The form field type.
-	 *
-	 * @var		string
+	 * @var		string	The form field type.
 	 * @since	1.6
 	 */
 	public $type = 'Category';
@@ -39,11 +37,8 @@ class JFormFieldCategory extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		// Initialize variables.
-		$session = JFactory::getSession();
-		$options = array();
-
-		// Initialize some field attributes.
+		// Initialise variables.
+		$options	= array();
 		$extension	= $this->element['extension'] ? (string) $this->element['extension'] : (string) $this->element['scope'];
 		$published	= (string) $this->element['published'];
 
@@ -63,15 +58,17 @@ class JFormFieldCategory extends JFormFieldList
 
 				// Get the current user object.
 				$user = JFactory::getUser();
-
-				// TODO: Add a preload method to JAccess so that we can get all the asset rules in one query and cache them.
-				// eg JAccess::preload('core.create', 'com_content.category')
-				foreach($options as $i => $option) {
-					// Unset the option if the user isn't authorised for it.
-					if (!$user->authorise($action, $extension.'.category.'.$option->value)) {
+			
+				foreach($options as $i => $option)
+				{
+					// To take save or create in a category you need to have create rights for that category
+					// unless the item is already in that category.
+					// Unset the option if the user isn't authorised for it. In this field assets are always categories.
+					if ($user->authorise('core.create', $extension.'.category.'.$option->value) != true ) {
 						unset($options[$i]);
 					}
 				}
+				
 			}
 
 			if (isset($this->element['show_root'])) {
@@ -80,12 +77,6 @@ class JFormFieldCategory extends JFormFieldList
 		}
 		else {
 			JError::raiseWarning(500, JText::_('JLIB_FORM_ERROR_FIELDS_CATEGORY_ERROR_EXTENSION_EMPTY'));
-		}
-
-		// if no value exists, try to load a selected filter category from the list view
-		if (!$this->value && ($this->form instanceof JForm)) {
-			$context = $this->form->getName();
-			$this->value = $session->get($context.'.filter.category_id', $this->value);
 		}
 
 		// Merge any additional options in the XML definition.

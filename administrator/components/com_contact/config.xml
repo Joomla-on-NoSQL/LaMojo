@@ -5,6 +5,16 @@
 		label="COM_CONTACT_FIELD_CONFIG_INDIVIDUAL_CONTACT_DISPLAY"
 		description="COM_CONTACT_FIELD_CONFIG_INDIVIDUAL_CONTACT_DESC"
 	>
+
+		<field
+			name="contact_layout" type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_contact"
+			view="contact"
+		/>
+
 		<field name="show_contact_category"
 			type="list"
 			default="hide"
@@ -59,7 +69,7 @@
 		<field name="show_email"
 			type="radio"
 			default="0"
-			label="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_LABEL"
+			label="JGLOBAL_EMAIL"
 			description="COM_CONTACT_FIELD_PARAMS_CONTACT_E_MAIL_DESC"
 		>
 			<option value="0">JHIDE</option>
@@ -202,7 +212,7 @@
 		<field name="show_profile"
 			type="radio"
 			default="1"
-			label="COM_CONTACT_FIELD_PROFILE_SHOW_LABEL" description="COM_CONTACT_FIELD_PROFILE_SHOW_LABEL"
+			label="COM_CONTACT_FIELD_PROFILE_SHOW_LABEL" description="COM_CONTACT_FIELD_PROFILE_SHOW_DESC"
 		>
 			<option value="0">JHIDE</option>
 			<option value="1">JSHOW</option>
@@ -308,10 +318,19 @@
 	</fieldset>
 	
 	<fieldset name="Category" 
-			label="COM_CONTACT_FIELD_CONFIG_CATEGORY_LABEL"
+			label="JCATEGORY"
 			description="COM_CONTACT_FIELD_CONFIG_CATEGORY_DESC"
 	>
 			
+		<field 
+			name="category_layout" type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_contact"
+			view="category"
+		/>
+
 			<field name="show_category_title" type="radio"
 				default="1"
 				label="JGLOBAL_SHOW_CATEGORY_TITLE"
@@ -389,7 +408,7 @@
 	</fieldset>
 	
 			<fieldset name="categories"
-			label="COM_CONTACT_FIELD_CONFIG_CATEGORIES_LABEL"
+			label="JCATEGORIES"
 			description="COM_CONTACT_FIELD_CONFIG_CATEGORIES_DESC"
 	>
 			<field name="show_base_description" type="radio"
@@ -448,7 +467,7 @@
 	</fieldset>
 	
 	<fieldset name="contacts"
-		label="COM_CONTACT_FIELD_CONFIG_TABLE_OF_CONTACTS_LABEL"
+		label="JGLOBAL_LIST_LAYOUT_OPTIONS"
 		description="COM_CONTACT_FIELD_CONFIG_TABLE_OF_CONTACTS_DESC"
 	>
 		<field name="show_pagination_limit" type="radio"
@@ -483,7 +502,7 @@
 
 		<field name="show_email_headings" type="radio"
 			default="0"
-			label="COM_CONTACT_FIELD_CONFIG_EMAIL_LABEL"
+			label="JGLOBAL_EMAIL"
 			description="COM_CONTACT_FIELD_CONFIG_EMAIL_DESC"
 		>
 			
@@ -537,7 +556,7 @@
 		<field name="show_state_headings"
 			type="radio"
 			default="0"
-			label="JGLOBAL_STATE"
+			label="COM_CONTACT_FIELD_CONFIG_STATE_LABEL"
 			description="COM_CONTACT_FIELD_CONFIG_STATE_DESC"
 		>
 			
@@ -659,7 +678,7 @@
 	</fieldset>
 
 	<fieldset name="integration"
-		label="JGLOBAL_MENUS_LAYOUT_INTEGRATION_OPTIONS_LABEL"
+		label="JGLOBAL_INTEGRATION_LABEL"
 		description="COM_CONTACT_CONFIG_INTEGRATION_SETTINGS_DESC"
 	>
 
@@ -695,6 +714,7 @@
 		<field name="rules"
 			type="rules"
 			label="JCONFIG_PERMISSIONS_LABEL"
+			validate="rules"
 			filter="rules"
 			component="com_contact"
 			section="component" />

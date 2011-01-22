@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_modules
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -14,27 +14,26 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.combobox');
-
 $hasContent = empty($this->item->module) || $this->item->module == 'custom' || $this->item->module == 'mod_custom';
-?>
-<script type="text/javascript">
-	function submitbutton(task)
-	{
-		if (task == 'module.cancel' || document.formvalidator.isValid(document.id('module-form'))) {
-			<?php
-			if ($hasContent) :
-				echo $this->form->getField('content')->save();
-			endif;
-			?>
-			submitform(task);
-		}
-		else {
-			alert('<?php echo $this->escape(JText::_('COM_MODULES_ERROR_TITLE'));?>');
-		}
-	}
-</script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_modules'); ?>" method="post" name="adminForm" id="module-form" class="form-validate">
+$script = "Joomla.submitbutton = function(task)
+	{
+			if (task == 'module.cancel' || document.formvalidator.isValid(document.id('module-form'))) {";
+if ($hasContent) {
+	$script .= $this->form->getField('content')->save();
+}
+$script .= "	Joomla.submitform(task, document.getElementById('module-form'));
+				if (self != top) {
+					window.top.setTimeout('window.parent.SqueezeBox.close()', 1000);
+				}
+			} else {
+				alert('".$this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'))."');
+			}
+	}";
+
+JFactory::getDocument()->addScriptDeclaration($script);
+?>
+<form action="<?php echo JRoute::_('index.php?option=com_modules&layout=edit&id='.(int) $this->item->id); ?>" method="post" name="adminForm" id="module-form" class="form-validate">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('JDETAILS'); ?></legend>
@@ -43,8 +42,10 @@ $hasContent = empty($this->item->module) || $this->item->module == 'custom' || $
 			<li><?php echo $this->form->getLabel('title'); ?>
 			<?php echo $this->form->getInput('title'); ?></li>
 
+			<li><?php echo $this->form->getLabel('showtitle'); ?>
+			<?php echo $this->form->getInput('showtitle'); ?></li>
+
 			<li><?php echo $this->form->getLabel('position'); ?>
-			<?php echo $this->form->getInput('custom_position'); ?>
 			<?php echo $this->form->getInput('position'); ?></li>
 
 			<?php if ((string) $this->item->xml->name != 'Login Form'): ?>
@@ -57,9 +58,6 @@ $hasContent = empty($this->item->module) || $this->item->module == 'custom' || $
 
 			<li><?php echo $this->form->getLabel('ordering'); ?>
 			<?php echo $this->form->getInput('ordering'); ?></li>
-
-			<li><?php echo $this->form->getLabel('showtitle'); ?>
-			<?php echo $this->form->getInput('showtitle'); ?></li>
 
 			<?php if ((string) $this->item->xml->name != 'Login Form'): ?>
 			<li><?php echo $this->form->getLabel('publish_up'); ?>
@@ -82,7 +80,7 @@ $hasContent = empty($this->item->module) || $this->item->module == 'custom' || $
 
 			<li><?php echo $this->form->getLabel('module'); ?>
 			<?php echo $this->form->getInput('module'); ?>
-			<input type="text" size="35" value="<?php if ($this->item->xml) echo ($text = (string) $this->item->xml->name) ? JText::_($text) : $this->item->module;else echo JText::_(MODULES_ERR_XML);?>" class="readonly" readonly="readonly" /></li>
+			<input type="text" size="35" value="<?php if ($this->item->xml) echo ($text = (string) $this->item->xml->name) ? JText::_($text) : $this->item->module;else echo JText::_(COM_MODULES_ERR_XML);?>" class="readonly" readonly="readonly" /></li>
 
 			<li><?php echo $this->form->getLabel('client_id'); ?>
 			<input type="text" size="35" value="<?php echo $this->item->client_id == 0 ? JText::_('JSITE') : JText::_('JADMINISTRATOR'); ?>	" class="readonly" readonly="readonly" />
@@ -105,12 +103,9 @@ $hasContent = empty($this->item->module) || $this->item->module == 'custom' || $
 	</div>
 
 	<div class="width-40 fltrt">
-	<?php echo JHtml::_('sliders.start','plugin-sliders-'.$this->item->id); ?>
-
+	<?php echo JHtml::_('sliders.start', 'module-sliders'); ?>
 		<?php echo $this->loadTemplate('options'); ?>
-
 		<div class="clr"></div>
-
 	<?php echo JHtml::_('sliders.end'); ?>
 	</div>
 

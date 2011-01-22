@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,6 +35,9 @@ class TemplatesControllerStyles extends JControllerAdmin
 			if (empty($pks)) {
 				throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
 			}
+
+			JArrayHelper::toInteger($pks);
+
 			$model = $this->getModel();
 			$model->duplicate($pks);
 			$this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_DUPLICATED'));
@@ -70,7 +73,7 @@ class TemplatesControllerStyles extends JControllerAdmin
 	 *
 	 * @since	1.6
 	 */
-	public function &getModel($name = 'Style', $prefix = 'TemplatesModel')
+	public function getModel($name = 'Style', $prefix = 'TemplatesModel', $config = array())
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
@@ -89,10 +92,13 @@ class TemplatesControllerStyles extends JControllerAdmin
 		// Initialise variables.
 		$pks = JRequest::getVar('cid', array(), 'post', 'array');
 
-		try {
+		try
+		{
 			if (empty($pks)) {
 				throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
 			}
+
+			JArrayHelper::toInteger($pks);
 
 			// Pop off the first element.
 			$id = array_shift($pks);
@@ -100,7 +106,43 @@ class TemplatesControllerStyles extends JControllerAdmin
 			$model->setHome($id);
 			$this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_HOME_SET'));
 
-		} catch (Exception $e) {
+		}
+		catch (Exception $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+		}
+
+		$this->setRedirect('index.php?option=com_templates&view=styles');
+	}
+	/**
+	 * Method to unset the default template for a client and for a language
+	 *
+	 * @since	1.6
+	 */
+	public function unsetDefault()
+	{
+		// Check for request forgeries
+		JRequest::checkToken('default') or jexit(JText::_('JINVALID_TOKEN'));
+
+		// Initialise variables.
+		$pks = JRequest::getVar('cid', array(), 'get', 'array');
+		JArrayHelper::toInteger($pks);
+
+		try
+		{
+			if (empty($pks)) {
+				throw new Exception(JText::_('COM_TEMPLATES_NO_TEMPLATE_SELECTED'));
+			}
+
+			// Pop off the first element.
+			$id = array_shift($pks);
+			$model = $this->getModel();
+			$model->unsetHome($id);
+			$this->setMessage(JText::_('COM_TEMPLATES_SUCCESS_HOME_UNSET'));
+
+		}
+		catch (Exception $e)
+		{
 			JError::raiseWarning(500, $e->getMessage());
 		}
 

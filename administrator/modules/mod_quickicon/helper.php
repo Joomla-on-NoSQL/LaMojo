@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	mod_quickicon
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,8 +35,15 @@ abstract class QuickIconHelper
 	public static function button($button)
 	{
 		if (!empty($button['access'])) {
-			if (!JFactory::getUser()->authorise($button['access'][0], $button['access'][1])) {
+			if (is_bool($button['access']) && $button['access'] == false) {
 				return '';
+			}
+
+			// Take each pair of permission, context values.
+			for ($i = 0, $n = count($button['access']); $i < $n; $i += 2) {
+				if (!JFactory::getUser()->authorise($button['access'][$i], $button['access'][$i+1])) {
+					return '';
+				}
 			}
 		}
 
@@ -46,7 +53,7 @@ abstract class QuickIconHelper
 		}
 
 		ob_start();
-		require JModuleHelper::getLayoutPath('mod_quickicon', 'button');
+		require JModuleHelper::getLayoutPath('mod_quickicon', 'default_button');
 		$html = ob_get_clean();
 		return $html;
 	}
@@ -68,7 +75,7 @@ abstract class QuickIconHelper
 					'link' => JRoute::_('index.php?option=com_content&task=article.add'),
 					'image' => 'icon-48-article-add.png',
 					'text' => JText::_('MOD_QUICKICON_ADD_NEW_ARTICLE'),
-					'access' => array('core.manage', 'com_content')
+					'access' => array('core.manage', 'com_content', 'core.create', 'com_content', )
 				),
 				array(
 					'link' => JRoute::_('index.php?option=com_content'),
@@ -122,8 +129,20 @@ abstract class QuickIconHelper
 					'link' => JRoute::_('index.php?option=com_config'),
 					'image' => 'icon-48-config.png',
 					'text' => JText::_('MOD_QUICKICON_GLOBAL_CONFIGURATION'),
-					'access' => array('core.admin', 'com_config')
-				)
+					'access' => array('core.manage', 'com_config', 'core.admin', 'com_config')
+				),
+				array(
+					'link' => JRoute::_('index.php?option=com_templates'),
+					'image' => 'icon-48-themes.png',
+					'text' => JText::_('MOD_QUICKICON_TEMPLATE_MANAGER'),
+					'access' => array('core.manage', 'com_templates')
+				),
+				array(
+					'link' => JRoute::_('index.php?option=com_admin&task=profile.edit'),
+					'image' => 'icon-48-user-profile.png',
+					'text' => JText::_('MOD_QUICKICON_PROFILE'),
+					'access' => true
+				),
 			);
 		}
 

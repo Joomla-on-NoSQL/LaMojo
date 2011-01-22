@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -27,14 +27,19 @@ class MediaViewMediaList extends JView
 		$app	= JFactory::getApplication();
 		$style = $app->getUserStateFromRequest('media.list.layout', 'layout', 'thumbs', 'word');
 
+		$lang	= JFactory::getLanguage();
+		
 		JHtml::_('behavior.framework', true);
 
 		$document = JFactory::getDocument();
 		$document->addStyleSheet('../media/media/css/medialist-'.$style.'.css');
+		if ($lang->isRTL()) :
+			$document->addStyleSheet('../media/media/css/medialist-'.$style.'_rtl.css');
+		endif;
 
 		$document->addScriptDeclaration("
 		window.addEvent('domready', function() {
-			window.top.document.updateUploader && window.top.document.updateUploader();
+			window.parent.document.updateUploader();
 			$$('a.img-preview').each(function(el) {
 				el.addEvent('click', function(e) {
 					new Event(e).stop();
@@ -43,11 +48,16 @@ class MediaViewMediaList extends JView
 			});
 		});");
 
+		$images = $this->get('images');
+		$documents = $this->get('documents');
+		$folders = $this->get('folders');
+		$state = $this->get('state');
+
 		$this->assign('baseURL', JURI::root());
-		$this->assignRef('images', $this->get('images'));
-		$this->assignRef('documents', $this->get('documents'));
-		$this->assignRef('folders', $this->get('folders'));
-		$this->assignRef('state', $this->get('state'));
+		$this->assignRef('images', $images);
+		$this->assignRef('documents', $documents);
+		$this->assignRef('folders', $folders);
+		$this->assignRef('state', $state);
 
 		parent::display($tpl);
 	}

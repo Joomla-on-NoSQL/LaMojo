@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -19,6 +19,18 @@ jimport('joomla.application.component.modeladmin');
  */
 class PluginsModelPlugin extends JModelAdmin
 {
+	/**
+	 * @var		string	The help screen key for the module.
+	 * @since	1.6
+	 */
+	protected $helpKey = 'JHELP_EXTENSIONS_PLUGIN_MANAGER_EDIT';
+
+	/**
+	 * @var		string	The help screen base URL for the module.
+	 * @since	1.6
+	 */
+	protected $helpURL;
+
 	protected $_cache;
 
 	/**
@@ -63,6 +75,18 @@ class PluginsModelPlugin extends JModelAdmin
 			return false;
 		}
 
+		// Modify the form based on access controls.
+		if (!$this->canEditState((object) $data)) {
+			// Disable fields for display.
+			$form->setFieldAttribute('ordering', 'disabled', 'true');
+			$form->setFieldAttribute('enabled', 'disabled', 'true');
+
+			// Disable fields while saving.
+			// The controller has already verified this is a record you can edit.
+			$form->setFieldAttribute('ordering', 'filter', 'unset');
+			$form->setFieldAttribute('enabled', 'filter', 'unset');
+		}
+
 		return $form;
 	}
 
@@ -91,7 +115,7 @@ class PluginsModelPlugin extends JModelAdmin
 	 *
 	 * @return	mixed	Object on success, false on failure.
 	 */
-	public function &getItem($pk = null)
+	public function getItem($pk = null)
 	{
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('plugin.id');
@@ -112,7 +136,8 @@ class PluginsModelPlugin extends JModelAdmin
 			}
 
 			// Convert to the JObject before adding other data.
-			$this->_cache[$pk] = JArrayHelper::toObject($table->getProperties(1), 'JObject');
+			$properties = $table->getProperties(1);
+			$this->_cache[$pk] = JArrayHelper::toObject($properties, 'JObject');
 
 			// Convert the params field to an array.
 			$registry = new JRegistry;
@@ -120,8 +145,7 @@ class PluginsModelPlugin extends JModelAdmin
 			$this->_cache[$pk]->params = $registry->toArray();
 
 			// Get the plugin XML.
-			$client	= JApplicationHelper::getClientInfo($table->client_id);
-			$path	= JPath::clean($client->path.'/plugins/'.$table->folder.'/'.$table->element.'/'.$table->element.'.xml');
+			$path = JPath::clean(JPATH_PLUGINS.'/'.$table->folder.'/'.$table->element.'/'.$table->element.'.xml');
 
 			if (file_exists($path)) {
 				$this->_cache[$pk]->xml = JFactory::getXML($path);
@@ -147,13 +171,33 @@ class PluginsModelPlugin extends JModelAdmin
 	}
 
 	/**
+	 * Auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+	protected function populateState()
+	{
+		// Execute the parent method.
+		parent::populateState();
+
+		$app = JFactory::getApplication('administrator');
+
+		// Load the User state.
+		$pk = (int) JRequest::getInt('extension_id');
+		$this->setState('plugin.id', $pk);
+	}
+
+	/**
 	 * @param	object	A form object.
 	 * @param	mixed	The data expected for the form.
 	 * @return	mixed	True if successful.
 	 * @throws	Exception if there is an error in the form event.
 	 * @since	1.6
 	 */
-	protected function preprocessForm($form, $data)
+	protected function preprocessForm(JForm $form, $data, $group = '')
 	{
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
@@ -169,21 +213,21 @@ class PluginsModelPlugin extends JModelAdmin
 			$app->redirect(JRoute::_('index.php?option=com_plugins&view=plugins',false));
 		}
 		// Try 1.6 format: /plugins/folder/element/element.xml
-		$formFile = JPath::clean($client->path.'/plugins/'.$folder.'/'.$element.'/'.$element.'.xml');
+		$formFile = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$element.'/'.$element.'.xml');
 		if (!file_exists($formFile)) {
 			// Try 1.5 format: /plugins/folder/element/element.xml
-			$formFile = JPath::clean($client->path.'/plugins/'.$folder.'/'.$element.'.xml');
+			$formFile = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$element.'.xml');
 			if (!file_exists($formFile)) {
-				throw new Exception(JText::sprintf('JError_File_not_found', $element.'.xml'));
+				throw new Exception(JText::sprintf('COM_PLUGINS_ERROR_FILE_NOT_FOUND', $element.'.xml'));
 				return false;
 			}
 		}
 
 		// Load the core and/or local language file(s).
 			$lang->load('plg_'.$folder.'_'.$element, JPATH_ADMINISTRATOR, null, false, false)
-		||	$lang->load('plg_'.$folder.'_'.$element, $client->path.'/plugins/'.$folder.'/'.$element, null, false, false)
+		||	$lang->load('plg_'.$folder.'_'.$element, JPATH_PLUGINS.'/'.$folder.'/'.$element, null, false, false)
 		||	$lang->load('plg_'.$folder.'_'.$element, JPATH_ADMINISTRATOR, $lang->getDefault(), false, false)
-		||	$lang->load('plg_'.$folder.'_'.$element, $client->path.'/plugins/'.$folder.'/'.$element, $lang->getDefault(), false, false);
+		||	$lang->load('plg_'.$folder.'_'.$element, JPATH_PLUGINS.'/'.$folder.'/'.$element, $lang->getDefault(), false, false);
 
 		if (file_exists($formFile)) {
 			// Get the plugin form.
@@ -192,8 +236,23 @@ class PluginsModelPlugin extends JModelAdmin
 			}
 		}
 
+		// Attempt to load the xml file.
+		if (!$xml = simplexml_load_file($formFile)) {
+			throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
+		}
+
+		// Get the help data from the XML file if present.
+		$help = $xml->xpath('/extension/help');
+		if (!empty($help)) {
+			$helpKey = trim((string) $help[0]['key']);
+			$helpURL = trim((string) $help[0]['url']);
+
+			$this->helpKey = $helpKey ? $helpKey : $this->helpKey;
+			$this->helpURL = $helpURL ? $helpURL : $this->helpURL;
+		}
+
 		// Trigger the default form events.
-		parent::preprocessForm($form, $data);
+		parent::preprocessForm($form, $data, $group);
 	}
 
 	/**
@@ -203,7 +262,7 @@ class PluginsModelPlugin extends JModelAdmin
 	 * @return	array	An array of conditions to add to add to ordering queries.
 	 * @since	1.6
 	 */
-	protected function getReorderConditions($table = null)
+	protected function getReorderConditions($table)
 	{
 		$condition = array();
 		$condition[] = 'type = '. $this->_db->Quote($table->type);
@@ -227,5 +286,16 @@ class PluginsModelPlugin extends JModelAdmin
 		$data['type'] = 'plugin';
 
 		return parent::save($data);
+	}
+
+	/**
+	 * Get the necessary data to load an item help screen.
+	 *
+	 * @return	object	An object with key, url, and local properties for loading the item help screen.
+	 * @since	1.6
+	 */
+	public function getHelp()
+	{
+		return (object) array('key' => $this->helpKey, 'url' => $this->helpURL);
 	}
 }

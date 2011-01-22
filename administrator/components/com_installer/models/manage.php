@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	com_installer
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,7 +11,7 @@
 defined('_JEXEC') or die;
 
 // Import library dependencies
-require_once JPATH::dirname(__FILE__) . '/extension.php';
+require_once dirname(__FILE__) . '/extension.php';
 
 /**
  * Installer Manage Model
@@ -23,13 +23,36 @@ require_once JPATH::dirname(__FILE__) . '/extension.php';
 class InstallerModelManage extends InstallerModel
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param	array	An optional associative array of configuration settings.
+	 * @see		JController
+	 * @since	1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'name',
+				'client_id',
+				'enabled',
+				'type',
+				'folder',
+				'extension_id',
+			);
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * @since	1.6
 	 */
-	protected function populateState()
+	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication();
@@ -42,8 +65,8 @@ class InstallerModelManage extends InstallerModel
 			$app->setUserState($this->context.'.data', array('filters'=>$filters));
 		}
 
-		$this->setState($this->context.'.message',$app->getUserState('com_installer.message'));
-		$this->setState($this->context.'.extension_message',$app->getUserState('com_installer.extension_message'));
+		$this->setState('message',$app->getUserState('com_installer.message'));
+		$this->setState('extension_message',$app->getUserState('com_installer.extension_message'));
 		$app->setUserState('com_installer.message','');
 		$app->setUserState('com_installer.extension_message','');
 
@@ -94,7 +117,7 @@ class InstallerModelManage extends InstallerModel
 			}
 		} else {
 			$result = false;
-			JError::raiseWarning(403, JText::_('JERROR_CORE_EDIT_STATE_NOT_PERMITTED'));
+			JError::raiseWarning(403, JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
 		}
 		return $result;
 	}
@@ -176,15 +199,22 @@ class InstallerModelManage extends InstallerModel
 					$failed[] = $id;
 				}
 			}
+
+			$langstring = 'COM_INSTALLER_TYPE_TYPE_'. strtoupper($row->type);
+			$rowtype = JText::_($langstring);
+			if(strpos($rowtype, $langstring) !== false) {
+				$rowtype = $row->type;
+			}
+
 			if (count($failed)) {
 
 				// There was an error in uninstalling the package
-				$msg = JText::sprintf('COM_INSTALLER_UNINSTALL_ERROR', $row->type);
+				$msg = JText::sprintf('COM_INSTALLER_UNINSTALL_ERROR', $rowtype);
 				$result = false;
 			} else {
 
 				// Package uninstalled sucessfully
-				$msg = JText::sprintf('COM_INSTALLER_UNINSTALL_SUCCESS', $row->type);
+				$msg = JText::sprintf('COM_INSTALLER_UNINSTALL_SUCCESS', $rowtype);
 				$result = true;
 			}
 			$app = JFactory::getApplication();

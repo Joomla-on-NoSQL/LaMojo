@@ -34,10 +34,19 @@
 	</fieldset>
 	
 	<fieldset name="category"
-		label="COM_WEBLINKS_CATEGORY_LABEL"
+		label="JCATEGORY"
 		description="COM_WEBLINKS_CATEGORY_DESC"
 	>
 		
+		<field 
+			name="category_layout" type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_weblinks"
+			view="category"
+		/>
+
 		<field name="show_category_title" type="radio"
 				label="JGLOBAL_SHOW_CATEGORY_TITLE"
 				description="JGLOBAL_SHOW_CATEGORY_TITLE_DESC"
@@ -110,7 +119,7 @@
 	</fieldset>
 	
 	<fieldset name="categories"
-		label="COM_WEBLINKS_CATEGORIES_LABEL"
+		label="JCATEGORIES"
 		description="COM_WEBLINKS_CATEGORIES_DESC"
 	>
 			<field name="show_base_description" type="radio"
@@ -167,7 +176,7 @@
 	
 	
 	<fieldset name="list_layout"
-		label="COM_WEBLINKS_LIST_LAYOUT_LABEL"
+		label="JGLOBAL_LIST_LAYOUT_OPTIONS"
 		description="COM_WEBLINKS_LIST_LAYOUT_DESC"
 	>
 
@@ -230,7 +239,7 @@
 	
 	<fieldset
 		name="integration"
-		label="COM_WEBLINKS_CONFIG_INTEGRATION_SETTINGS_LABEL"
+		label="JGLOBAL_INTEGRATION_LABEL"
 		description="COM_WEBLINKS_CONFIG_INTEGRATION_SETTINGS_DESC"
 		>
 
@@ -266,6 +275,7 @@
 		<field name="rules" type="rules"
 			component="com_weblinks"
 			filter="rules"
+			validate="rules"
 			label="JCONFIG_PERMISSIONS_LABEL"
 			section="component" />
 	</fieldset>

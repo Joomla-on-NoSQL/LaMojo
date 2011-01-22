@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -71,15 +71,17 @@ class BannersViewClients extends JView
 		}
 		if ($this->state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'clients.delete','JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::divider();
 		} else if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('clients.trash','JTOOLBAR_TRASH');
+			JToolBarHelper::divider();
 		}
 
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_banners');
+			JToolBarHelper::divider();
 		}
-		JToolBarHelper::divider();
+
 		JToolBarHelper::help('JHELP_COMPONENTS_BANNERS_CLIENTS');
 	}
 }

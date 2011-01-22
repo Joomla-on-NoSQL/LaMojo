@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	Massmail
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -32,7 +32,9 @@ class MediaController extends JController
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
+		JPluginHelper::importPlugin('content');
 		$vName = JRequest::getCmd('view', 'images');
+
 		switch ($vName)
 		{
 			case 'imagesList':

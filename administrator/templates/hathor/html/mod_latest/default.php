@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.hathor
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * @since		1.6
  */
@@ -16,6 +16,9 @@ defined('_JEXEC') or die;
 		<tr>
 			<th>
 				<?php echo JText::_('MOD_LATEST_LATEST_ITEMS'); ?>
+			</th>
+			<th>
+				<strong><?php echo JText::_('JPUBLISHED'); ?></strong>
 			</th>
 			<th>
 				<strong><?php echo JText::_('MOD_LATEST_CREATED'); ?></strong>
@@ -41,6 +44,9 @@ defined('_JEXEC') or die;
 					echo htmlspecialchars($item->title, ENT_QUOTES, 'UTF-8');
 				endif; ?>
 			</th>
+			<td class="center">
+				<?php echo JHtml::_('jgrid.published', $item->state, $i, '', false); ?>
+			</td>
 			<td class="center">
 				<?php echo JHTML::_('date',$item->created, 'Y-m-d H:i:s'); ?>
 			</td>

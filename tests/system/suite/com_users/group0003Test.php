@@ -2,7 +2,7 @@
 /**
  * @version		$Id
  * @package		Joomla.SystemTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  * Tests deleting a User Group that does not exist.
  */
@@ -30,10 +30,9 @@ class Group0003Test extends SeleniumJoomlaTestCase
 		echo "Delete all groups in view.\n";
 		$this->click("checkall-toggle");
 		$this->click("//li[@id='toolbar-delete']/a");
-		$this->waitForPageToLoad("30000");
 		try
 		{
-			$this->assertTrue($this->isTextPresent("No Groups selected"), 'Group(s) selected or message incorrect or not present');
+			$this->assertEquals("Please first make a selection from the list", $this->getAlert());
 		}
 		catch (PHPUnit_Framework_AssertionFailedError $e)
 		{
@@ -41,6 +40,7 @@ class Group0003Test extends SeleniumJoomlaTestCase
 		}
 
         $this->doAdminLogout();
+		$this->deleteAllVisibleCookies();
   }
 }
-?>
+

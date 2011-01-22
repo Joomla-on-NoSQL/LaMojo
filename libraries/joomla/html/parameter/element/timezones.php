@@ -3,7 +3,7 @@
  * @version		$Id:timezones.php 6961 2007-03-15 16:06:53Z tcp $
  * @package		Joomla.Framework
  * @subpackage	Parameter
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -64,7 +64,7 @@ class JElementTimezones extends JElement
 			JHtml::_('select.option', 5.75, JText::_('UTC__05_45__KATHMANDU')),
 			JHtml::_('select.option', 6, JText::_('UTC__06_00__ALMATY__DHAKA')),
 			JHtml::_('select.option', 6.5, JText::_('UTC__06_30__YAGOON')),
-			JHtml::_('select.option', 7, JText::_('UTC__07_00__BANGKOK__HANOI__JAKARTA')),
+			JHtml::_('select.option', 7, JText::_('UTC__07_00__BANGKOK__HANOI__JAKARTA__PHNOM_PENH')),
 			JHtml::_('select.option', 8, JText::_('UTC__08_00__BEIJING__PERTH__SINGAPORE__HONG_KONG')),
 			JHtml::_('select.option', 8.75, JText::_('UTC__08_00__WESTERN_AUSTRALIA')),
 			JHtml::_('select.option', 9, JText::_('UTC__09_00__TOKYO__SEOUL__OSAKA__SAPPORO__YAKUTSK')),

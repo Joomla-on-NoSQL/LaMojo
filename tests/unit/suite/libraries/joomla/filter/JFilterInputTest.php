@@ -4,7 +4,7 @@
  *
  * @version		$Id$
  * @package		Joomla.UnitTest
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved.
  * @license		GNU General Public License
  */
 
@@ -413,7 +413,7 @@ class JFilterInputTest extends PHPUnit_Framework_TestCase
 				'<img class="one two" />',
 				'<img class="one two" />',
 				'From generic cases'
-			)
+			),
 		);
 	}
 
@@ -548,7 +548,14 @@ class JFilterInputTest extends PHPUnit_Framework_TestCase
 				'<img class="one two" />',
 				'',
 				'From specific cases'
-			)
+			),
+			'tracker24258' => array(
+				// Test for recursion on attributes
+				'string',
+				'<scrip &nbsp; t>alert(\'test\');</scrip t>',
+				'alert(\'test\');',
+				'From generic cases'
+			),
 		);
 		$tests = array_merge($this->casesGeneric(), $casesSpecific);
 

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Administrator
  * @subpackage	templates.bluestork
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -139,7 +139,7 @@ $app = JFactory::getApplication();
 		<jdoc:include type="modules" name="footer" style="none"  />
 	<div id="footer">
 		<p class="copyright">
-			<?php $joomla= '<a href="http://www.joomla.org">Joomla!</a>';
+			<?php $joomla= '<a href="http://www.joomla.org">Joomla!&#174;</a>';
 				echo JText::sprintf('JGLOBAL_ISFREESOFTWARE', $joomla) ?>
 			<span class="version"><?php echo  JText::_('JVERSION') ?> <?php echo  JVERSION; ?></span>
 		</p>

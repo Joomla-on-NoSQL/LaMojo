@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Framework
  * @subpackage	Filter
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -75,7 +75,7 @@ class JFilterInput extends JObject
 	 * @param	int		$xssAuto	Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
 	 * @since	1.5
 	 */
-	function __construct($tagsArray = array(), $attrArray = array(), $tagsMethod = 0, $attrMethod = 0, $xssAuto = 1)
+	public function __construct($tagsArray = array(), $attrArray = array(), $tagsMethod = 0, $attrMethod = 0, $xssAuto = 1)
 	{
 		// Make sure user defined arrays are in lowercase
 		$tagsArray = array_map('strtolower', (array) $tagsArray);
@@ -170,6 +170,10 @@ class JFilterInput extends JObject
 
 			case 'STRING' :
 				$result = (string) $this->_remove($this->_decode((string) $source));
+				break;
+
+			case 'HTML' :
+				$result = (string) $this->_remove((string) $source);
 				break;
 
 			case 'ARRAY' :
@@ -344,11 +348,15 @@ class JFilterInput extends JObject
 					} else {
 						$attribEnd = $nextSpace - 1;
 					}
-					if((int) $fromSpace > 0)
+					// if there is an ending, use this, if not do not worry
+					if($attribEnd > 0)
 					{
-						$fromSpace = substr($fromSpace, $attribEnd + 1);
-					} else {
-						$fromSpace = substr($fromSpace, 0, $attribEnd).'="'.substr($fromSpace, 0, $attribEnd).'"'.substr($fromSpace, $attribEnd);
+						if((int) $fromSpace > 0)
+						{
+							$fromSpace = substr($fromSpace, $attribEnd + 1);
+						} else {
+							$fromSpace = substr($fromSpace, 0, $attribEnd).'="'.substr($fromSpace, 0, $attribEnd).'"'.substr($fromSpace, $attribEnd);
+						}
 					}
 				}
 				if (strpos($fromSpace, '=') !== false) {
@@ -474,7 +482,7 @@ class JFilterInput extends JObject
 			}
 
 			// Autostrip script tags
-			if (JFilterInput::checkAttribute($attrSubSet)) {
+			if (self::checkAttribute($attrSubSet)) {
 				continue;
 			}
 

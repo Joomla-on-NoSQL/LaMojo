@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	MailTo
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -69,7 +69,7 @@ class MailtoController extends JController
 			return $this->mailto();
 		}
 
-		// An array of e-mail headers we do not want to allow as input
+		// An array of email headers we do not want to allow as input
 		$headers = array (	'Content-Type:',
 							'MIME-Version:',
 							'Content-Transfer-Encoding:',

@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	Contact
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -45,9 +45,11 @@ class ContactModelContact extends JModelItem
 		$params = $app->getParams();
 		$this->setState('params', $params);
 
-		// TODO: Tune these values based on other permissions.
-		$this->setState('filter.published', 1);
-		$this->setState('filter.archived', 2);
+		$user = JFactory::getUser();
+		if ((!$user->authorise('core.edit.state', 'com_contact')) &&  (!$user->authorise('core.edit', 'com_contact'))){
+			$this->setState('filter.published', 1);
+			$this->setState('filter.archived', 2);
+		}
 	}
 
 	/**
@@ -90,13 +92,14 @@ class ContactModelContact extends JModelItem
 				$nullDate = $db->Quote($db->getNullDate());
 				$nowDate = $db->Quote(JFactory::getDate()->toMySQL());
 
-				$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
-				$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
+
 				// Filter by published state.
 				$published = $this->getState('filter.published');
 				$archived = $this->getState('filter.archived');
 				if (is_numeric($published)) {
 					$query->where('(a.published = ' . (int) $published . ' OR a.published =' . (int) $archived . ')');
+					$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')');
+					$query->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
 				}
 
 				$db->setQuery($query);
@@ -135,7 +138,7 @@ class ContactModelContact extends JModelItem
 				else {
 					// If no access filter is set, the layout takes some responsibility for display of limited information.
 					$user = JFactory::getUser();
-					$groups = $user->authorisedLevels();
+					$groups = $user->getAuthorisedViewLevels();
 
 					if ($data->catid == 0 || $data->category_access === null) {
 						$data->params->set('access-view', in_array($data->access, $groups));
@@ -156,9 +159,10 @@ class ContactModelContact extends JModelItem
 		}
 		if ($this->_item[$pk])
 		{
-			$extendedData = $this->getContactQuery($pk);
- 			$this->_item[$pk]->articles = $extendedData->articles;
-  			$this->_item[$pk]->profile = $extendedData->profile;
+			if ($extendedData = $this->getContactQuery($pk)) {
+				$this->_item[$pk]->articles = $extendedData->articles;
+				$this->_item[$pk]->profile = $extendedData->profile;
+			}
 		}
   		return $this->_item[$pk];
 
@@ -185,22 +189,26 @@ class ContactModelContact extends JModelItem
 			$query->join('INNER', '#__categories AS cc on cc.id = a.catid');
 
 			$query->where('a.id = ' . (int) $pk);
-			$query->where('a.published = 1');
-			$query->where('cc.published = 1');
-			$groups		= implode(',', $user->authorisedLevels());
-			$query->where('a.access IN ('.implode(',', $user->authorisedLevels()).')');
-
-		try {
-			$db->setQuery($query);
-			$result = $db->loadObject();
-
-			if ($error = $db->getErrorMsg()) {
-				throw new Exception($error);
+			$published = $this->getState('filter.published');
+			$archived = $this->getState('filter.archived');
+			if (is_numeric($published)) {
+				$query->where('a.published IN (1,2)');
+				$query->where('cc.published IN (1,2)');
 			}
+			$groups		= implode(',', $user->getAuthorisedViewLevels());
+			$query->where('a.access IN ('.$groups.')');
 
-			if (empty($result)) {
-					throw new JException(JText::_('COM_CONTACT_ERROR_CONTACT_NOT_FOUND'), 404);
-			}
+			try {
+				$db->setQuery($query);
+				$result = $db->loadObject();
+	
+				if ($error = $db->getErrorMsg()) {
+					throw new Exception($error);
+				}
+	
+				if (empty($result)) {
+						throw new JException(JText::_('COM_CONTACT_ERROR_CONTACT_NOT_FOUND'), 404);
+				}
 
 			// If we are showing a contact list, then the contact parameters take priority
 			// So merge the contact parameters with the merged parameters
@@ -209,36 +217,52 @@ class ContactModelContact extends JModelItem
 					$registry->loadJSON($result->params);
 					$this->getState('params')->merge($registry);
 				}
-		} catch (Exception $e) {
-			$this->setError($e);
-			return false;
-		}
+			} catch (Exception $e) {
+				$this->setError($e);
+				return false;
+			}
 
-		if ($result) {
-			$user	= JFactory::getUser();
-			$groups	= implode(',', $user->authorisedLevels());
-			//get the content by the linked user
-			$query = 'SELECT id, title, state, access, created' .
-				' FROM #__content' .
-				' WHERE created_by = '.(int)$result->user_id .
-				' AND access IN ('. $groups . ')' .
-				' ORDER BY state DESC, created DESC' ;
-			$db->setQuery($query, 0, 10);
-			$articles = $db->loadObjectList();
-			$result->articles = $articles;
+			if ($result) {
+				$user	= JFactory::getUser();
+				$groups	= implode(',', $user->getAuthorisedViewLevels());
+				//get the content by the linked user
+				$query	= $db->getQuery(true);
+				$query->select('id, title, state, access, created'); 
+				$query->from('#__content');
+				$query->where('created_by = '.(int)$result->user_id);
+				$query->where('access IN ('. $groups.')');
+				$query->order('state DESC, created DESC');
+				if (is_numeric($published)) {
+					$query->where('state IN (1,2)');
+				}
+				$db->setQuery($query, 0, 10);
+				$articles = $db->loadObjectList();
+				$result->articles = $articles;
 
 			//get the profile information for the linked user
-			$query = 'SELECT user_id, profile_key, profile_value, ordering' .
-				' FROM #__user_profiles' .
-				' WHERE user_id = '.(int)$result->user_id .
-				' ORDER BY ordering ASC' ;
+			if ($result) {
+					require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_users'.DS.'models'.DS.'user.php';
+					$userModel = JModel::getInstance('User','UsersModel',array('ignore_request' => true));
+						$data = $userModel->getItem((int)$result->user_id);
+			
+					JPluginHelper::importPlugin('user');
+					$form = new JForm('com_users.profile');
+					// Get the dispatcher.
+					$dispatcher	= JDispatcher::getInstance();
+	
+					// Trigger the form preparation event.
+					$dispatcher->trigger('onContentPrepareForm', array($form, $data));
+					// Trigger the data preparation event.
+					$dispatcher->trigger('onContentPrepareData', array('com_users.profile', $data));
+	
+					// Load the data into the form after the plugins have operated.
+					$form->bind($data);
+					$result->profile = $form;
+				}
 
-			$db->setQuery($query, 0, 10);
-			$profile = $db->loadObjectList();
-			$result->profile = $profile;
-		}
-		$this->contact = $result;
-		return $result;
+			$this->contact = $result;
+			return $result;
+			}
 		}
 	}
 }

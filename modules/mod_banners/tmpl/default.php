@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_banners
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 require_once JPATH_ROOT . '/components/com_banners/helpers/banner.php';
 $baseurl = JURI::base();
 ?>
-<div class="bannergroup<?php echo $params->get('moduleclass_sfx') ?>">
+<div class="bannergroup<?php echo $moduleclass_sfx ?>">
 <?php if ($headerText) : ?>
 	<?php echo $headerText; ?>
 <?php endif; ?>
@@ -88,7 +88,6 @@ $baseurl = JURI::base();
 				<object
 					classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 					codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
-					border="0"
 					<?php if (!empty($width)) echo 'width ="'. $width.'"';?>
 					<?php if (!empty($height)) echo 'height ="'. $height.'"';?>
 				>
@@ -100,7 +99,7 @@ $baseurl = JURI::base();
 						type="application/x-shockwave-flash"
 						<?php if (!empty($width)) echo 'width ="'. $width.'"';?>
 						<?php if (!empty($height)) echo 'height ="'. $height.'"';?>
-					></embed>
+					/>
 				</object>
 			<?php endif;?>
 		<?php endif;?>

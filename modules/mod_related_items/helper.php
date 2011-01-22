@@ -3,14 +3,14 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_related_items
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // no direct access
 defined('_JEXEC') or die;
 
-require_once JPATH_SITE.'/components/com_content/helpers/route.php';
+require_once JPATH_SITE.DS.'components'.DS.'com_content'.DS.'helpers'.DS.'route.php';
 
 abstract class modRelatedItemsHelper
 {
@@ -21,7 +21,7 @@ abstract class modRelatedItemsHelper
 		$user		= JFactory::getUser();
 		$userId		= (int) $user->get('id');
 		$count		= intval($params->get('count', 5));
-		$groups		= implode(',', $user->authorisedLevels());
+		$groups		= implode(',', $user->getAuthorisedViewLevels());
 		$date		= JFactory::getDate();
 
 		$option		= JRequest::getCmd('option');

@@ -2,7 +2,7 @@
 /**
  * @version		$Id$
  * @package		Joomla
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -65,7 +65,7 @@ class plgSystemRedirect extends JPlugin
 
 			// If a redirect exists and is published, permanently redirect.
 			if ($link and ($link->published == 1)) {
-				$app->redirect($link->new_url, null, null, true);
+				$app->redirect($link->new_url, null, null, true, false);
 			}
 			else
 			{

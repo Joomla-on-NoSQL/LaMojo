@@ -3,7 +3,7 @@
  * @version		$Id$
  * @package		Joomla.Site
  * @subpackage	mod_languages
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -11,24 +11,26 @@
 defined('_JEXEC') or die('Restricted access');
 JHtml::_('stylesheet', 'mod_languages/template.css', array(), true);
 ?>
-<div class="mod_languages<?php echo $params->get('moduleclass_sfx') ?>">
+<div class="mod-languages<?php echo $moduleclass_sfx ?>">
 <?php if ($headerText) : ?>
-	<div class="header"><p><?php echo $headerText; ?></p></div>
+	<div class="pretext"><p><?php echo $headerText; ?></p></div>
 <?php endif; ?>
-		<ul>
+	<ul class="<?php echo $params->get('inline', 1) ? 'lang-inline' : 'lang-block';?>">
 <?php foreach($list as $language):?>
-			<li>
-				<a href="<?php echo JRoute::_('index.php?Itemid='.$language->id.'&lang=' . $language->sef);?>">
-	<?php if ($params->get('image', 1)):?>
-		<?php echo JHtml::_('image', 'mod_languages/'.$language->image.'.gif', $language->title, array('title'=>$language->title), true);?>
-	<?php else:?>
-		<?php echo $language->title;?>
-	<?php endif;?>
+	<?php if ($params->get('show_active', 0) || !$language->active):?>
+		<li class="<?php echo $language->active ? 'lang-active' : '';?>">
+		<a href="<?php echo $language->link;?>">
+		<?php if ($params->get('image', 1)):?>
+			<?php echo JHtml::_('image', 'mod_languages/'.$language->image.'.gif', $language->title, array('title'=>$language->title), true);?>
+		<?php else:?>
+			<?php echo $language->title;?>
+		<?php endif;?>
 				</a>
 			</li>
+	<?php endif;?>
 <?php endforeach;?>
-		</ul>
+	</ul>
 <?php if ($footerText) : ?>
-	<div class="footer"><p><?php echo $footerText; ?></p></div>
+	<div class="posttext"><p><?php echo $footerText; ?></p></div>
 <?php endif; ?>
 </div>

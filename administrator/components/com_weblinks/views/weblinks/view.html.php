@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -49,7 +49,7 @@ class WeblinksViewWeblinks extends JView
 	 */
 	protected function addToolbar()
 	{
-		require_once JPATH_COMPONENT.'/helpers/weblinks.php';
+		require_once JPATH_COMPONENT.DS.'helpers'.DS.'weblinks.php';
 
 		$state	= $this->get('State');
 		$canDo	= WeblinksHelper::getActions($state->get('filter.category_id'));
@@ -74,14 +74,16 @@ class WeblinksViewWeblinks extends JView
 		}
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
 			JToolBarHelper::deleteList('', 'weblinks.delete','JTOOLBAR_EMPTY_TRASH');
+			JToolBarHelper::divider();
 		} else if ($canDo->get('core.edit.state')) {
 			JToolBarHelper::trash('weblinks.trash','JTOOLBAR_TRASH');
+			JToolBarHelper::divider();
 		}
 		if ($canDo->get('core.admin')) {
-			JToolBarHelper::divider();
 			JToolBarHelper::preferences('com_weblinks');
+			JToolBarHelper::divider();
 		}
-		JToolBarHelper::divider();
+
 		JToolBarHelper::help('JHELP_COMPONENTS_WEBLINKS_LINKS');
 	}
 }

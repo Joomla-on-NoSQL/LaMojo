@@ -1,7 +1,7 @@
 <?php
 /**
  * @version		$Id$
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -23,6 +23,8 @@ class MediaViewMedia extends JView
 	{
 		$app	= JFactory::getApplication();
 		$config = JComponentHelper::getParams('com_media');
+		
+		$lang	= JFactory::getLanguage();
 
 		$style = $app->getUserStateFromRequest('media.list.layout', 'layout', 'thumbs', 'word');
 
@@ -33,6 +35,9 @@ class MediaViewMedia extends JView
 
 		JHTML::_('script','media/mediamanager.js', true, true);
 		JHTML::_('stylesheet','media/mediamanager.css', array(), true);
+		if ($lang->isRTL()) :
+			JHTML::_('stylesheet','media/mediamanager_rtl.css', array(), true);
+		endif;
 
 		JHtml::_('behavior.modal');
 		$document->addScriptDeclaration("
@@ -41,10 +46,13 @@ class MediaViewMedia extends JView
 		});");
 
 		JHTML::_('script','system/mootree.js', true, true, false, false);
-		JHTML::_('stylesheet','system/mootree.css', array(), true);
+		JHTML::_('stylesheet','system/mootree.css', array(), true);	
+		if ($lang->isRTL()) :
+			JHTML::_('stylesheet','media/mootree_rtl.css', array(), true);
+		endif;
 
 		if ($config->get('enable_flash', 1)) {
-			$fileTypes = $config->get('image_extensions', 'bmp,gif,jpg,png,jpeg');
+			$fileTypes = $config->get('upload_extensions', 'bmp,gif,jpg,png,jpeg');
 			$types = explode(',', $fileTypes);
 			$displayTypes = '';		// this is what the user sees
 			$filterTypes = '';		// this is what controls the logic
@@ -59,7 +67,7 @@ class MediaViewMedia extends JView
 				$displayTypes .= '*.'.$type;
 				$filterTypes .= '*.'.$type;
 			}
-			$typeString = '{ \'Images ('.$displayTypes.')\': \''.$filterTypes.'\' }';
+			$typeString = '{ \''.JText::_('COM_MEDIA_FILES','true').' ('.$displayTypes.')\': \''.$filterTypes.'\' }';
 
 			JHtml::_('behavior.uploader', 'upload-flash',
 				array(
@@ -67,7 +75,7 @@ class MediaViewMedia extends JView
 					'onComplete' 	=> 'function(){ MediaManager.refreshFrame(); }',
 					'targetURL' 	=> '\\$(\'uploadForm\').action',
 					'typeFilter' 	=> $typeString,
-					'fileSizeMax'	=> $config->get('upload_maxsize'),
+					'fileSizeMax'	=> (int) ($config->get('upload_maxsize',0) * 1024 * 1024),
 				)
 			);
 		}
@@ -92,9 +100,11 @@ class MediaViewMedia extends JView
 		jimport('joomla.client.helper');
 		$ftp = !JClientHelper::hasCredentials('ftp');
 
-		$this->assignRef('session', JFactory::getSession());
+		$session	= JFactory::getSession();
+		$state		= $this->get('state');
+		$this->assignRef('session', $session);
 		$this->assignRef('config', $config);
-		$this->assignRef('state', $this->get('state'));
+		$this->assignRef('state', $state);
 		$this->assign('require_ftp', $ftp);
 		$this->assign('folders_id', ' id="media-tree"');
 		$this->assign('folders', $this->get('folderTree'));
@@ -115,19 +125,27 @@ class MediaViewMedia extends JView
 	{
 		// Get the toolbar object instance
 		$bar = JToolBar::getInstance('toolbar');
+		$user = JFactory::getUser();
 
 		// Set the titlebar text
 		JToolBarHelper::title(JText::_('COM_MEDIA'), 'mediamanager.png');
 
 		// Add a delete button
-		$title = JText::_('JTOOLBAR_DELETE');
-		$dhtml = "<a href=\"#\" onclick=\"MediaManager.submit('folder.delete')\" class=\"toolbar\">
-					<span class=\"icon-32-delete\" title=\"$title\"></span>
-					$title</a>";
-		$bar->appendButton('Custom', $dhtml, 'delete');
-		JToolBarHelper::divider();
-		JToolBarHelper::preferences('com_media', 450, 800, 'JToolbar_Options', '', 'window.location.reload()');
-		JToolBarHelper::divider();
+		if ($user->authorise('core.delete','com_media'))
+		{
+			$title = JText::_('JTOOLBAR_DELETE');
+			$dhtml = "<a href=\"#\" onclick=\"MediaManager.submit('folder.delete')\" class=\"toolbar\">
+						<span class=\"icon-32-delete\" title=\"$title\"></span>
+						$title</a>";
+			$bar->appendButton('Custom', $dhtml, 'delete');
+			JToolBarHelper::divider();
+		}
+		// Add a delete button
+		if ($user->authorise('core.admin','com_media'))
+		{
+			JToolBarHelper::preferences('com_media', 450, 800, 'JToolbar_Options', '', 'window.location.reload()');
+			JToolBarHelper::divider();
+		}
 		JToolBarHelper::help('JHELP_CONTENT_MEDIA_MANAGER');
 	}
 

@@ -1,26 +1,7 @@
 # $Id$
 
 # 1.5 to 1.6
-
--- ----------------------------------------------------------------
--- #__assets
--- ----------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `#__assets` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set parent.',
-  `lft` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set lft.',
-  `rgt` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set rgt.',
-  `level` int(10) unsigned NOT NULL COMMENT 'The cached level in the nested tree.',
-  `name` varchar(50) NOT NULL COMMENT 'The unique name for the asset.\n',
-  `title` varchar(100) NOT NULL COMMENT 'The descriptive title for the asset.',
-  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_asset_name` (`name`),
-  KEY `idx_lft_rgt` (`lft`,`rgt`),
-  KEY `idx_parent_id` (`parent_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
+	
 -- ----------------------------------------------------------------
 -- #__banners
 -- ----------------------------------------------------------------
@@ -31,7 +12,7 @@ ALTER TABLE `#__banner`
 ALTER TABLE `#__banners`
  CHANGE COLUMN `bid` `id` INTEGER NOT NULL auto_increment;
  
-ALTER TABLE `#__banner`
+ALTER TABLE `#__banners`
  CHANGE `custombannercode` `custombannercode` varchar(2048) NOT NULL;
 
 ALTER TABLE `#__banners`
@@ -189,7 +170,7 @@ ALTER TABLE `#__banner_tracks`
  ADD INDEX `idx_banner_id` (`banner_id`);
 
 -- ----------------------------------------------------------------
--- #__categories
+-- #_categories
 -- ----------------------------------------------------------------
 
 ALTER TABLE `#__categories`
@@ -204,11 +185,22 @@ ALTER TABLE `#__categories`
 ALTER TABLE `#__categories`
  ADD COLUMN `rgt` INTEGER NOT NULL DEFAULT 0 COMMENT 'Nested set rgt.' AFTER `lft`;
 
+ ALTER TABLE `#__categories`
+ ADD COLUMN   `asset_id` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.' AFTER `id`;
+ 
 ALTER TABLE `#__categories`
  ADD COLUMN `level` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `rgt`;
 
 ALTER TABLE `#__categories`
  ADD COLUMN `path` VARCHAR(1024) NOT NULL DEFAULT '' AFTER `level`;
+
+ALTER TABLE `#__categories`
+ ADD COLUMN   `extension` varchar(50) NOT NULL default '' AFTER `path`;
+
+ UPDATE #__categories
+ SET extension = section WHERE SUBSTR(section,1,3) = 'com';
+UPDATE #__categories
+ SET extension = 'com_content' WHERE SUBSTR(section,1,3) != 'com';
 
 ALTER TABLE `#__categories`
  ADD COLUMN `note` VARCHAR(255) NOT NULL DEFAULT '' AFTER `alias`;
@@ -254,6 +246,67 @@ ALTER TABLE `#__categories`
 
 ALTER TABLE `#__categories`
  DROP COLUMN `ordering`;
+ 
+ALTER TABLE `#__categories`
+ DROP COLUMN `image`;
+ 
+ALTER TABLE `#__categories`
+ DROP COLUMN `image_position`;
+ 
+ALTER TABLE `#__categories`
+ DROP COLUMN `editor`;
+ 
+ALTER TABLE `#__categories`
+ DROP COLUMN `count`;
+ 
+ALTER TABLE `#__categories`
+ DROP COLUMN `name`;
+UPDATE #__categories SET  parent_id=0
+	WHERE SUBSTR(section,1,3)='com';
+UPDATE #__categories SET  parent_id=section
+	WHERE SUBSTR(section,1,3) !='com';
+INSERT INTO `#__categories` (parent_id,lft,rgt,level,path,extension,title,alias,note,description,published,checked_out,checked_out_time,access,params,metadesc,metakey,metadata,created_user_id,created_time,modified_user_id,modified_time,hits,language)
+VALUES
+( 0, 1, 2, 1, 'uncategorised', 'com_content', 'Uncategorised', 'uncategorised', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{"target":"","image":""}', '', '', '{"page_title":"","author":"","robots":""}', 42, '2010-06-28 13:26:37', 0, '0000-00-00 00:00:00', 0, '*'),
+( 0, 3, 4, 1, 'uncategorised', 'com_banners', 'Uncategorised', 'uncategorised', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{"target":"","image":"","foobar":""}', '', '', '{"page_title":"","author":"","robots":""}', 42, '2010-06-28 13:27:35', 0, '0000-00-00 00:00:00', 0, '*'),
+( 0, 5, 6, 1, 'uncategorised', 'com_contact', 'Uncategorised', 'uncategorised', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{"target":"","image":""}', '', '', '{"page_title":"","author":"","robots":""}', 42, '2010-06-28 13:27:57', 0, '0000-00-00 00:00:00', 0, '*'),
+( 0, 7, 8, 1, 'uncategorised', 'com_newsfeeds', 'Uncategorised', 'uncategorised', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{"target":"","image":""}', '', '', '{"page_title":"","author":"","robots":""}', 42, '2010-06-28 13:28:15', 0, '0000-00-00 00:00:00', 0, '*'),
+( 0, 9, 10, 1, 'uncategorised', 'com_weblinks', 'Uncategorised', 'uncategorised', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{"target":"","image":""}', '', '', '{"page_title":"","author":"","robots":""}', 42, '2010-06-28 13:28:33', 0, '0000-00-00 00:00:00', 0, '*');
+INSERT INTO `#__categories` (parent_id,lft,rgt,level,path,extension,title,alias,note,description,published,checked_out,checked_out_time,access,params,metadesc,metakey,metadata,created_user_id,created_time,modified_user_id,modified_time,hits,language)
+SELECT
+'0',				# parent_id
+'',					# lft
+'',					# rgt
+'1',				# level
+alias,				# path
+'com_content',		# extension
+title,				# title
+alias,				# alias
+id,					# note
+description,		# description
+published,			# published
+checked_out,		# checked_out
+checked_out_time,	# checked_out_time
+access,				# access 
+params,				# params
+'',					# metadesc
+'',					# metakey
+'',					# metadata
+'',					# created_user_id
+'',					# created_time
+'',					# modified_user_id,
+'',					# modified_time
+'',					# hits
+''					# language
+FROM #__sections; 
+
+
+INSERT INTO `#__categories`
+(asset_id,parent_id,lft,rgt,level,path,extension,title,alias,note,description,published,checked_out,checked_out_time,access,params,metadesc,metakey,metadata,created_user_id,created_time,modified_user_id,modified_time,hits,language)
+VALUES
+( 0, 0, 0, 0, 0, '', 'system', 'ROOT', 'root', '', '', 1, 0, '0000-00-00 00:00:00', 1, '{}', '', '', '', 0, '2009-10-18 16:07:09', 0, '0000-00-00 00:00:00', 0, '*');
+UPDATE  #__categories
+ SET parent_id=LAST_INSERT_ID() WHERE parent_id=0 AND id !=LAST_INSERT_ID() ;
 
 -- TODO: Merge from sections and add uncategorised nodes.
 
@@ -269,9 +322,7 @@ UPDATE `#__components`
  WHERE link = 'option=com_content';
 
 INSERT INTO `#__components` VALUES
- (null, 'Articles', '', 0, 0, 'option=com_content&view=articles', 'com_content_Articles', 'com_content', 1, '', 1, '{}', 1),
  (null, 'Categories', '', 0, 0, 'option=com_categories&view=categories&extension=com_content', 'com_content_Categories', 'com_content', 2, '', 1, '{}', 1),
- (null, 'Featured', '', 0, 0, 'option=com_content&view=featured', 'com_content_Featured', 'com_content', 3, '', 1, '{}', 1),
  (null, 'Redirects', '', 0, 0, 'option=com_redirect', 'Manage Redirects', 'com_redirect', 0, 'js/ThemeOffice/component.png', 1, '{}', 1),
  (null, 'Checkin', '', 0, 0, 'option=com_checkin', 'Checkin', 'com_checkin', 0, 'js/ThemeOffice/component.png', 1, '{}', 1);
 
@@ -283,7 +334,7 @@ UPDATE `#__components` AS a
 
 
 -- ----------------------------------------------------------------
--- #__contact_details
+-- #_contact_details
 -- ----------------------------------------------------------------
  ALTER TABLE `#__contact_details`
   ADD COLUMN `sortname1` varchar(255) NOT NULL,
@@ -313,11 +364,11 @@ UPDATE `#__components` AS a
   ADD  KEY `idx_language` (`language`),
   ADD  KEY `idx_xreference` (`xreference`);
 -- ----------------------------------------------------------------
--- #__content
+-- #_content
 -- ----------------------------------------------------------------
 
 ALTER TABLE `#__content`
- ADD COLUMN `asset_id` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT 'FK to the #__assets table.' AFTER `id`;
+ ADD COLUMN `asset_id` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT 'FK to the #_assets table.' AFTER `id`;
 
 ALTER TABLE `#__content`
  ADD COLUMN `featured` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Set if article is featured.' AFTER `metadata`;
@@ -347,7 +398,7 @@ UPDATE `#__content` AS a
  ALTER TABLE `#__content` CHANGE `attribs` `attribs` VARCHAR( 5120 ) NOT NULL;
 
 -- ----------------------------------------------------------------
--- #__extensions (new) and migration
+-- #_extensions (new) and migration
 -- ----------------------------------------------------------------
 
 CREATE TABLE  `#__extensions` (
@@ -360,7 +411,7 @@ CREATE TABLE  `#__extensions` (
   `enabled` tinyint(3) NOT NULL default '1',
   `access` tinyint(3) unsigned NOT NULL default '0',
   `protected` tinyint(3) NOT NULL default '0',
-  `manifestcache` text NOT NULL,
+  `manifest_cache` text NOT NULL,
   `params` text NOT NULL,
   `custom_data` text NOT NULL,
   `system_data` text NOT NULL,
@@ -377,8 +428,9 @@ CREATE TABLE  `#__extensions` (
 ) ENGINE=MyISAM CHARACTER SET `utf8`;
 
 TRUNCATE TABLE #__extensions;
-INSERT INTO #__extensions SELECT
-     0,							# extension id (regenerate)
+INSERT INTO #__extensions (name,type,element,folder,client_id,enabled,access,protected,
+	manifest_cache,params,custom_data,system_data,checked_out,checked_out_time,ordering,
+	state) SELECT
      name,						# name
      'plugin',					# type
      element,					# element
@@ -395,10 +447,12 @@ INSERT INTO #__extensions SELECT
      checked_out_time,         	# checked_out_time
      ordering,                  # ordering
      0							# state
-     FROM #__plugins;         	# #__extensions replaces the old #__plugins table
+     FROM #__plugins;         	# #__extensions replaces the old #_plugins table
 
- INSERT INTO #__extensions SELECT
-     0,                         # extension id (regenerate)
+ INSERT INTO #__extensions (name,type,element,folder,client_id,enabled,access,protected,
+	manifest_cache,params,custom_data,system_data,checked_out,checked_out_time,ordering,
+	state)
+	SELECT
      name,						# name
      'component',				# type
      `option`,					# element
@@ -419,8 +473,10 @@ INSERT INTO #__extensions SELECT
                                 # component menu selection still utilises the #__components table
      WHERE parent = 0;          # only get top level entries
 
- INSERT INTO #__extensions SELECT DISTINCT
-     0,                         # extension id (regenerate)
+ INSERT INTO #__extensions (name,type,element,folder,client_id,enabled,access,protected,
+	manifest_cache,params,custom_data,system_data,checked_out,checked_out_time,ordering,
+	state)
+	SELECT DISTINCT
      module,                    # name
      'module',                  # type
      `module`,                  # element
@@ -440,12 +496,41 @@ INSERT INTO #__extensions SELECT
      FROM #__modules			# #__extensions provides the install/uninstall control for modules
      WHERE id IN (SELECT id FROM #__modules GROUP BY module ORDER BY id);
 
+	 
+	 
 -- rename mod_newsflash to mod_articles_news
 UPDATE `#__extensions` SET `name` = 'mod_articles_news', `element` = 'mod_articles_news' WHERE `name` = 'mod_newsflash';
 
 -- New extensions
-INSERT INTO `#__extensions` VALUES(0, 'plg_editors_codemirror', 'plugin', 'codemirror', 'editors', 1, 0, 1, 1, '', 'linenumbers=0\n\n', '', '', 0, '0000-00-00 00:00:00', 7, 0);
-INSERT INTO `#__extensions` VALUES(0, 'plg_extension_joomla', 'plugin', 'joomla', 'extension', 0, 1, 1, 0, '', '{}', '', '', 0, '0000-00-00 00:00:00', 1, 0);
+
+INSERT INTO `#__extensions` ( `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `custom_data`, `system_data`, `checked_out`, `checked_out_time`, `ordering`, `state`) VALUES
+( 'atomic', 'template', 'atomic', '', 0, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'rhuk_milkyway', 'template', 'rhuk_milkyway', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'bluestork', 'template', 'bluestork', '', 1, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'beez_20', 'template', 'beez_20', '', 0, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'hathor', 'template', 'hathor', '', 1, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'Beez5', 'template', 'beez5', '', 0, 1, 1, 0, 'a:11:{s:6:"legacy";b:1;s:4:"name";s:5:"Beez5";s:4:"type";s:8:"template";s:12:"creationDate";s:11:"21 May 2010";s:6:"author";s:12:"Angie Radtke";s:9:"copyright";s:72:"Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.";s:11:"authorEmail";s:23:"a.radtke@derauftritt.de";s:9:"authorUrl";s:26:"http://www.der-auftritt.de";s:7:"version";s:5:"1.6.0";s:11:"description";s:22:"A Easy Version of Beez";s:5:"group";s:0:"";}', '{"wrapperSmall":"53","wrapperLarge":"72","sitetitle":"BEEZ 2.0","sitedescription":"Your site name","navposition":"center","html5":"0"}', '', '', 0, '0000-00-00 00:00:00', 0, 0);
+
+# Languages
+INSERT INTO `#__extensions` ( `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `custom_data`, `system_data`, `checked_out`, `checked_out_time`, `ordering`, `state`) VALUES
+( 'English (United Kingdom)', 'language', 'en-GB', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'English (United Kingdom)', 'language', 'en-GB', '', 1, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'XXTestLang', 'language', 'xx-XX', '', 1, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+( 'XXTestLang', 'language', 'xx-XX', '', 0, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0);
+
+INSERT INTO `#__extensions` (`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `custom_data`, `system_data`, `checked_out`, `checked_out_time`, `ordering`, `state`) VALUES
+( 'Joomla! CMS', 'file', 'joomla', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('plg_user_contactcreator', 'plugin', 'contactcreator', 'user', 0, 0, 1, 1, '', '{"autowebpage":"","category":"26","autopublish":"0"}', '', '', 0, '0000-00-00 00:00:00', 1, 0),
+('plg_user_profile', 'plugin', 'profile', 'user', 0, 0, 1, 1, '', '{"register-require_address1":"0","register-require_address2":"0","register-require_city":"0","register-require_region":"0","register-require_country":"0","register-require_postal_code":"0","register-require_phone":"0","register-require_website":"0","profile-require_address1":"1","profile-require_address2":"1","profile-require_city":"1","profile-require_region":"1","profile-require_country":"1","profile-require_postal_code":"1","profile-require_phone":"1","profile-require_website":"1"}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('plg_extension_joomla', 'plugin', 'joomla', 'extension', 0, 1, 1, 1, '', '{}', '', '', 0, '0000-00-00 00:00:00', 1, 0),
+('plg_system_languagefilter', 'plugin', 'languagefilter', 'system', 0, 0, 1, 1, '', '{}', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('plg_editors_codemirror', 'plugin', 'codemirror', 'editors', 0, 1, 1, 1, '', '{"linenumbers":"0","tabmode":"indent"}', '', '', 0, '0000-00-00 00:00:00', 1, 0),
+('plg_extension_joomla', 'plugin', 'joomla', 'extension', 0, 1, 1, 0, '', '{}', '', '', 0, '0000-00-00 00:00:00', 1, 0),
+('mod_articles_category', 'module', 'mod_articles_category', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('mod_articles_categories', 'module', 'mod_articles_categories', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('mod_languages', 'module', 'mod_languages', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('mod_users_latest', 'module', 'mod_users_latest', '', 0, 1, 1, 1, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0),
+('mod_weblinks', 'module', 'mod_weblinks', '', 0, 1, 1, 0, '', '', '', '', 0, '0000-00-00 00:00:00', 0, 0);
 
 -- ----------------------------------------------------------------
 -- #__languages (new)
@@ -459,12 +544,12 @@ CREATE TABLE `#__languages` (
   `description` varchar(512) NOT NULL,
   `published` int(11) NOT NULL default '0',
   PRIMARY KEY  (`lang_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__languages` (`lang_id`,`lang_code`,`title`,`title_native`,`description`,`published`)
+INSERT INTO `#__languages` (`lang_code`,`title`,`title_native`,`description`,`published`)
 VALUES
-	(1,'en_GB','English (UK)','English (UK)','',1),
-	(2,'en_US','English (US)','English (US)','',1);
+	('en_GB','English (UK)','English (UK)','',1);
+
 
 -- ----------------------------------------------------------------
 -- #__menu
@@ -541,11 +626,16 @@ ALTER TABLE `#__menu`
 ALTER TABLE `#__menu`
  ADD COLUMN `language` char(7) NOT NULL DEFAULT '' AFTER `home`;
 
+ALTER TABLE `jos_menu` ADD COLUMN `client_id` TINYINT(4) NOT NULL DEFAULT 0 AFTER `language`;
+
 ALTER TABLE `#__menu`
  ADD INDEX idx_language(`language`);
 
+ALTER TABLE `jos_menu` ADD UNIQUE `idx_alias_parent_id` (`client_id`,`parent_id`,`alias`);
+
 INSERT INTO `#__menu` VALUES
- (0, '', 'Menu_Item_Root', 'root', '', '', '', 1, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 0, 0, '', 0, 37, 0);
+	('','Menu_Item_Root','root','','','','',1,0,0,0,0,0,'0000-00-00 00:00:00',0,0,'',0,'',0,217,0,'*');
+
 
 -- TODO: Need to devise how to shift the parent_id's of the existing menus to relate to the new root.
 -- UPDATE `#__menu`
@@ -611,15 +701,9 @@ ALTER TABLE `#__modules`
 ALTER TABLE `#__modules`
  ADD COLUMN `publish_down` datetime NOT NULL default '0000-00-00 00:00:00' AFTER `publish_up`;
 
-ALTER TABLE `#__modules`
- ADD COLUMN `language` char(7) NOT NULL DEFAULT '' AFTER `client_id`;
-
-ALTER TABLE `#__modules`
- ADD INDEX idx_language(`language`);
-
 UPDATE `#__modules`
- SET `menutype` = 'mod_menu'
- WHERE `menutype` = 'mod_mainmenu';
+ SET `module` = 'mod_menu'
+ WHERE `module` = 'mod_mainmenu';
 
 -- ----------------------------------------------------------------
 -- #__newsfeeds
@@ -675,8 +759,6 @@ ALTER TABLE `#__newsfeeds`
 -- #__plugins
 -- ----------------------------------------------------------------
 
-INSERT INTO `#__plugins` VALUES (NULL, 'Editor - CodeMirror', 'codemirror', 'editors', 1, 0, 1, 1, 0, 0, '0000-00-00 00:00:00', 'linenumbers=0\n\n');
-
 -- ----------------------------------------------------------------
 -- #__schemas
 -- ----------------------------------------------------------------
@@ -706,29 +788,27 @@ ALTER TABLE `#__session`
 -- ----------------------------------------------------------------
 -- #__template_styles
 -- ----------------------------------------------------------------
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__template_styles`
+--
 
-RENAME TABLE `#__menu_template` TO `#__template_styles`;
+CREATE TABLE IF NOT EXISTS `#__template_styles` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `template` varchar(50) NOT NULL DEFAULT '',
+  `client_id` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `home` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `params` varchar(10240) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `idx_template` (`template`),
+  KEY `idx_home` (`home`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=115 ;
 
-ALTER TABLE `#__template_styles`
- CHANGE `id` `id` int(11) UNSIGNED NOT NULL auto_increment;
+INSERT INTO #__template_styles (`template`, `client_id`)
+SELECT `#__templates_menu`.`template`, `#__templates_menu`.`client_id`
+FROM `#__templates_menu`;
 
-ALTER TABLE `#__template_styles`
- CHANGE `template` `template` varchar(50) NOT NULL DEFAULT '';
-
-ALTER TABLE `#__template_styles`
- CHANGE `client_id` `client_id` tinyint(1) UNSIGNED NOT NULL DEFAULT '0';
-
-ALTER TABLE `#__template_styles`
- CHANGE `home` `home` tinyint(1) UNSIGNED NOT NULL DEFAULT '0';
-
-ALTER TABLE `#__template_styles`
- CHANGE `params` `params` varchar(2048) NOT NULL DEFAULT '';
-
-ALTER TABLE `#__template_styles`
- ADD INDEX `idx_template` (`template`);
-
-ALTER TABLE `#__template_styles`
- ADD INDEX `idx_home` (`home`);
 
 -- ----------------------------------------------------------------
 -- #__updates (new)
@@ -865,9 +945,82 @@ DROP TABLE `#__core_acl_aro_sections`;
 -- Add an entry to the schema table (for this migration)
 -- ----------------------------------------------------------------
 INSERT INTO #__extensions (name, type, element, protected) VALUES ('Joomla! CMS', 'package', 'joomla', 1);
-INSERT INTO #__schema VALUES(LAST_INSERT_ID()), '20090622');
+INSERT INTO #__schemas VALUES(LAST_INSERT_ID(), '20090622');
 
 -- Parameter conversions todo
 
 DROP TABLE `#__core_log_items`;
 DROP TABLE `#__stats_agents`;
+
+
+-- ----------------------------------------------------------------
+-- #__assets
+-- ----------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `#__assets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
+  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set parent.',
+  `lft` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set lft.',
+  `rgt` int(11) NOT NULL DEFAULT '0' COMMENT 'Nested set rgt.',
+  `level` int(10) unsigned NOT NULL COMMENT 'The cached level in the nested tree.',
+  `name` varchar(50) NOT NULL COMMENT 'The unique name for the asset.\n',
+  `title` varchar(100) NOT NULL COMMENT 'The descriptive title for the asset.',
+  `rules` varchar(5120) NOT NULL COMMENT 'JSON encoded access control.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_asset_name` (`name`),
+  KEY `idx_lft_rgt` (`lft`,`rgt`),
+  KEY `idx_parent_id` (`parent_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+INSERT INTO `#__assets` (`parent_id`, `lft`, `rgt`, `level`, `name`, `title`, `rules`)       
+SELECT
+     '1',						# parent_id
+     '',						# lft
+     '',						# rgt
+     '2',	                    # level
+     `option`, 					# name
+     name,                 		# title
+	'{"core.admin":{"7":1},"core.manage":{"6":1},"core.create":[],"core.delete":[],"core.edit":[],"core.edit.state":[]}' # rules
+     FROM #__components        # Each component is an asset with a parent of 0.	
+	WHERE parent = 0; 
+UPDATE #__assets 
+	SET rules='{}' WHERE NAME='com_admin'  OR NAME='com_wrapper' OR
+		NAME='com_login'  OR NAME='com_cpanel';
+UPDATE #__assets
+	SET rules='{"core.admin":{"7":1},"core.manage":{"7":1},"core.create":{"7":1},"core.delete":{"7":1},"core.edit":{"7":1},"core.edit.state":{"7":1}}'
+    WHERE NAME= 'com_mailto' OR NAME='com_massmail' OR NAME='com_config';
+INSERT INTO #__assets (`parent_id`, `lft`, `rgt`, `level`, `name`, `title`, `rules`) 
+SELECT
+     '',						# parent_id
+     '',						# lft
+     '',						# rgt
+     '2',	                    # level
+     CONCAT(extension,'.category.',id), # name
+     section,                 	# title
+     '{}'	                    # rules
+     FROM #__categories        # Each existing category is an asset with a parent of its component or section.
+	WHERE SUBSTR(section,1,3) = 'com';
+INSERT INTO #__assets (`parent_id`, `lft`, `rgt`, `level`, `name`, `title`, `rules`) 
+SELECT
+     '',						# parent_id
+     '',						# lft
+     '',						# rgt
+     '3',	                    # level
+     CONCAT('com_content.article.',id),   # name
+     title,                 	# title
+     '{}'	                    # rules
+     FROM #__content          	# Uncategorized articles becomes assets in the uncategorized category.
+								#other articles becomes assets with parent of their category.
+	 ;
+
+-- We can now drop the section column, since we have done the queries above.
+
+#ALTER TABLE `#__categories` DROP COLUMN `section`;
+
+
+-- issue http://joomlacode.org/gf/project/joomla/tracker/?action=TrackerItemEdit&tracker_item_id=22606
+ALTER TABLE `#__usergroups`
+	DROP INDEX `idx_usergroup_title_lookup`,
+	ADD INDEX `idx_usergroup_title_lookup` ( `title` ),
+	ADD UNIQUE `idx_usergroup_parent_title_lookup` ( `parent_id` , `title` ) 
+;
+

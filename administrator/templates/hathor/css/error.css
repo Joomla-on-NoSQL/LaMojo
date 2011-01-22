@@ -1,6 +1,6 @@
 /**
  * @version		$Id: error.css 14276 2010-01-18 14:20:28Z louis $
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -47,6 +47,7 @@ a {
 	border: 1px solid #c7c8b2;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	background-color: #ffffff;
 	color: #2c2c2c;
 	padding: 3px 20px;
