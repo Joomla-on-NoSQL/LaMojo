@@ -940,11 +940,11 @@ class JTableNested extends JTable
 
 			// Update and cascade the publishing state.
 			$query = $this->_db->getQuery(true)
-				->update($this->_db->nameQuote($this->_tbl).' AS n')
-				->set('n.published = '.(int) $state)
+				->update($this->_db->nameQuote($this->_tbl))
+				->set('published = '.(int) $state)
 				->where(
-					'(n.lft > '.(int) $this->lft.' AND n.rgt < '.(int) $this->rgt.')' .
-					' OR n.'.$k.' = '.(int) $pk
+					'(lft > '.(int) $this->lft.' AND rgt < '.(int) $this->rgt.')' .
+					' OR '.$k.' = '.(int) $pk
 				);
 			$this->_db->setQuery($query);
 
