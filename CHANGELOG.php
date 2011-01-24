@@ -38,6 +38,7 @@ $ -> Language fix or change
 
 24-Jan-2011 Jean-Marie Simonet
 $ Adding uz-UZ to installation languages
+# Updating Credits
 
 -------------------- 1.5.22 Stable Release [03-November-2010] ------------------
 
