@@ -36,6 +36,7 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+$ Adding uz-UZ to installation languages
 
 -------------------- 1.5.22 Stable Release [03-November-2010] ------------------
 
