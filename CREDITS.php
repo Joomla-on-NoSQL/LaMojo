@@ -125,7 +125,6 @@ Thai (th-TH) - Joomla LaiThai Team (JoomlaCorner) - Akarawuth Tamrareang , Supac
 Turkish (tr-TR) - Joomla! Turkiye - Ümit Kenan Gönüllü
 Ukrainian (uk-UA) - Ukrainian Translation Team - Denys Nosov
 Urdu Pakistan (ur-PK) - Basim
-Uzbek (uz-UZ) - Uzbek Translation team - wickedwebdesigner
 Vietnamese (vi-VN) - Việt Nam Translation Team - Viet Hoang Vu
 
 Pizza Bug and fun Event
