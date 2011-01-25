@@ -16,16 +16,19 @@ window.addEvent('domready', function(){
 		document.id('jform_cloud_acc_name').set('class', '');
 		document.id('jform_cloud_access_key').set('class', '');
 		document.id('jform_secret_key').set('class', '');
+		document.id('jform_container').set('class', '');
 	}
 	document.id('jform_storage_type').addEvent('change',function() {
 		if(this.get("value")!='local'){
 			document.id('jform_cloud_acc_name').set('class', 'required');
 			document.id('jform_cloud_access_key').set('class', 'required');
 			document.id('jform_secret_key').set('class', 'required');
+			document.id('jform_container').set('class', 'required');
 		  }else{
 			  document.id('jform_cloud_acc_name').set('class', '');
 			  document.id('jform_cloud_access_key').set('class', '');
 			  document.id('jform_secret_key').set('class', '');
+			  document.id('jform_container').set('class', '');
 		  }
 	});
 });
