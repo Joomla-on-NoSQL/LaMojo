@@ -611,6 +611,19 @@ input#jformparams_link_category1 {
 	margin-left: 13px;
 }
 
+div#position-icon.pane-sliders div.pane-down div.icon-wrapper {
+	margin: 5px 0 5px 0;
+}
+
+div#position-icon.pane-sliders div.pane-down .icon-wrapper .icon {
+	padding: 5px 0 5px 10px;
+	margin: 0;
+}
+
+div#position-icon.pane-sliders .icon {
+	background: #fff;
+}
+
 /* -- TAB STYLES ----------------------------- */
 dl.tabs {
 	float: left;
@@ -2443,6 +2456,26 @@ dl.menu_type dd ul li {
 dl.menu_type dd ul {
 	margin-left: -40px;
 }
+
+ul#new-modules-list {
+	padding: 5px 0 0 15px;
+	width:95%;
+	margin: 0;
+	list-style: none;
+	border-top: 1px solid #666;
+}
+ul#new-modules-list li {
+	list-style: none;
+	display: block;
+	float:left;
+	margin: 0 20px 0 0;
+	width: 47%;
+}
+ul#new-modules-list li a {
+	font-size: 1.091em;
+	line-height: 1.8em;
+}
+
 
 /* -- ACL STYLES ----------- */
 

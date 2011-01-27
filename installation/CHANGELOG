@@ -27,6 +27,52 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+27-Jan-2011 Christophe Demko
+ # [#24558] Improve the Directory Permissions in com_admin (Rouven Weßling)
+
+27-Jan-2011 Jean-Marie Simonet
+ # [#24320] Unstyled dialog when clicking 'new' in module manager. Thanks Andrea.
+ # Updating credits
+ # [#24550] Manifest data is not being serialized as JSON during install and discovery install. Thanks Brian Towles.
+
+26-Jan-2011 Mark Dexter
+# [#24513] *Incorrect error string after saving default menu item with set 'Default Page' radio button to 'no' value
+# [#24607] *No translation of options (plugin names) in ordering field of plugins
+
+26-Jan-2011 Jean-Marie Simonet
+ # [#24599] Templates filter searches all extensions. Thanks CY Lee.
+ $ Updating zh-CN
+ # [#24619] Wrong description language code for email1 field. Thanks Bill.
+ $ Correcting some lang strings values.
+ #$ [#24615] Extra language definitions for icon tooltips in Messages component
+ #$ [#24587] beez template typo with position-15
+ $ Adding pt-PT installation lang
+ 
+25-Jan-2011 Jean-Marie Simonet
+ $ Adding el-GR, ka-GE installation langs
+ $ Adding fi-FI installation langs. Modifying gu-IN.
+ # [#24580] Localise xml default language is not highlighted in the drop down
+ # [#24582] Languages not installed in db but present in the language folders in joomla issue
+ # [#24564] mod_articles_category creates wrong html code. Thanks Andras.
+
+24-Jan-2011 Jean-Marie Simonet
+ $ Updating af-ZA
+ #$ [#24457] Language fixes and new warnings for com_installer. Thanks Sam.
+ # [#24540] New Window without navigation. Thanks Byron and Bill.
+ $ Updating ru-RU, sk-SK
+ $ Updating ca-ES, adding ml-IN installation lang
+ $ Correcting parse errors in ml-IN.ini
+ #$ [#24573] Backend mod_status private messages pluralisation. Thanks Edgars. Reordered en-GB.mod_status.ini
+ 
+23-Jan-2011 Jean-Marie Simonet
+ # [#24523] Improve the cpanel of admin templates + correcting some errors. Thanks Christophe.
+ $ Adding bn-BD, ckb-IQ, eo-XX, ta-IN installation langs + updating 35 installation langs for 1.6.1 
+ $ Updating vi_VN
+ # [#24570] Correcting icon message display in installation with rtl lang
+ # [#24463] Admin Trashed menu doesn't display - link error. Thanks Barny and Bill.
+ # [#24459] In Users -> Mass Mail Users, the tooltips are not being styled. Thanks Jeremy.
+ $ Missing strings in lv-LV
+ 
 22-Jan-2011 Jean-Marie Simonet
  # Updating some TT credits
  # [#24525] In Bluestork, longer labels are being cut off especially radio button labels. Thanks Andrea
