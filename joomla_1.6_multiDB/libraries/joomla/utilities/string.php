@@ -712,7 +712,7 @@ abstract class JString
 		}
 		return $result;
 	}
-	function startsWith($haystack, $needle, $case = TRUE) 
+	public static function startsWith($haystack, $needle, $case = TRUE) 
 	{
 		$ret = FALSE;
 
