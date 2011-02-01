@@ -103,7 +103,7 @@ $saveOrder 	= ($listOrder == 'a.lft' && $listDirn == 'asc');
 				$canEditOwn	= $user->authorise('core.edit.own',		$extension.'.category.'.$item->id) && $item->created_user_id == $userId;
 				$canChange	= $user->authorise('core.edit.state',	$extension.'.category.'.$item->id) && $canCheckin;
 				?>
-				<tr class="row<?php echo $i % 2; ?>">
+				<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 					<td class="center">
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 					</td>

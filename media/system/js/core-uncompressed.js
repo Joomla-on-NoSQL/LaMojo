@@ -92,6 +92,66 @@ Joomla.isEmail = function(text) {
 };
 
 /**
+ * USED IN: libraries/joomla/html/html/jgrid.php
+ *
+ * @param id
+ * @param task
+ * @return
+ */
+Joomla.checkin = function (id, task, form) {
+	if (typeof(form) === 'undefined') {
+		form = document.id('adminForm');
+	}
+	var cb = form[id];
+	if (cb) {
+		for (var i = 0; true; i++) {
+			var cbx = form['cb'+i];
+			if (!cbx) {
+				break;
+			}
+			cbx.checked = false;
+		} // for
+		cb.checked = true;
+		form.boxchecked.value = 1;
+		form.task.value = task;
+		
+		var req = new Request.JSON({
+			method: 'post',
+			url: form.action+'&format=json',
+			onSuccess: function(r) {
+				Joomla.replaceTokens(r.token);
+				if (r.error === false) {
+					var id;
+					for (var i = 0; true; i++) {
+						var cbx = form['cb'+i];
+						if (!cbx) {
+							break;
+						} else if (cbx.checked === true) {
+							var lock = $$('#row'+i+' a.checkedout');
+							lock.fireEvent('mouseleave');
+							lock.dispose();
+							cbx.checked = false;
+							break;
+						}
+					}
+				} else {
+					alert(r.message);
+				}
+			},
+			onFailure: function(xhr) {
+				var r = JSON.decode(xhr.responseText);
+				if (r) {
+					Joomla.replaceTokens(r.token);
+					alert(r.message);
+				}
+			}
+		});
+		req.post(form.toQueryString());		
+	}
+	return false;
+}
+
+/**
  * USED IN: administrator/components/com_modules/views/module/tmpl/default.php
  *
  * Writes a dynamically generated list

@@ -82,7 +82,7 @@ $listDirn	= $this->state->get('list.direction');
 			$canEdit	= $user->authorise('core.edit',			'com_redirect');
 			$canChange	= $user->authorise('core.edit.state',	'com_redirect');
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>

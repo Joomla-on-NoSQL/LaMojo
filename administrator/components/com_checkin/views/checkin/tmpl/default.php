@@ -36,7 +36,7 @@ $listDirn	= $this->state->get('list.direction');
 		</thead>
 		<tbody>
 		<?php foreach ($this->items as $table => $count): $i=0;?>
-			<tr class="row<?php echo $i%2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center"><?php echo JHtml::_('grid.id', $i, $table); ?></td>
 				<td><?php echo JText::sprintf('COM_CHECKIN_TABLE',$table); ?></td>
 				<td width="200" class="center"><?php echo $count; ?></td>

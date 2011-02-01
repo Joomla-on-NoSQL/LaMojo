@@ -74,7 +74,7 @@ $listDirn	= $this->state->get('list.direction');
 			$canEdit	= $user->authorise('core.edit',			'com_menus');
 			$canChange	= $user->authorise('core.edit.state',	'com_menus');
 		?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>
@@ -99,7 +99,7 @@ $listDirn	= $this->state->get('list.direction');
 						<?php echo $item->count_unpublished; ?></a>
 				</td>
 				<td class="center btns">
-					<a href="<?php echo JRoute::_('index.php?option=com_menus&view=items&menutype='.$item->menutype.'&filter_published=2');?>">
+					<a href="<?php echo JRoute::_('index.php?option=com_menus&view=items&menutype='.$item->menutype.'&filter_published=-2');?>">
 						<?php echo $item->count_trashed; ?></a>
 				</td>
 				<td class="left">

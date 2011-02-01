@@ -70,7 +70,7 @@ $saveOrder	= $listOrder == 'a.ordering';
 			$canEdit	= $user->authorise('core.edit',			'com_users');
 			$canChange	= $user->authorise('core.edit.state',	'com_users');
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>

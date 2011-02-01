@@ -27,10 +27,133 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+31-Jan-2011 Mark Dexter
+# [#24642] Incorrect term in a tooltip in the Menu Items screen
+# [#24681] *Issue in back-end login module with Languages not installed in db but present in the admin language folder
+# [#24265] Strict standards: Declaration of WeblinksModelCategory::getItems() should be compatible with that of JModelList::getItems() in
+# [#24298] Screens jumps when using the ACL widget
+# [#24336] *PHP warning in extension manger
+# [#24674] Empty tooltips in module edit screens
+# [#24405] Library JURI has an optional parameter: it should be mandatory
+# [#24665] Inconsistency in the Add new newsfeed screen
+# [#24591] No rounded corners in Opera for Modal
+# [#24557] Mod popular and latest article processing events in content plugins
+
+31-Jan-2011 Jean-Marie Simonet
+ $ Deleting duplicate lang string
+ $ Updating aa-AA.ini 
+
+30-Jan-2011 Jean-Marie Simonet
+ $ Customising a lang key to fit different languages
+
+29-Jan-2011 Mark Dexter
+# [#24288] com_mailto Spam Email Relay
+# [#24371] SQL error in com_contact if id not set
+# [#24097] Add a button to the installation to remove the installation folder
+# [#24274] Title is displayed in Readmore text although 'Title with Readmore' is turned off
+
+29-Jan-2011 Jean-Marie Simonet
+ $ Deleting one unused string from all installation ini files.
+
+28-Jan-2011 Mark Dexter
+# Fix MySQLi wording in installation language files
+
+28-Jan-2011 Christophe Demko
+ # [#23915] Trashed articles - no indication of being trashed , when viewed at front of site
+ # [#24404] Update GeSHI to 1.0.8.9 (Michael Babker)
+ # [#24269] com_contact view contact > links (Nikolai Plath, Sergio Iglesias, Jennifer Marriott)
+ # [#24287] Disabling modules on a page leaves error messages (Nikolai Plath)
+ # [#24305] 3rd party components install in location "site" instead of "administrator" (Samuel Moffatt)
+ # [#24444] com_newsfeeds doesn't set default view in frontend (Jeremy Wilken)
+ # [#24394] Error page styling forces error box to far left (Jeremy Wilken, Nikolai Plath)
+ # [#24309] PHP Strict Standards Message, Category Blog (bill richardson)
+
+28-Jan-2011 Jean-Marie Simonet
+ $ Correcting parse issues in 14 installation langs
+ # [#24657] Enabling debug language mode in installation application. Thanks Christophe.
+ 
+27-Jan-2011 Mark Dexter
+# [#24644] Joomla! Web Application Framework library is uninstallable
+# Fix SVN properties on some joomla_update sql scripts 
+
+27-Jan-2011 Christophe Demko
+ # [#24558] Improve the Directory Permissions in com_admin (Rouven Weßling)
+
+27-Jan-2011 Jean-Marie Simonet
+ # [#24320] Unstyled dialog when clicking 'new' in module manager. Thanks Andrea.
+ # Updating credits
+ # [#24550] Manifest data is not being serialized as JSON during install and discovery install. Thanks Brian Towles.
+
+26-Jan-2011 Mark Dexter
+# [#24513] *Incorrect error string after saving default menu item with set 'Default Page' radio button to 'no' value
+# [#24607] *No translation of options (plugin names) in ordering field of plugins
+
+26-Jan-2011 Jean-Marie Simonet
+ # [#24599] Templates filter searches all extensions. Thanks CY Lee.
+ $ Updating zh-CN
+ # [#24619] Wrong description language code for email1 field. Thanks Bill.
+ $ Correcting some lang strings values.
+ #$ [#24615] Extra language definitions for icon tooltips in Messages component
+ #$ [#24587] beez template typo with position-15
+ $ Adding pt-PT installation lang
+ 
+25-Jan-2011 Jean-Marie Simonet
+ $ Adding el-GR, ka-GE installation langs
+ $ Adding fi-FI installation langs. Modifying gu-IN.
+ # [#24580] Localise xml default language is not highlighted in the drop down
+ # [#24582] Languages not installed in db but present in the language folders in joomla issue
+ # [#24564] mod_articles_category creates wrong html code. Thanks Andras.
+
+24-Jan-2011 Jean-Marie Simonet
+ $ Updating af-ZA
+ #$ [#24457] Language fixes and new warnings for com_installer. Thanks Sam.
+ # [#24540] New Window without navigation. Thanks Byron and Bill.
+ $ Updating ru-RU, sk-SK
+ $ Updating ca-ES, adding ml-IN installation lang
+ $ Correcting parse errors in ml-IN.ini
+ #$ [#24573] Backend mod_status private messages pluralisation. Thanks Edgars. Reordered en-GB.mod_status.ini
+ 
+23-Jan-2011 Jean-Marie Simonet
+ # [#24523] Improve the cpanel of admin templates + correcting some errors. Thanks Christophe.
+ $ Adding bn-BD, ckb-IQ, eo-XX, ta-IN installation langs + updating 35 installation langs for 1.6.1 
+ $ Updating vi_VN
+ # [#24570] Correcting icon message display in installation with rtl lang
+ # [#24463] Admin Trashed menu doesn't display - link error. Thanks Barny and Bill.
+ # [#24459] In Users -> Mass Mail Users, the tooltips are not being styled. Thanks Jeremy.
+ $ Missing strings in lv-LV
+ 
+22-Jan-2011 Jean-Marie Simonet
+ # Updating some TT credits
+ # [#24525] In Bluestork, longer labels are being cut off especially radio button labels. Thanks Andrea
+
+21-Jan-2011 Christophe Demko
+ # [#24523] Improve the cpanel of admin templates + correting some errors
+ # Revert [#24523]
+
+21-Jan-2011 Jean-Marie Simonet
+ $ [#24520] Incorrect tooltips in Articles Categories module. Thanks Jozsef and Bill.
+ $ [#24518] Incorrect tooltip in Module Manager. Thanks Jozsef and Bill. 
+ 
+20-Jan-2011 Jean-Marie Simonet
+ # [#24491] com_contact, wrong string is used in config.xml (COM_CONTACT_FIELD_PROFILE_SHOW_LABEL used twice). Thanks Edgars.
+ # Changing version number in en-GB.xml and en-US.xml installation
+ # Adding missing new tag in localise.xml [#23083]
+ # [#24318] Administration templates renders JForm "checkboxes" incorrectly in config. Thanks Andrea.
+
+19-Jan-2011 Jean-Marie Simonet
+ #$ [#24464] Incorrect language definition in 'List Contacts in a Category' menu item type. Thanks Jozsef and Bill.
+ # [#24397] group perms list should be expand/collapsible at will. Thanks Jeremy and Andrea.
+ #$ [#24475] Multiple groups are a problem in the user manager. Thanks Andrea.
+ $ [#24097] Adding new strings from that non-committed yet patch in installation ini files to freeze them for 1.6.1. 
+  
 18-Jan-2011 Jean-Marie Simonet
  # Correcting code typo
  # [#24327] Bluestork administrator template template.css typo. Thanks Bill.
  # [#24428] breadcrumbs doesn't look good on rtl templates
+ # [#24461] Langswitcher module needed display improvement parameters
+ $ [#24466] Incomplete language strings in Mass Mail. Thanks Mark.
+ # [#24460] uppear right toolbar on rtl template isn't align well. Thanks Ofer.
+ $ [#24448] missing translation for COM_WEBLINKS_DEFAULT_PAGE_TITLE. Thanks Bill.
 
 17-Jan-2011 Jean-Marie Simonet
  + Adding he.gif flag to langswitcher

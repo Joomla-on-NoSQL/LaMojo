@@ -464,6 +464,15 @@ input#jformparams_link_category1 {
 
 }
 
+div#position-icon.pane-sliders div.pane-down div.icon-wrapper {
+	margin: 5px 0 5px 0;
+}
+
+div#position-icon.pane-sliders div.pane-down .icon-wrapper .icon {
+	padding: 5px 0 5px 10px;
+	margin: 0;
+}
+
 /**
  * Tabs
  */
@@ -528,6 +537,24 @@ div.current fieldset.radio label {
 	clear:none;
 	min-width: 45px;
 	float:left;
+	margin: 3px 0 0 2px;
+}
+
+div.current fieldset.checkboxes {
+	float:left;
+	clear: right;
+}
+
+div.current fieldset.checkboxes input {
+	clear:left;
+	min-width: 15px;
+	float:left;
+	margin: 3px 0 0 2px;
+}
+
+div.current fieldset.checkboxes label {
+	clear:right;
+	min-width: 45px;
 	margin: 3px 0 0 2px;
 }
 
@@ -1850,7 +1877,8 @@ h2.modal-title {
 	margin-left: 15px;
 	margin-bottom:0;
 	margin-top: 5px;
-	font-size: 1.5em;
+	font-size: 1.8em;
+	padding-bottom: .5em;
 }
 
 ul.menu_types {
@@ -1897,6 +1925,24 @@ dl.menu_type dd ul li {
 /* dl.menu_type dd ul {
 	margin-left: -40px;
 } */
+
+ul#new-modules-list {
+	padding: 5px 0 0 15px;
+	width:95%;
+	margin: 0;
+	list-style: none;
+}
+ul#new-modules-list li {
+	list-style: none;
+	display: block;
+	float:left;
+	margin: 0 20px 0 0;
+	width: 47%;
+}
+ul#new-modules-list li a {
+	font-size: 1em;
+	line-height: 1.5em;
+}
 
 body.contentpane #filter-bar {
 	font-size: 80%;
@@ -2009,6 +2055,7 @@ fieldset.panelform span.faux-label {
 	min-width: 12em;
 	float:left;
 	margin-left: 10px;
+	margin-right: 5px;
 }
 
 fieldset.adminform.long label,

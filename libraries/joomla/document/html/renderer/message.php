@@ -43,12 +43,13 @@ class JDocumentRendererMessage extends JDocumentRenderer
 				}
 			}
 		}
-
+		
+		$buffer .= "\n<dl id=\"system-message\">";
 		// If messages exist render them
 		if (is_array($lists))
 		{
 			// Build the return string
-			$buffer .= "\n<dl id=\"system-message\">";
+			
 			foreach ($lists as $type => $msgs)
 			{
 			if (count($msgs))
@@ -63,8 +64,9 @@ class JDocumentRendererMessage extends JDocumentRenderer
 					$buffer .= "\n</dd>";
 				}
 			}
-			$buffer .= "\n</dl>";
+			
 		}
+		$buffer .= "\n</dl>";
 		return $buffer;
 	}
 }

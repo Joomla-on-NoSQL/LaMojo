@@ -93,8 +93,12 @@ class JInstallation extends JApplication
 
 		$document->setBuffer($contents, 'installation');
 		$document->setTitle(JText::_('INSTL_PAGE_TITLE'));
+
 		$data = $document->render(false, $params);
 		JResponse::setBody($data);
+		if (JFactory::getConfig()->get('debug_lang')) {
+			$this->debugLanguage();
+		}
 	}
 
 	/**
@@ -153,15 +157,66 @@ class JInstallation extends JApplication
 		$conf->set('language', $options['language']);
 		$conf->set('debug_lang', $forced['debug']);
 		$conf->set('sampledata', $forced['sampledata']);
+	}
 
-		// Load Library language 
-		// Commented for now as it systematically loads en-GB.lib_joomla.ini 
-		// instead of the equivalent strings in the installation ini file when no lang .lib_joomla ini is present
-		
-		//$lang = JFactory::getLanguage();
-		//$lang->load('lib_joomla', JPATH_SITE)
-		//|| $lang->load('lib_joomla', JPATH_ADMINISTRATOR);
+	public static function debugLanguage()
+	{
+		ob_start();
+		$lang = JFactory::getLanguage();
+		echo '<h4>Parsing errors in language files</h4>';
+		$errorfiles = $lang->getErrorFiles();
 
+		if (count($errorfiles)) {
+			echo '<ul>';
+
+			foreach ($errorfiles as $file => $error)
+			{
+				echo "<li>$error</li>";
+			}
+			echo '</ul>';
+		}
+		else {
+			echo '<pre>None</pre>';
+		}
+
+		echo '<h4>Untranslated Strings</h4>';
+		echo '<pre>';
+		$orphans = $lang->getOrphans();
+
+		if (count($orphans)) {
+			ksort($orphans, SORT_STRING);
+
+			foreach ($orphans as $key => $occurance)
+			{
+				$guess = str_replace('_', ' ', $key);
+
+				$parts = explode(' ', $guess);
+				if (count($parts) > 1) {
+					array_shift($parts);
+					$guess = implode(' ', $parts);
+				}
+
+				$guess = trim($guess);
+			
+
+				$key = trim(strtoupper($key));
+				$key = preg_replace('#\s+#', '_', $key);
+				$key = preg_replace('#\W#', '', $key);
+
+				// Prepare the text
+				$guesses[] = $key.'="'.$guess.'"';
+				
+			}
+
+			echo "\n\n# ".$file."\n\n";
+			echo implode("\n", $guesses);
+		}
+		else {
+			echo 'None';
+		}
+		echo '</pre>';
+		$debug = ob_get_clean();
+		JResponse::appendBody($debug);
 	}
 
 	/**
@@ -225,7 +280,7 @@ class JInstallation extends JApplication
 	}
 
 	/**
-	 * Returns the langauge code and help url set in the localise.xml file.
+	 * Returns the language code and help url set in the localise.xml file.
 	 * Used for forcing a particular language in localised releases.
 	 *
 	 * @return	bool|array	False on failure, array on success.
@@ -256,23 +311,56 @@ class JInstallation extends JApplication
 
 	}
 
-	/**
-	 * Returns the installed admin language files in the administrative and
-	 * front-end area.
-	 *
-	 * @return	array	Array with installed language packs in admin area
-	 */
-	public function getLocaliseAdmin()
-	{
-		jimport('joomla.filesystem.folder');
+/**
+ 	* Returns the installed language files in the administrative and
+ 	* front-end area.
+ 	*
+ 	* @return array Array with installed language packs in admin and site area
+ 	*/
+ 	public function getLocaliseAdmin($db=false)
+ 	{
+ 		jimport('joomla.filesystem.folder');
 
-		// Read the files in the admin area
-		$path = JLanguage::getLanguagePath(JPATH_SITE.DS.'administrator');
-		$langfiles['admin'] = JFolder::folders($path);
+ 		// Read the files in the admin area
+ 		$path = JLanguage::getLanguagePath(JPATH_SITE.DS.'administrator');
+ 		$langfiles['admin'] = JFolder::folders($path);
 
-		$path = JLanguage::getLanguagePath(JPATH_SITE);
-		$langfiles['site'] = JFolder::folders($path);
+ 		// Read the files in the site area
+ 		$path = JLanguage::getLanguagePath(JPATH_SITE);
+ 		$langfiles['site'] = JFolder::folders($path);
 
-		return $langfiles;
-	}
-}
+ 		if($db)
+ 		{
+ 			$langfiles_disk = $langfiles;
+ 			$langfiles = Array();
+ 			$langfiles['admin'] = Array();
+ 			$langfiles['site'] = Array();
+ 			$query = $db->getQuery(true);
+ 			$query->select('element,client_id');
+ 			$query->from('#__extensions');
+ 			$query->where('type = '.$db->quote('language'));
+ 			$db->setQuery($query);
+ 			$langs = $db->loadObjectList();
+ 			foreach($langs as $lang)
+ 			{
+ 				switch($lang->client_id)
+ 				{
+ 					case 0: // site
+ 						if(in_array($lang->element, $langfiles_disk['site']))
+ 						{
+ 							$langfiles['site'][] = $lang->element;
+ 						}
+ 						break;
+ 					case 1: // administrator
+ 						if(in_array($lang->element, $langfiles_disk['admin']))
+ 						{
+ 							$langfiles['admin'][] = $lang->element;
+ 						}
+ 						break;
+ 				}
+ 			}
+ 		}
+
+ 		return $langfiles;
+ 	}
+ }

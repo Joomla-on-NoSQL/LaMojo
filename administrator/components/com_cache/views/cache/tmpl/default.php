@@ -54,7 +54,7 @@ $listDirn	= $this->state->get('list.direction');
 		<?php
 		$i = 0;
 		foreach ($this->data as $folder => $item): ?>
-		<tr class="row<?php echo $i % 2; ?>">
+		<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 			<td>
 				<?php echo $this->pagination->getRowOffset($i); ?>
 			</td>

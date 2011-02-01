@@ -22,7 +22,9 @@ Dark grey color:			#666666 		RGB: 102/102/102
 Border grey color:			#CCCCCC 		RGB: 204/204/204
 
 ----------------------------------------------------------*/
-
+html {
+	overflow-y:scroll
+}
 
 body {
 	margin: 10px;
@@ -611,6 +613,19 @@ input#jformparams_link_category1 {
 	margin-left: 13px;
 }
 
+div#position-icon.pane-sliders div.pane-down div.icon-wrapper {
+	margin: 5px 0 5px 0;
+}
+
+div#position-icon.pane-sliders div.pane-down .icon-wrapper .icon {
+	padding: 5px 0 5px 10px;
+	margin: 0;
+}
+
+div#position-icon.pane-sliders .icon {
+	background: #fff;
+}
+
 /* -- TAB STYLES ----------------------------- */
 dl.tabs {
 	float: left;
@@ -680,6 +695,24 @@ div.current fieldset.radio label {
 	clear: none;
 	min-width: 45px;
 	float: left;
+	margin: 3px 0 0 5px;
+}
+
+div.current fieldset.checkboxes {
+	float: left;
+	clear: right;
+}
+
+div.current fieldset.checkboxes input {
+	clear: left;
+	min-width: 15px;
+	float: left;
+	margin: 3px 0 0 2px;
+}
+
+div.current fieldset.checkboxes label {
+	clear: right;
+	min-width: 45px;
 	margin: 3px 0 0 5px;
 }
 
@@ -1046,7 +1079,8 @@ fieldset.adminform.long input { }
 /* Field label widths - short label */
 fieldset.adminform label, 
 fieldset.adminform span.faux-label {
-	width: 135px;
+	min-width: 135px;
+	padding: 0 5px 0 0;
 }
 
 fieldset.panelform {
@@ -1056,7 +1090,8 @@ fieldset.panelform label,
 fieldset.panelform div.paramrow label,
 fieldset.panelform span.faux-label {
 	min-width: 145px;
-	max-width: 145px;
+	max-width: 250px;
+	padding: 0 5px 0 0;
 }
 
 /* One-offs */
@@ -1146,16 +1181,18 @@ fieldset.adminform-legacy fieldset.radio {
 	border: 0;
 	float: left;
 	padding: 0;
-	margin: 0 0 5px 5px;
+	margin: 0 0 5px 0;
 	/* clear: right; */
 }
 
 fieldset.adminform fieldset.radio label,
 fieldset.panelform fieldset.radio label {
 	min-width: 60px;
+	padding-left: 0;
+	padding-right: 10px;
 	float: left;
 	clear: none;
-	width: 40px;
+	/*width: 40px;*/
 	display:inline;
 }
 
@@ -1314,11 +1351,11 @@ table.adminform {
 	width: 100%;
 }
 
-table.adminform tr.row0 {
+table.adminform tr.odd {
 	background-color: #f9f9f9;
 }
 
-table.adminform tr.row1 {
+table.adminform tr.even {
 	background-color: #eeeeee;
 }
 
@@ -1445,8 +1482,8 @@ table.adminlist tbody tr {
 	text-align: left;
 }
 
-table.adminlist tbody tr.row0:hover td,
-table.adminlist tbody tr.row1:hover td	{
+table.adminlist tbody tr.odd:hover td,
+table.adminlist tbody tr.even:hover td	{
 	background-color: #e8f6fe;
 }
 
@@ -1455,7 +1492,7 @@ table.adminlist tbody tr td {
 	border: 1px solid #fff;
 }
 
-table.adminlist tbody tr.row1 td {
+table.adminlist tbody tr.even td {
 	background: #f0f0f0;
 	border-top: 1px solid #FFF;
 }
@@ -1596,11 +1633,11 @@ table#global-checkin td.active {
 	background-color: #E8F6FE !important;
 }
 
-table#global-checkin tbody tr.row0:hover td {
+table#global-checkin tbody tr.odd:hover td {
 	background-color: #FFF;
 }
 
-table#global-checkin tbody tr.row1:hover td {
+table#global-checkin tbody tr.even:hover td {
 	background-color: #F0F0F0;
 }
 
@@ -2422,6 +2459,26 @@ dl.menu_type dd ul {
 	margin-left: -40px;
 }
 
+ul#new-modules-list {
+	padding: 5px 0 0 15px;
+	width:95%;
+	margin: 0;
+	list-style: none;
+	border-top: 1px solid #666;
+}
+ul#new-modules-list li {
+	list-style: none;
+	display: block;
+	float:left;
+	margin: 0 20px 0 0;
+	width: 47%;
+}
+ul#new-modules-list li a {
+	font-size: 1.091em;
+	line-height: 1.8em;
+}
+
+
 /* -- ACL STYLES ----------- */
 
 /* Relocated from com_users/media/default.css  */
@@ -2648,7 +2705,7 @@ td.col1 {
 	padding: 4px;
 }
 
-tr.row1 {
+tr.even {
 	background-color: #f0f0ee;
 }
 

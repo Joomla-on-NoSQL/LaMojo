@@ -70,7 +70,7 @@ $listDirn	= $this->state->get('list.direction');
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item): ?>
-			<tr class="row<?php echo $i%2; if ($item->protected) echo ' protected';?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); if ($item->protected) echo ' protected';?>" id="row<?php echo $i;?>">
 				<td>
 					<?php echo JHtml::_('grid.id', $i, $item->extension_id); ?>
 				</td>

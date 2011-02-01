@@ -112,7 +112,7 @@ $saveOrder	= $listOrder == 'a.ordering';
 
 			$item->cat_link = JRoute::_('index.php?option=com_categories&extension=com_contact&task=edit&type=other&id='. $item->catid);
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>

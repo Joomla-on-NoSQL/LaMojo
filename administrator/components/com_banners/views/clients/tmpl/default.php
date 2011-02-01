@@ -81,7 +81,7 @@ $listDirn	= $this->state->get('list.direction');
 			$canCheckin	= $user->authorise('core.manage',		'com_checkin') || $item->checked_out==$user->get('id') || $item->checked_out==0;
 			$canChange	= $user->authorise('core.edit.state',	'com_banners') && $canCheckin;
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>

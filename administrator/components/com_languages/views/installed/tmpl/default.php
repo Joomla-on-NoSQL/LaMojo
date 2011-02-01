@@ -77,7 +77,7 @@ $client = $this->state->get('filter.client_id', 0) ? JText::_('JADMINISTRATOR') 
 			$canEdit	= $user->authorise('core.edit',			'com_languages');
 			$canChange	= $user->authorise('core.edit.state',	'com_languages');
 		?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td width="20">
 					<?php echo $this->pagination->getRowOffset($i); ?>
 				</td>

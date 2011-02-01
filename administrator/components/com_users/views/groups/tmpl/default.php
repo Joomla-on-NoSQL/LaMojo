@@ -88,7 +88,7 @@ JText::script('COM_USERS_GROUPS_CONFIRM_DELETE');
 			}
 			$canChange	= $user->authorise('core.edit.state',	'com_users');
 		?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php if ($canEdit) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>

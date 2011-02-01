@@ -417,7 +417,7 @@ class JInstallerComponent extends JAdapterInstance
 		$row->set('enabled', 1);
 		$row->set('protected', 0);
 		$row->set('access', 0);
-		$row->set('client_id', 0);
+		$row->set('client_id', 1);
 		$row->set('params', $this->parent->getParams());
 		$row->set('manifest_cache', $this->parent->generateManifestCache());
 
@@ -873,7 +873,7 @@ class JInstallerComponent extends JAdapterInstance
 			$row->enabled = 1;
 			$row->protected = 0;
 			$row->access = 1;
-			$row->client_id = 0;
+			$row->client_id = 1;
 			$row->params = $this->parent->getParams();
 		}
 
@@ -1433,7 +1433,7 @@ class JInstallerComponent extends JAdapterInstance
 				$extension->set('element', $component);
 				$extension->set('name', $component);
 				$extension->set('state', -1);
-				$extension->set('manifest_cache', serialize($manifest_details));
+				$extension->set('manifest_cache', json_encode($manifest_details));
 				$results[] = $extension;
 			}
 		}
@@ -1447,7 +1447,7 @@ class JInstallerComponent extends JAdapterInstance
 				$extension->set('element', $component);
 				$extension->set('name', $component);
 				$extension->set('state', -1);
-				$extension->set('manifest_cache', serialize($manifest_details));
+				$extension->set('manifest_cache', json_encode($manifest_details));
 				$results[] = $extension;
 			}
 		}
@@ -1472,7 +1472,7 @@ class JInstallerComponent extends JAdapterInstance
 		$this->parent->setPath('extension_root', $this->parent->getPath('source'));
 
 		$manifest_details = JApplicationHelper::parseXMLInstallFile($this->parent->getPath('manifest'));
-		$this->parent->extension->manifest_cache = serialize($manifest_details);
+		$this->parent->extension->manifest_cache = json_encode($manifest_details);
 		$this->parent->extension->state = 0;
 		$this->parent->extension->name = $manifest_details['name'];
 		$this->parent->extension->enabled = 1;

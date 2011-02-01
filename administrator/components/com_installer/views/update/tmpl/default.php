@@ -44,7 +44,7 @@ $listDirn	= $this->state->get('list.direction');
 		</tfoot>
 		<tbody>
 		<?php foreach($this->items as $i=>$item):?>
-			<tr class="row<?php echo $i%2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td><?php echo JHtml::_('grid.id', $i, $item->update_id); ?></td>
 				<td>
 					<span class="editlinktip hasTip" title="<?php echo JText::_('JGLOBAL_DESCRIPTION');?>::<?php echo $item->description ? $item->description : JText::_('COM_INSTALLER_MSG_UPDATE_NODESC'); ?>">

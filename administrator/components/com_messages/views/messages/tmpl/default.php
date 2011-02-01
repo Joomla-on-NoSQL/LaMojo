@@ -67,7 +67,7 @@ $listDirn	= $this->state->get('list.direction');
 		<?php foreach ($this->items as $i => $item) :
 			$canChange	= $user->authorise('core.edit.state', 'com_messages');
 			?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td>
 					<?php echo JHtml::_('grid.id', $i, $item->message_id); ?>
 				</td>

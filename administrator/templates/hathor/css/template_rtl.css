@@ -160,6 +160,11 @@ div.pane-sliders {
 	padding-left: 0;
 }
 
+div#position-icon.pane-sliders div.pane-down .icon-wrapper .icon {
+	padding: 5px 10px 5px 0;
+	margin: 0;
+}
+
 /**
  * Tabs
  */
@@ -200,6 +205,22 @@ div.current fieldset.radio input {
 
 div.current fieldset.radio label {
 	float:right;
+	margin: 3px 2px 0 0;
+}
+
+div.current fieldset.checkboxes {
+	float:right;
+	clear:left;
+}
+
+div.current fieldset.checkboxes input {
+	float:right;
+	clear:right;
+	margin: 3px 2px 0 0;
+}
+
+div.current fieldset.checkboxes label {
+	clear:left;
 	margin: 3px 2px 0 0;
 }
 
@@ -824,9 +845,12 @@ a img.calendar {
 }
 
 /* -- MODAL STYLES ----------- */
+div#sbox-window {
+	text-align: right;
+}
 
 h2.modal-title {
-	margin-right: 15px;
+	margin: 5px 15px 0 0;
 }
 
 ul.menu_types {
@@ -836,6 +860,7 @@ ul.menu_types li,
 dl.menu_type dd ul li {
 	float:right;
 	margin-left: 10px;
+	margin-right: 0;
 }
 
 dl.menu_type dt {
@@ -844,6 +869,23 @@ dl.menu_type dt {
 }
 dl.menu_type dd {
 	clear:right;
+}
+
+dl.menu_type dd ul li {
+	margin: 0;
+}
+
+dl.menu_type dd ul {
+	margin: 0;
+}
+
+ul#new-modules-list {
+	padding: 5px 15px 0 0;
+	margin: 0;
+}
+ul#new-modules-list li {
+	float:right;
+	margin: 0 0 0 20px;
 }
 
 /**
@@ -897,6 +939,7 @@ fieldset.panelform span.faux-label {
 	clear:right;
 	float:right;
 	margin-right: 10px;
+	margin-left: 5px;
 }
 
 fieldset.adminform fieldset.radio label,

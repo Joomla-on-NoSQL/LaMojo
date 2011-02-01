@@ -66,7 +66,7 @@ $loggeduser = JFactory::getUser();
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_USERNAME', 'a.username', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
-					<?php echo JHtml::_('grid.sort', 'JENABLED', 'a.block', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_USERS_HEADING_ENABLED', 'a.block', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
 					<?php echo JHtml::_('grid.sort', 'COM_USERS_HEADING_ACTIVATED', 'a.activation', $listDirn, $listOrder); ?>
@@ -105,7 +105,7 @@ $loggeduser = JFactory::getUser();
 				$canChange	= false;
 			}
 		?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 				<td class="center">
 					<?php if ($canEdit) : ?>
 						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
@@ -141,7 +141,11 @@ $loggeduser = JFactory::getUser();
 					<?php echo JHtml::_('grid.boolean', $i, !$item->activation, 'users.activate', null); ?>
 				</td>
 				<td class="center">
-					<?php echo nl2br($item->group_names); ?>
+					<?php if (substr_count($item->group_names,"\n") > 1) : ?>
+						<span class="hasTip" title="<?php echo JText::_('COM_USERS_HEADING_GROUPS').'::'.nl2br($item->group_names); ?>"><?php echo JText::_('COM_USERS_USERS_MULTIPLE_GROUPS'); ?></span>
+					<?php else : ?>
+						<?php echo nl2br($item->group_names); ?>
+					<?php endif; ?>
 				</td>
 				<td class="center">
 					<?php echo $this->escape($item->email); ?>

@@ -74,7 +74,7 @@ $canDo	= SearchHelper::getActions();
 		</tfoot>
 		<tbody>
 		<?php foreach ($this->items as $i => $item) : ?>
-			<tr class="row<?php echo $i % 2; ?>">
+			<tr class="<?php echo ($i % 2?'even':'odd'); ?>" id="row<?php echo $i;?>">
 					<td class="right">
 						<?php echo $i + 1 + $this->pagination->limitstart; ?>
 					</td>
