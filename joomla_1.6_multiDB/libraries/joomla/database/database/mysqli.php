@@ -235,6 +235,22 @@ class JDatabaseMySQLi extends JDatabase
 	}
 
 	/**
+	 * Get the current or query, or new JDatabaseQuery object.
+	 *
+	 * @param boolean False to return the last query set by setQuery, True to return a new JDatabaseQuery object.
+	 * @return  string  The current value of the internal SQL variable
+	 */
+	function getQuery($new = false)
+	{
+		if ($new) {
+			jimport('joomla.database.databasequerymysqli');
+			return new JDatabaseQueryMySQLi;
+		} else {
+			return $this->_sql;
+		}
+	}
+	
+	/**
 	 * Description
 	 *
 	 * @return	int	The number of affected rows in the previous operation
@@ -731,5 +747,19 @@ class JDatabaseMySQLi extends JDatabase
 		}
 
 		return $result;
+	}
+	
+/**
+	 * Gets the date as an MySQL datetime string.
+	 *
+	 * @link http://dev.mysql.com/doc/refman/5.0/en/datetime.html
+	 *
+	 * @param	boolean	True to return the date string in the local time zone, false to return it in GMT.
+	 * @return	string	The date string in MySQL datetime format.
+	 * @since	1.5
+	 */
+	public function toSQLDate(&$date, $local = false)
+	{
+		return $date->toMySQL($local);
 	}
 }
