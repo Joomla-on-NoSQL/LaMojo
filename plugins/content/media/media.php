@@ -214,8 +214,7 @@ class plgContentMedia extends JPlugin
 		}
 		
 		// AutoStart
-		$autostart = (boolean)$autostart;
-		
+		$autostart = (boolean)$autostart;		
 		//First Check if we have the extension...
 		$type = substr( $media, strrpos($media, '.')+1 ); // type contains the text after the last '.'
 		if(ctype_alnum($type)){ // If the type is alphanumeric...
@@ -687,23 +686,11 @@ class plgContentMedia extends JPlugin
 		
 	}
 	
-	public function getParams()
+	public static function getParams()
 	{
-		$db= JFactory::getDbo();
-		$db->setQuery("select params from #__extensions where name='PLG_CONTENT_MEDIA' ");
-		$res= $db->query();
-		if($res){
-			$params=$db->loadResult();
-			//We get the params in serialized JSON form :) But let's reduce efforts by converting to an Array
-			$reg=JRegistry::getInstance(0);
-			$reg->loadJSON($params);
-			$params=$reg->toArray();
-			//Wuhoo we have the params...now send it...
-			return $params;
-		}
-		else{
-			return false;
-		}
+		$plugin = JPluginHelper::getPlugin('content', 'media');
+		$params = new JParameter($plugin->params);
+		return $params;
 	}
 	
 	

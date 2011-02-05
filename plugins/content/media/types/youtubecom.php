@@ -1,9 +1,57 @@
 <?php 
-function host($video, $params){
+include("swf.php");
+class MediaTypeYoutubeCom extends MediaType{
+	
+	public function getMedia($media='', $width='', $height='', $params=array()){
+	   	$plugin = JPluginHelper::getPlugin('content', 'media');
+		$params = new JParameter($plugin->params);
+		$plgParams=$params;
+		$registry = new JRegistry();
+		$registry->loadJSON($params);
+		$params= $registry->toArray();
+		$plgParams= $registry->toObject();
+		
+	//$vparams[] = 'autoplay='.$autostart;
+	$vparams[] = 'rel='.$params['youtube_rel'];//, 'advanced');
+	$vparams[] = 'loop='.$params['youtube_loop'];//, 'advanced');
+	//$vparams[] = 'enablejsapi='.$params['youtube_enablejsapi'];
+	//$vparams[] = 'playerapiid='.$params['youtube_playerapiid'];
+	$vparams[] = 'disablekb='.$params['youtube_disablekb'];//, 'advanced');
+	$vparams[] = 'egm='.$params['youtube_egm'];//, 'advanced');
+	$vparams[] = 'border='.$params['youtube_border'];//, 'advanced');
+	$vparams[] = 'color1=0x'.$params['youtube_color1'];//, 'advanced');
+	$vparams[] = 'color2=0x'.$params['youtube_color2'];//, 'advanced');
+	
+	if( !$width ){
+		$width='width: 425px;';
+		$height='height: 344px;';// Auto H		
+		
+		}
+	if( strpos( $media, '/v/' ) ) {// If yes, New way
+		$media = substr( strstr( $media, '/v/' ), 3 );
+		$media = explode( '/', $media);
+		$media = $media[0];
+	}
+	else{// Else, Old way		
+		$media = substr( strstr( $media, 'v=' ), 2 ) ; 
+		$media = explode( '&', $media);
+		$media = $media[0];
+	}	
+	
+	$player = 'http://www.youtube.com/v/'. $media .'&'. implode('&', $params);
+	
+	$params['a'] = '';
+	$params['p'] = '';
+	//Call the SWF's extension function
+	return extension( $player,$params );
+    }
+}
+
+function host($media, $params){
 	plgContentMedia::getExtension('swf');
 	$plgParams=plgContentMedia::getParams();
 	
-	/*$vparams[] = 'autoplay='.$autostart;
+	$vparams[] = 'autoplay='.$autostart;
 	$vparams[] = 'rel='.$plgParams->youtube_rel;//, 'advanced');
 	$vparams[] = 'loop='.$plgParams->youtube_loop;//, 'advanced');
 	$vparams[] = 'enablejsapi='.$plgParams->get('youtube_enablejsapi', '', 'advanced');
@@ -13,24 +61,24 @@ function host($video, $params){
 	$vparams[] = 'border='.$plgParams->get('youtube_border');//, 'advanced');
 	$vparams[] = 'color1=0x'.$plgParams->get('youtube_color1');//, 'advanced');
 	$vparams[] = 'color2=0x'.$plgParams->get('youtube_color2');//, 'advanced');
-	*/
-	if( !$params['width'] ){
-		$params['width']='width: 425px;';
-		$params['height']='height: 344px;';// Auto H		
+
+	if( !$width ){
+		$width='width: 425px;';
+		$height='height: 344px;';// Auto H		
 		
 		}
-	if( strpos( $video, '/v/' ) ) {// If yes, New way
-		$video = substr( strstr( $video, '/v/' ), 3 );
-		$video = explode( '/', $video);
-		$video = $video[0];
+	if( strpos( $media, '/v/' ) ) {// If yes, New way
+		$media = substr( strstr( $media, '/v/' ), 3 );
+		$media = explode( '/', $media);
+		$media = $media[0];
 	}
 	else{// Else, Old way		
-		$video = substr( strstr( $video, 'v=' ), 2 ) ; 
-		$video = explode( '&', $video);
-		$video = $video[0];
+		$media = substr( strstr( $media, 'v=' ), 2 ) ; 
+		$media = explode( '&', $media);
+		$media = $media[0];
 	}	
 		
-	$player = 'http://www.youtube.com/v/'. $video .'&'. implode('&', $params);
+	$player = 'http://www.youtube.com/v/'. $media .'&'. implode('&', $params);
 	
 	$params['a'] = '';
 	$params['p'] = '';
