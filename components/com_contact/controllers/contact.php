@@ -9,13 +9,18 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controller');
-
+jimport('joomla.application.component.controllerform');
 /**
  * @package		Joomla.Site
  * @subpackage	com_content
  */
-class ContactControllerContact extends JController
+class ContactControllerContact extends JControllerForm
 {
+	/**
+	 * @since	1.6
+	 */
+	protected $view_item = 'contact';
+	
 	/**
 	 * Method to send an email to a contact
 	 *

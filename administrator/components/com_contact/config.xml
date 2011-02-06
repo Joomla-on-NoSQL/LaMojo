@@ -407,7 +407,7 @@
 	
 	</fieldset>
 	
-			<fieldset name="categories"
+	<fieldset name="categories"
 			label="JCATEGORIES"
 			description="COM_CONTACT_FIELD_CONFIG_CATEGORIES_DESC"
 	>
@@ -600,7 +600,95 @@
 			</field>
 
 	</fieldset>
+	<fieldset name="Contact_Directory"
+		label="COM_CONTACT_DIRECTORY_LABEL"
+		description="COM_CONTACT_DIRECTORY_DESC">
+			<field name="show_directory_title" type="list"
+				label="COM_CONTACT_SHOW_DIRECTORY_TITLE"
+				description="COM_CONTACT_SHOW_DIRECTORY_TITLE_DESC"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+			
+			<field name="show_description" type="list"
+				description="COM_CONTACT_SHOW_DIRECTORY_DESCRIPTION_DESC"
+				label="COM_CONTACT_SHOW_DIRECTORY_DESCRIPTION_LABEL"
+			>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
 
+			<field name="show_description_image" type="list"
+				description="COM_CONTACT_SHOW_DIRECTORY_IMAGE_DESC"
+				label="COM_CONTACT_SHOW_DIRECTORY_IMAGE_LABEL"
+			>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+			
+			<field name="directory_name" 
+				label="COM_CONTACT_DIRECTORY_TITLE_LABEL"
+				desc="COM_CONTACT_DIRECTORY_TITLE_DESC"
+				type="text"
+				size="30" 
+				/>
+			<field name="directory_description"
+				label="COM_CONTACT_DIRECTORY_DESCRIPTION_LABEL"
+				desc="COM_CONTACT_DIRECTORY_DESCRIPTION_DESC"
+				type="textarea"
+				rows="5"
+				cols="30" 
+				/>	
+			<field name="directory_image" 
+				label="COM_CONTACT_DIRECTORY_IMAGE_LABEL"
+				desc="COM_CONTACT_DIRECTORY_IMAGE_DESC"
+				type="media" 
+				/>
+			<field name="sortbyfield1"
+				label="COM_CONTACT_DIRECTORY_SORT1_LABEL"
+				desc="COM_CONTACT_DIRECTORY_SORT1_DESC"
+				type="list">
+				<option value="a.ordering">COM_CONTACT_ORDERING</option>
+				<option value="a.name">COM_CONTACT_NAME</option>
+				<option value="a.sortname1">COM_CONTACT_SORTNAME1</option>
+				<option value="a.sortname2">COM_CONTACT_SORTNAME2</option>
+				<option value="a.sortname3">COM_CONTACT_SORTNAME3</option>						
+		
+			</field>					
+			<field name="sortbyfield1"
+				label="COM_CONTACT_DIRECTORY_SORT1_LABEL"
+				desc="COM_CONTACT_DIRECTORY_SORT1_DESC"
+				type="list">
+				<option value="a.ordering">COM_CONTACT_ORDERING</option>
+				<option value="a.name">COM_CONTACT_NAME</option>
+				<option value="a.sortname1">COM_CONTACT_SORTNAME1</option>
+				<option value="a.sortname2">COM_CONTACT_SORTNAME2</option>
+				<option value="a.sortname3">COM_CONTACT_SORTNAME3</option>						
+			</field>		
+			<field name="sortbyfield2"
+				label="COM_CONTACT_DIRECTORY_SORT2_LABEL"
+				desc="COM_CONTACT_DIRECTORY_SORT2_DESC"
+				type="list">
+				<option value="a.ordering">COM_CONTACT_ORDERING</option>
+				<option value="a.name">COM_CONTACT_NAME</option>
+				<option value="a.sortname1">COM_CONTACT_SORTNAME1</option>
+				<option value="a.sortname2">COM_CONTACT_SORTNAME2</option>
+				<option value="a.sortname3">COM_CONTACT_SORTNAME3</option>						
+			
+			</field>		
+			<field name="sortbyfield3"
+				label="COM_CONTACT_DIRECTORY_SORT3_LABEL"
+				desc="COM_CONTACT_DIRECTORY_SORT3_DESC"
+				type="list">
+				<option value="a.ordering">COM_CONTACT_ORDERING</option>
+				<option value="a.name">COM_CONTACT_NAME</option>
+				<option value="a.sortname1">COM_CONTACT_SORTNAME1</option>
+				<option value="a.sortname2">COM_CONTACT_SORTNAME2</option>
+				<option value="a.sortname3">COM_CONTACT_SORTNAME3</option>						
+							
+			</field>				
+	</fieldset>	
 	<fieldset name="Contact_Form"
 		label="COM_CONTACT_FIELD_CONFIG_CONTACT_FORM"
 		description="COM_CONTACT_FIELD_CONFIG_INDIVIDUAL_CONTACT_DESC"

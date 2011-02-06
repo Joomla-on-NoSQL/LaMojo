@@ -29,7 +29,10 @@ class ContentViewForm extends JView
 		// Initialise variables.
 		$app		= JFactory::getApplication();
 		$user		= JFactory::getUser();
-
+		$dispatcher = JDispatcher::getInstance();
+		$state		= $this->get('State');
+		$item		= $this->get('Item');
+		
 		// Get model data.
 		$this->state		= $this->get('State');
 		$this->item			= $this->get('Item');
