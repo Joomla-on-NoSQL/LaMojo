@@ -44,7 +44,7 @@ class ContactModelContact extends JModelItem
 		// Load the parameters.
 		$params = $app->getParams();
 		$this->setState('params', $params);
-
+					
 		$user = JFactory::getUser();
 		if ((!$user->authorise('core.edit.state', 'com_contact')) &&  (!$user->authorise('core.edit', 'com_contact'))){
 			$this->setState('filter.published', 1);

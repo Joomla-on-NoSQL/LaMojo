@@ -13,7 +13,8 @@
 
 	<!-- Add fields to the parameters object for the layout. -->
 <fields name="params">
-<fieldset name="basic" label="COM_CONTACT_DIRECTORY_OPTIONS">
+<fieldset name="basic" label="COM_CONTACT_DIRECTORY_OPTIONS"
+					addfieldpath="components/com_contact/models/fields">
 
 			<field name="spacer1" type="spacer" class="text"
 					label="COM_CONTACT_SUBSLIDER_DIRECTORY_LABEL"
@@ -96,8 +97,45 @@
 				<option value="a.sortname1">COM_CONTACT_SORTNAME1</option>
 				<option value="a.sortname2">COM_CONTACT_SORTNAME2</option>
 				<option value="a.sortname3">COM_CONTACT_SORTNAME3</option>						
-						
-			</field>											
+			</field>	
+			<field
+				name="country-select"
+				type="country"
+				label="COM_CONTACT_DIRECTORY_COUNTRY_LABEL"
+				desc="COM_CONTACT_DIRECTORY_COUNTRY_DESC"
+				cols="30"
+				default="JNONE"
+				>
+				<option value="">JNONE</option>	
+			</field>				
+			<field
+				name="state-select"
+				type="state"
+				label="COM_CONTACT_DIRECTORY_STATE_LABEL"
+				desc="COM_CONTACT_DIRECTORY_STATE_DESC"
+				cols="30"
+				default="JNONE"
+				>	
+				<option value="">JNONE</option>	
+			</field>					
+			<field
+				name="conposition-select"
+				type="conposition"
+				label="COM_CONTACT_DIRECTORY_POSITION_LABEL"
+				desc="COM_CONTACT_DIRECTORY_POSITION_DESC"
+				cols="30"
+				default="JNONE"
+				>	
+				<option value="">JNONE</option>	
+			</field>					
+			<field name="customquery"
+				label="COM_CONTACT_DIRECTORY_QUERY_LABEL"
+				description="COM_CONTACT_DIRECTORY_QUERY_DESC"				
+				type="textarea"
+				cols="30" 
+				rows="3"
+			/>	
+																	
 </fieldset>
 
 <fieldset name="advanced" label="JGLOBAL_LIST_LAYOUT_OPTIONS">

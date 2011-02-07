@@ -91,8 +91,20 @@ class ContactModelDirectory extends JModelList
 		$user	= JFactory::getUser();
 		$groups	= implode(',', $user->getAuthorisedViewLevels());
 		// Initialise variables.
-	
+		// Initialise variables.
+		$app	= JFactory::getApplication();
 		$params	= JComponentHelper::getParams('com_contact');
+				// Convert parameter fields to objects.
+		$menuParams = new JRegistry;
+
+		if ($menu = $app->getMenu()->getActive()) {
+			$menuParams->loadJSON($menu->params);
+		}
+
+		$mergedParams = clone $menuParams;
+		$mergedParams->merge($params);
+		
+	//	$params	= JComponentHelper::getParams('com_contact');
 			
 		// Create a new query object.
 		$db		= $this->getDbo();
@@ -127,7 +139,19 @@ class ContactModelDirectory extends JModelList
 		if ($this->getState('filter.language')) {
 			$query->where('a.language in (' . $db->Quote(JFactory::getLanguage()->getTag()) . ',' . $db->Quote('*') . ')');
 		}
-
+		//Filter by country
+		if ($mergedParams->get('country-select') != 'JNONE') {
+			$query->where('a.country = ' . $db->Quote($mergedParams->get('country-select')));		
+		}
+		//Filter by state
+		if ($mergedParams->get('state-select') != 'JNONE') {
+			$query->where('a.state = ' . $db->Quote($mergedParams->get('state-select')));		
+		}		
+		//Filter by position
+		if ($mergedParams->get('conposition-select') != 'JNONE') {
+			$query->where('a.con_position= ' . $db->Quote($mergedParams->get('conposition-select')));		
+		}				
+		
 		// Add the list ordering clause.
 		$query->order($params->get('sortbyfield1'),$params->get('sortbyfield2'),$params->get('sortbyfield3'));
 
@@ -146,7 +170,16 @@ class ContactModelDirectory extends JModelList
 		// Initialise variables.
 		$app	= JFactory::getApplication();
 		$params	= JComponentHelper::getParams('com_contact');
+				// Convert parameter fields to objects.
+		$menuParams = new JRegistry;
 
+		if ($menu = $app->getMenu()->getActive()) {
+			$menuParams->loadJSON($menu->params);
+		}
+
+		$mergedParams = clone $menuParams;
+		$mergedParams->merge($params);
+		$this->setState('params', $mergedParams);	
 
 		// List state information
 		$format = JRequest::getWord('format');
@@ -185,7 +218,7 @@ class ContactModelDirectory extends JModelList
 		$this->setState('filter.language',$app->getLanguageFilter());
 
 		// Load the parameters.
-		$this->setState('params', $params);
+		$this->setState('params', $mergedParams);
 	}
 	
 }
