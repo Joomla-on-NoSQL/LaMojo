@@ -53,8 +53,9 @@ abstract class JHtmlJGrid
 			JHtml::_('behavior.tooltip');
 		}
 		if ($enabled) {
-			return '<a class="jgrid'.($tip?' hasTip':'').'" href="#" onclick="return listItemTask(\''.$checkbox.$i.'\',\''.$prefix.$task.'\')" title="'.addslashes(htmlspecialchars($translate?JText::_($active_title):$active_title, ENT_COMPAT, 'UTF-8')).'"><span class="state '.$active_class.'"><span class="text">'.($translate?JText::_($text):$text).'</span></span></a>';
-		} else {
+			return '<a class="jgrid'.($tip?' hasTip':'').'" href="javascript:void(0);" onclick="return listItemTask(\''.$checkbox.$i.'\',\''.$prefix.$task.'\')" title="'.addslashes(htmlspecialchars($translate?JText::_($active_title):$active_title, ENT_COMPAT, 'UTF-8')).'"><span class="state '.$active_class.'"><span class="text">'.($translate?JText::_($text):$text).'</span></span></a>';
+		}
+		else {
 			return '<span class="jgrid'.($tip?' hasTip':'').'" title="'.addslashes(htmlspecialchars($translate?JText::_($inactive_title):$inactive_title, ENT_COMPAT, 'UTF-8')).'"><span class="state '.$inactive_class.'"><span class="text">'.($translate?JText::_($text):$text).'</span></span></span>';
 		}
 	}
@@ -258,10 +259,10 @@ abstract class JHtmlJGrid
 	public static function checkedout($i, $editorName, $time, $prefix='', $enabled=false, $checkbox='cb')
 	{
 		if (is_array($prefix)) {
-			$options			= $prefix;
-			$enabled			= array_key_exists('enabled',			$options) ? $options['enabled']				: $enabled;
-			$checkbox			= array_key_exists('checkbox',			$options) ? $options['checkbox']			: $checkbox;
-			$prefix				= array_key_exists('prefix',			$options) ? $options['prefix']				: '';
+			$options	= $prefix;
+			$enabled	= array_key_exists('enabled',	$options) ? $options['enabled']		: $enabled;
+			$checkbox	= array_key_exists('checkbox',	$options) ? $options['checkbox']	: $checkbox;
+			$prefix		= array_key_exists('prefix',	$options) ? $options['prefix']		: '';
 		}
 		$text			= addslashes(htmlspecialchars($editorName, ENT_COMPAT, 'UTF-8'));
 		$date			= addslashes(htmlspecialchars(JHTML::_('date',$time, JText::_('DATE_FORMAT_LC')), ENT_COMPAT, 'UTF-8'));
@@ -269,13 +270,7 @@ abstract class JHtmlJGrid
 		$active_title	= JText::_('JLIB_HTML_CHECKIN') 	.'::'. $text .'<br />'. $date .'<br />'. $time;
 		$inactive_title	= JText::_('JLIB_HTML_CHECKED_OUT')	.'::'. $text .'<br />'. $date .'<br />'. $time;
 
-		JHtml::_('behavior.tooltip');
-		
-		if ($enabled) {
-			return '<a class="jgrid hasTip checkedout" href="#" onclick="return Joomla.checkin(\''.$checkbox.$i.'\',\''.$prefix.'checkin\')" title="'.addslashes(htmlspecialchars($active_title, ENT_COMPAT, 'UTF-8')).'"><span class="state checkedout"><span class="text">'.(JText::_('JLIB_HTML_CHECKED_OUT')).'</span></span></a>';
-		} else {
-			return '<span class="jgrid hasTip checkedout" title="'.addslashes(htmlspecialchars($inactive_title, ENT_COMPAT, 'UTF-8')).'"><span class="state checkedout"><span class="text">'.(JText::_('JLIB_HTML_CHECKED_OUT')).'</span></span></span>';
-		}
+		return  self::action($i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'checkedout', 'checkedout', $enabled, false, $checkbox);
 	}
 
 	/**
