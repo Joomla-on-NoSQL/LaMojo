@@ -964,4 +964,60 @@ class JController extends JObject
 
 		return $this;
 	}
+
+	/**
+	 * Method to handle a send a JSON response. The data parameter
+	 * can be a JException object for when an error has occurred or
+	 * a JObject for a good response.
+	 *
+	 * @access	public
+	 * @param	object	JObject on success, JException on failure.
+	 * @return	void
+	 * @since	1.7
+	 */
+	function sendJsonResponse($response)
+	{
+		// Check if we need to send an error code.
+		if (JError::isError($response)) {
+			// Send the appropriate error code response.
+			JResponse::setHeader('status', $response->getCode());
+			JResponse::setHeader('Content-Type', 'application/json; charset=utf-8');
+			JResponse::sendHeaders();
+		}
+
+		// Send the JSON response.
+		echo json_encode(new JJsonResponse($response));
+
+		// Close the application.
+		$app = JFactory::getApplication();
+		$app->close();
+	}
+}
+
+	 /**	 
+  * Joomla Core  JSON Response Class	 
+  *	 
+  * @package             Joomla.Framework	 
+  * @subpackage  Application	 
+  * @since               1.7	 
+  */	 
+ class JJsonResponse	 
+ {	 
+	function __construct($state)	 
+	{	 
+		// The old token is invalid so send a new one.	 
+		$this->token = JUtility::getToken(true);	 
+
+		// Check if we are dealing with an error.	 
+		if (JError::isError($state)) {	 
+			// Prepare the error response.	 
+			$this->error    = true;	 
+			$this->header   = JText::_('LIB_HEADER_ERROR');	 
+			$this->message  = $state->getMessage();	 
+		} else {	 
+			// Prepare the response data.	 
+			$this->error    = false;	 
+			$this->data		= $state;	 
+		}	 
+	}
 }
