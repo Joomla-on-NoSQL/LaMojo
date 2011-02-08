@@ -16,6 +16,23 @@ Install.submitform = function(task) {
 	Joomla.submitform(task, form);
 }
 
+Install.addToggler = function () {
+	new Accordion($$('h3.moofx-toggler'), $$('div.moofx-slider'), {
+		onActive: function(toggler, i) {
+			toggler.addClass('moofx-toggler-down');
+		},
+		onBackground: function(toggler, i) {
+			toggler.removeClass('moofx-toggler-down');
+		},
+		duration: 300,
+		opacity: false,
+		alwaysHide:true,
+		show: 1
+	}); 
+};
+
+window.addEvent('domready', Install.addToggler);
+
 /**
  * Method to install sample data via AJAX request.
  */
@@ -142,22 +159,16 @@ Install.verifyFtpSettings = function(el) {
  * Method to remove the installation Folder after a successful installation.
  */
 Install.removeFolder = function(el) {
-	el = $(el);
-	var req = new Request({
+	el = document.id(el);
+	var req = new Request.JSON({
 		method: 'get',
 		url: 'index.php?'+document.id(el.form).toQueryString(),
 		data: {'task':'setup.removeFolder', 'format':'json'},
 		onRequest: function() {
 			el.set('disabled', 'disabled');
-			$('theDefaultError').setStyle('display','none');
+			document.id('theDefaultError').setStyle('display','none');
 		},
-		onComplete: function(response) {
-			try {
-				var r = JSON.decode(response);
-			} catch(e) {
-				var r = false;
-			}
-
+		onComplete: function(r) {
 			if (r) {
 				Joomla.replaceTokens(r.token);
 				if (r.error == false) {
@@ -165,15 +176,15 @@ Install.removeFolder = function(el) {
 					el.set('onclick','');
 					el.set('disabled', 'disabled');
 					filename.set('disabled', 'disabled');
-					$('jform_sample_installed').set('value','1');
+					document.id('jform_sample_installed').set('value','1');
 				} else {
-					$('theDefaultError').setStyle('display','block');
-					$('theDefaultErrorMessage').set('html', r.message);
+					document.id('theDefaultError').setStyle('display','block');
+					document.id('theDefaultErrorMessage').set('html', r.message);
 					el.set('disabled', '');
 				}
 			} else {
-				$('theDefaultError').setStyle('display','block');
-				$('theDefaultErrorMessage').set('html', response );
+				document.id('theDefaultError').setStyle('display','block');
+				document.id('theDefaultErrorMessage').set('html', response );
 				el.set('disabled', 'disabled');
 			}
 		},
@@ -181,8 +192,8 @@ Install.removeFolder = function(el) {
 			var r = JSON.decode(xhr.responseText);
 			if (r) {
 				Joomla.replaceTokens(r.token);
-				$('theDefaultError').setStyle('display','block');
-				$('theDefaultErrorMessage').set('html', r.message);
+				document.id('theDefaultError').setStyle('display','block');
+				document.id('theDefaultErrorMessage').set('html', r.message);
 			}
 			el.set('disabled', '');
 		}

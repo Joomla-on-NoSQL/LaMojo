@@ -1006,7 +1006,11 @@ class JController extends JObject
 	function __construct($state)	 
 	{	 
 		// The old token is invalid so send a new one.	 
-		$this->token = JUtility::getToken(true);	 
+		$this->token = JUtility::getToken(true);
+		
+		// Get the language and send it's code along
+		$lang = JFactory::getLanguage();
+		$this->lang = $lang->getTag();
 
 		// Check if we are dealing with an error.	 
 		if (JError::isError($state)) {	 

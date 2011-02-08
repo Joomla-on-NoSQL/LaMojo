@@ -161,19 +161,17 @@ td.item + td {
 	background: url(../images/j_divider.png) 0 100% repeat-x;
 }
 
-.step-on, .step-off, .step-grey {
+.step,
+.step-grey {
 	padding-top: 10px;
 	padding-bottom: 12px;
 	font-size: 12px;
 	font-weight: bold;
 	background: url(../images/j_divider.png) 0 100% repeat-x;
-}
-
-.step-off {
 	color: #333;
 }
 
-.step-on {
+.step.active {
 	color: #f48b06;
 }
 

@@ -47,7 +47,7 @@ class JFormFieldLanguage extends JFormFieldList
 			$native = 'en-GB';
 		}
 
-	// Get a forced language if it exists.
+		// Get a forced language if it exists.
 		$forced = $app->getLocalise();
 		if (!empty($forced['language'])) {
 			$native = $forced['language'];

@@ -8,7 +8,6 @@
 
 defined('_JEXEC') or die;
 ?>
-
 <div class="t">
 	<div class="t">
 		<div class="t"></div>
