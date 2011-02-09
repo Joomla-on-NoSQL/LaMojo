@@ -154,16 +154,17 @@ class plgSearchContent extends JPlugin
 			$case_when1 .= ' ELSE ';
 			$case_when1 .= $c_id.' END as catslug';
 
-			$query->select('a.title AS title, a.metadesc, a.metakey, a.created AS created, '
-			.'CONCAT(a.introtext, a.fulltext) AS text, c.title AS section, '
-			.$case_when.','.$case_when1.', '.'\'2\' AS browsernav');
+			$query->select('a.title AS title, a.metadesc, a.metakey, a.created AS created');
+			$query->select($query->concat(array('a.introtext', 'a.fulltext')).' AS text');
+			$query->select('c.title AS section, '.$case_when.','.$case_when1.', '.'\'2\' AS browsernav');
+			
 			$query->from('#__content AS a');
 			$query->innerJoin('#__categories AS c ON c.id=a.catid');
 			$query->where('('. $where .')' . 'AND a.state=1 AND c.published = 1 AND a.access IN ('.$groups.') '
 						.'AND c.access IN ('.$groups.') '
 						.'AND (a.publish_up = '.$db->Quote($nullDate).' OR a.publish_up <= '.$db->Quote($now).') '
 						.'AND (a.publish_down = '.$db->Quote($nullDate).' OR a.publish_down >= '.$db->Quote($now).')' );
-			$query->group('a.id');
+			$query->group('a.id, a.title, a.metadesc, a.metakey, a.created, a.introtext, a.fulltext, c.title, a.alias, c.alias, c.id');
 			$query->order($order);
 
 			// Filter by language
@@ -231,7 +232,7 @@ class plgSearchContent extends JPlugin
 
 			$db->setQuery($query, 0, $limit);
 			$list3 = $db->loadObjectList();
-
+			
 			// find an itemid for archived to use if there isn't another one
 			$item	= $app->getMenu()->getItems('link', 'index.php?option=com_content&view=archive', true);
 			$itemid = isset($item) ? '&Itemid='.$item->id : '';
