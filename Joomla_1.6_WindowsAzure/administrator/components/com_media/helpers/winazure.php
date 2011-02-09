@@ -8,6 +8,7 @@ class WinAzureHelper
 		require_once('components/com_media/includes/Microsoft/WindowsAzure/Storage.php');
 		require_once('components/com_media/includes/Microsoft/WindowsAzure/Storage/Blob.php');
 		$config = JFactory::getConfig();
+		
 		try{
 			$usePathStyleUri = false;
 			$retryPolicy = Microsoft_WindowsAzure_RetryPolicy_RetryPolicyAbstract::retryN(10, 250);
@@ -30,7 +31,7 @@ class WinAzureHelper
 		try{
 			if(self::$win_azure_conn->isValidContainerName($container))
 			{
-				if(self::$win_azure_conn->containerExists($container))
+				if(!self::$win_azure_conn->containerExists($container))
 				{
 					$result = self::$win_azure_conn->createContainer($container);
 					if($access == 'public') //default is PRIVATE
@@ -77,10 +78,10 @@ class WinAzureHelper
 		}
 	}
 
-	public static function createBlob($container)
+	public static function createBlob($container, $file_name, $file_path)
 	{
 		try{
-			self::$win_azure_conn->putBlob($container, 'test/testing/powered_by.png', 'components/com_media/helpers/powered_by.png', array("ssdsasa"=>"sdddasasa"));
+			self::$win_azure_conn->putBlob($container, $file_name, $file_path);
 		}catch (Microsoft_WindowsAzure_Exception $ex)
 		{
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";

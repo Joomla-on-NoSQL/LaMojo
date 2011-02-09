@@ -49,7 +49,10 @@ class MediaController extends JController
 
 			case 'mediaList':
 				$app	= JFactory::getApplication();
-				$mName = 'list';
+				if(JFactory::checkAzureExists())
+					$mName = 'azurelist';
+				else
+					$mName = 'list';
 				$vLayout = $app->getUserStateFromRequest('media.list.layout', 'layout', 'thumbs', 'word');
 
 				break;
@@ -77,6 +80,9 @@ class MediaController extends JController
 			$view->setModel($model, true);
 		}
 
+		if($mName == 'azuremanager')
+			$model->syncLocaltoAzure();
+		
 		// Set the layout
 		$view->setLayout($vLayout);
 

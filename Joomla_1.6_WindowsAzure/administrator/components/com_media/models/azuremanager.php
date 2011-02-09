@@ -10,6 +10,7 @@ defined('_JEXEC') or die;
 ini_set('include_path', 'components/com_media/includes');
 require_once 'components\com_media\helpers\winazure.php';
 jimport('joomla.application.component.model');
+jimport('joomla.filesystem.folder');
 
 /**
  * Media Component Manager Model
@@ -93,12 +94,15 @@ class MediaModelAzureManager extends JModel
 		
 		WinAzureHelper::initialize();
 
+		//WinAzureHelper::createFolder('sachin'); 
+		
+		//WinAzureHelper::deleteContainer('karthik');
 		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
 
 		// Get the list of folders
 		//jimport('joomla.filesystem.folder');
 		//$folders = JFolder::folders($base, '.', true, true);
-		$folders = $this->getFolders();
+		$folders = $this->getFolders($mediaBase);
 
 		$tree = array();
 		
@@ -134,13 +138,73 @@ class MediaModelAzureManager extends JModel
 		return $tree;
 	}
 	
-	private function getFolders()
+	public function getFolders($path = null)
 	{
+		// Check to make sure the path valid and clean
+		$path = JPath::clean($path);
+
+		// Is the path a folder?
+		if (!is_dir($path))
+		{
+			JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_PATH_IS_NOT_A_FOLDER_FOLDER', $path));
+			return false;
+		}
 		$containers = WinAzureHelper::listContainers();
 		foreach($containers as $container)
 		{
-			$folders[] = 'C:/xampp/htdocs/joomla_1.6_multiDB/images/'.$container->name;
+			$folders[] = $path.$container->name;
 		}
 		return $folders;
+	}
+	
+	public function syncLocaltoAzure()
+	{
+		$base = str_replace(DS, '/', COM_MEDIA_BASE);
+		
+		// Get the list of folders
+		$folders = JFolder::folders($base, '.', true, true);
+		
+		foreach($folders as $folder)
+		{
+			$folder		= str_replace(DS, '/', $folder);
+			$container_names[]	= substr($folder, strrpos($folder, '/') + 1);
+			$file_list[$folder] = JFolder::files($folder);
+		}
+		
+		WinAzureHelper::initialize();
+		
+		//Check any files in the base folder
+		$base_files = JFolder::files($base);
+		if(!empty($base_files))
+			WinAzureHelper::createFolder(substr($base, strrpos($base, '/') + 1));
+		$def_file_list[$base] = $base_files;
+		$this->createFolderFiles($def_file_list);
+		
+		//create the nested folders and their files
+		$this->createFolders($container_names);
+		$this->createFolderFiles($file_list);
+		
+	}
+	
+	public function createFolders($container_names)
+	{
+		foreach($container_names as $name)
+		{
+			WinAzureHelper::createFolder($name); 
+		}
+	}
+	
+	public function createFolderFiles($file_list)
+	{
+		foreach($file_list as $path=>$files)
+		{
+			$folder_name = substr($path, strrpos($path, '/') + 1);
+			foreach($files as $file)
+			{
+				if (is_file($path.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+					WinAzureHelper::createBlob($folder_name, $file, $path.'/'.$file); 
+				}
+			}
+		}
 	}
 }
