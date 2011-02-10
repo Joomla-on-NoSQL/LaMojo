@@ -27,7 +27,8 @@ $nullDate = substr( JDatabase::getInstance()->getNullDate(), 0, 10 );
 					<?php 
 						if( $this->item->finish_at != $nullDate ) // finish at is filled out
 							echo JFactory::getDate( $this->item->finish_at )->format( 'd.m.Y' );
-						else echo JText::_( 'COM_PROJECTS_PROJECTS_FINISH_AT_NO' ); ?>
+						else echo JText::_( 'COM_PROJECTS_PROJECTS_FINISH_AT_NO' );
+					?>
 				</span>
 			</div>
 		</div>

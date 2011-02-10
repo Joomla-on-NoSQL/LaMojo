@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 // Vars
 $params = $this->params;
 $pageClass = $this->params->get('pageclass_sfx');
+$nullDate = substr( JDatabase::getInstance()->getNullDate(), 0, 10 );
 ?>
 <div class="projects<?php echo $pageClass ?>">
     <div class="two3">
@@ -23,11 +24,17 @@ $pageClass = $this->params->get('pageclass_sfx');
 		                <div class="projects-space">
 		                	<div class="projects-both-sides">
 			                    <span><?php echo JText::_('COM_PROJECTS_FIELD_START_AT_LABEL') ?>:</span>
-			                    <span><?php echo JFactory::getDate($this->item->start_at)->toFormat('%d.%m.%Y'); ?></span>
+			                    <span><?php echo JFactory::getDate($this->item->start_at)->format('d.m.Y'); ?></span>
 		                	</div>
 		                	<div class="projects-both-sides">
 								<span><?php echo JText::_('COM_PROJECTS_FIELD_FINISH_AT_LABEL') ?>:</span>
-								<span><?php echo JFactory::getDate($this->item->finish_at)->toFormat('%d.%m.%Y'); ?></span>
+								<span>
+									<?php 
+										if( $this->item->finish_at != $nullDate ) // finish at is filled out
+											echo JFactory::getDate( $this->item->finish_at )->format( 'd.m.Y' );
+										else echo JText::_( 'COM_PROJECTS_PROJECTS_FINISH_AT_NO' );
+									?>
+								</span>
 		                    </div>
 		                </div>
 	                    <?php echo JHTML::_('tool.progressBar', $this->item->progress); ?>
