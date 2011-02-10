@@ -133,9 +133,10 @@ class ProjectsTableProject extends JTable
 		}
 		
 		// Check the publish down date is not earlier than publish up.
-		if (!empty($this->finish_at) && $this->start_at > $this->finish_at) {
+		$nullDate = substr( JDatabase::getInstance()->getNullDate(), 0, 10 );
+		if ( ( $this->finish_at != $nullDate )  && ( $this->start_at > $this->finish_at ) ) {
 			// Swap the dates.
-			$this->setError(JText::_('COM_PROJECTS_PROJECT_WARNING_PROVIDE_VALID_DATE'));
+			$this->setError( JText::_( 'COM_PROJECTS_PROJECT_WARNING_PROVIDE_VALID_DATE' ).$nullDate.'asa' );
 			return false;
 		}
 		
