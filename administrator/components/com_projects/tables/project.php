@@ -136,7 +136,7 @@ class ProjectsTableProject extends JTable
 		$nullDate = substr( JDatabase::getInstance()->getNullDate(), 0, 10 );
 		if ( ( $this->finish_at != $nullDate )  && ( $this->start_at > $this->finish_at ) ) {
 			// Swap the dates.
-			$this->setError( JText::_( 'COM_PROJECTS_PROJECT_WARNING_PROVIDE_VALID_DATE' ).$nullDate.'asa' );
+			$this->setError( JText::_( 'COM_PROJECTS_PROJECT_WARNING_PROVIDE_VALID_DATE' ) );
 			return false;
 		}
 		
