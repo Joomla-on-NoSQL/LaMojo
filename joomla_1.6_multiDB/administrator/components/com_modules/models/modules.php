@@ -145,11 +145,13 @@ class ModulesModelModules extends JModelList
 		else {
 			if ($ordering == 'ordering') {
 				$query->order('a.position ASC');
+				$ordering = 'a.ordering';
 			}
 			$query->order($ordering . ' ' . $this->getState('list.direction'));
 			if ($ordering == 'position') {
 				$query->order('a.ordering ASC');
 			}
+			
 			$result = parent::_getList($query, $limitstart, $limit);
 			$this->translate($result);
 			return $result;
