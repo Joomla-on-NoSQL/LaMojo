@@ -218,9 +218,14 @@ class ContentModelArticles extends JModelList
 		// Add the list ordering clause.
 		$orderCol	= $this->state->get('list.ordering');
 		$orderDirn	= $this->state->get('list.direction');
-		if ($orderCol == 'a.ordering' || $orderCol == 'c.title') {
+		if ($orderCol == 'a.ordering' || $orderCol == 'category_title') {
 			$orderCol = 'c.title '.$orderDirn.', a.ordering';
 		}
+		//sqlsrv change
+		if($orderCol == 'language')
+			$orderCol = 'l.title';
+		if($orderCol == 'access_level')
+			$orderCol = 'ag.title';
 		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
 
 		// echo nl2br(str_replace('#__','jos_',$query));

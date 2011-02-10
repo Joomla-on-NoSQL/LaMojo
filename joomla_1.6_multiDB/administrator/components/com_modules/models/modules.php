@@ -147,6 +147,9 @@ class ModulesModelModules extends JModelList
 				$query->order('a.position ASC');
 				$ordering = 'a.ordering';
 			}
+			if ($ordering == 'language_title') {
+				$ordering = 'l.title';
+			}
 			$query->order($ordering . ' ' . $this->getState('list.direction'));
 			if ($ordering == 'position') {
 				$query->order('a.ordering ASC');

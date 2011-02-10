@@ -122,7 +122,12 @@ class JModelList extends JModel
 			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
-
+		//sqlsrv change
+		foreach($items as $item)
+		{
+			if(isset($item->language))
+				$item->language = trim($item->language);
+		}
 		// Add the items to the internal cache.
 		$this->cache[$store] = $items;
 
