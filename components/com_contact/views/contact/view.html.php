@@ -22,9 +22,14 @@ require_once JPATH_COMPONENT.'/models/category.php';
  */
 class ContactViewContact extends JView
 {
-	protected $state;
+	protected $form;
 	protected $item;
+	protected $return_page;
+	protected $state;
+	protected $data;
+	protected $params;
 
+	
 	function display($tpl = null)
 	{
 		// Initialise variables.
@@ -33,7 +38,9 @@ class ContactViewContact extends JView
 		$dispatcher = JDispatcher::getInstance();
 		$state		= $this->get('State');
 		$item		= $this->get('Item');
-
+		$this->data		= $this->get('Data');
+		$this->form		= $this->get('Form');
+		
 		// Get Category Model data
 		if ($item) {
 			$categoryModel = JModel::getInstance('Category', 'ContactModel', array('ignore_request' => true));
@@ -79,14 +86,7 @@ class ContactViewContact extends JView
 			$item->email_to = JHtml::_('email.cloak', $item->email_to);
 		}
 
-		if ($params->get('show_street_address') || $params->get('show_suburb') || $params->get('show_state') || $params->get('show_postcode') || $params->get('show_country')) {
-			if (!empty ($item->address) || !empty ($item->suburb) || !empty ($item->state) || !empty ($item->country) || !empty ($item->postcode)) {
-				$params->set('address_check', 1);
-			}
-		}
-		else {
-			$params->set('address_check', 0);
-		}
+
 
 		// Manage the display mode for contact detail groups
 		switch ($params->get('contact_icons'))

@@ -15,17 +15,17 @@
 			size="30"			
 		/>
 
-		<field name="contact-email" 
+		<field name="contact_email" 
 			type="text"
 			id="contact-emailmsg"
 			size="30"
 			description="CONTACT_EMAIL_DESC"
 			label="JGLOBAL_EMAIL"
 			filter="string"
-			validate="email"
+			validate="contactemail"
 			required="true"
 		/>
-		<field name="contact-subject" 
+		<field name="contact_subject" 
 			type="text"
 			id="contact-emailmsg"
 			size="30"

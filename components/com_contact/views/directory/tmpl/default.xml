@@ -104,7 +104,7 @@
 				label="COM_CONTACT_DIRECTORY_COUNTRY_LABEL"
 				desc="COM_CONTACT_DIRECTORY_COUNTRY_DESC"
 				cols="30"
-				default="JNONE"
+				default="JNONE" 
 				>
 				<option value="">JNONE</option>	
 			</field>				

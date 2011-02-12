@@ -10,8 +10,10 @@
 // No direct access
 defined('_JEXEC') or die;
 
+jimport('joomla.application.component.modelform');
 jimport('joomla.application.component.modelitem');
-
+jimport('joomla.event.dispatcher');
+jimport('joomla.plugin.helper');
 /**
  * @package		Joomla.Site
  * @subpackage	com_contact
@@ -19,6 +21,11 @@ jimport('joomla.application.component.modelitem');
  */
 class ContactModelContact extends JModelItem
 {
+	/**
+	 * @since	1.6
+	 */
+	protected $view_item = 'contact';
+	
 	/**
 	 * Model context string.
 	 *
@@ -265,5 +272,171 @@ class ContactModelContact extends JModelItem
 			}
 		}
 	}
+	/**
+	 * Method to get the contact form.
+	 *
+	 * The base form is loaded from XML and then an event is fired
+	 * 
+	 *
+	 * @param	array	$data		An optional array of data for the form to interrogate.
+	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
+	 * @return	JForm	A JForm object on success, false on failure
+	 * @since	1.6
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		// Initialise variables.
+		$app = JFactory::getApplication();
+		
+		// Get the form.
+		$form = $this->loadForm('com_contact.contact', 'contact', array('control' => 'jform', 'load_data' => $loadData));
+		if (empty($form)) {
+			return false;
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Method to get the data that should be injected in the form.
+	 *
+	 * @return	mixed	The data for the form.
+	 * @since	1.6
+	 */
+	protected function loadFormData()
+	{
+		return $this->getData();
+	}
+	/**
+	 * Method to get a form object.
+	 *
+	 * @param	string		$name		The name of the form.
+	 * @param	string		$source		The form source. Can be XML string if file flag is set to false.
+	 * @param	array		$options	Optional array of options for the form creation.
+	 * @param	boolean		$clear		Optional argument to force load a new form.
+	 * @param	string		$xpath		An optional xpath to search for the fields.
+	 * @return	mixed		JForm object on success, False on error.
+	 */
+	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+	{
+		// Handle the optional arguments.
+		$options['control']	= JArrayHelper::getValue($options, 'control', false);
+
+		// Create a signature hash.
+		$hash = md5($source.serialize($options));
+
+		// Check if we can use a previously loaded form.
+		if (isset($this->_forms[$hash]) && !$clear) {
+			return $this->_forms[$hash];
+		}
+
+		// Get the form.
+		JForm::addFormPath(JPATH_COMPONENT.'/models/forms');
+		JForm::addFieldPath(JPATH_COMPONENT.'/models/fields');
+		JForm::addFieldPath(JPATH_COMPONENT.'/models/rules');
+		try {
+			$form = JForm::getInstance($name, $source, $options, false, $xpath);
+
+			if (isset($options['load_data']) && $options['load_data']) {
+				// Get the data for the form.
+				$data = $this->loadFormData();
+			} else {
+				$data = array();
+			}
+
+			// Allow for additional modification of the form, and events to be triggered.
+			// We pass the data because plugins may require it.
+			$this->preprocessForm($form, $data);
+
+			// Load the data into the form after the plugins have operated.
+			$form->bind($data);
+
+		} catch (Exception $e) {
+			$this->setError($e->getMessage());
+			return false;
+		}
+
+		// Store the form for later.
+		$this->_forms[$hash] = $form;
+
+		return $form;
+	}
+	
+	function &getData()
+	{
+		$user = JFactory::getUser();
+		$data = new stdClass();
+
+
+
+
+		return $data;
+	}
+	/**
+	 * Method to allow derived classes to preprocess the form.
+	 *
+	 * @param	object	A form object.
+	 * @param	mixed	The data expected for the form.
+	 * @param	string	The name of the plugin group to import (defaults to "content").
+	 * @throws	Exception if there is an error in the form event.
+	 * @since	1.6
+	 */
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		// Import the approriate plugin group.
+		JPluginHelper::importPlugin($group);
+
+		// Get the dispatcher.
+		$dispatcher	= JDispatcher::getInstance();
+
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onContentPrepareForm', array($form, $data));
+
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true)) {
+			// Get the last error.
+			$error = $dispatcher->getError();
+
+			// Convert to a JException if necessary.
+			if (!JError::isError($error)) {
+				throw new Exception($error);
+			}
+		}
+	}
+
+	/**
+	 * Method to validate the form data.
+	 *
+	 * @param	object		$form		The form to validate against.
+	 * @param	array		$data		The data to validate.
+	 * @return	mixed		Array of filtered data if valid, false otherwise.
+	 * @since	1.1
+	 */
+	function validate($form, $data)
+	{
+		// Filter and validate the form data.
+		$data	= $form->filter($data);
+		$return	= $form->validate($data);
+
+		// Check for an error.
+		if (JError::isError($return)) {
+			$this->setError($return->getMessage());
+			return false;
+		}
+
+		// Check the validation results.
+		if ($return === false) {
+			// Get the validation messages from the form.
+			foreach ($form->getErrors() as $message) {
+				$this->setError(JText::_($message));
+			}
+
+			return false;
+		}
+
+		return $data;
+	}
+	
+	
 }
 
