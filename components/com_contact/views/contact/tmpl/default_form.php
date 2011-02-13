@@ -34,7 +34,7 @@ JHtml::_('behavior.formvalidation');
 						<dt>
 						<?php echo $field->label; ?>
 						<?php if (!$field->required && (!$field->type == "spacer")): ?>
-							<span class="optional"><?php echo JText::_('COM_USERS_OPTIONAL');?></span>
+							<span class="optional"><?php echo JText::_('COM_CONTACT_OPTIONAL');?></span>
 						<?php endif; ?>
 						</dt>
 						<dd><?php echo $field->input;?></dd>
