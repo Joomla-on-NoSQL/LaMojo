@@ -33,7 +33,8 @@ class ContactControllerContact extends JControllerForm
 		// Initialise variables.
 		$app	= JFactory::getApplication();
 		$model	= $this->getModel('contact');
-		$id 	= (int) $app->getUserState('com_contact.contact.id');
+		//$id 	= (int) $app->getUserState('com_contact.contact.id');
+		$id		= JRequest::getVar('id');
 		
 		// Get the data from POST
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
@@ -58,7 +59,7 @@ class ContactControllerContact extends JControllerForm
 
 		// Validate the posted data.
 		$validate = $model->validate($form,$data);
-		
+				
 		if ($validate === false) {
 			// Get the validation messages.
 			$errors	= $model->getErrors();
