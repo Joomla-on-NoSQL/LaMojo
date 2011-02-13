@@ -33,8 +33,23 @@ class ContactControllerContact extends JControllerForm
 		// Initialise variables.
 		$app	= JFactory::getApplication();
 		$model	= $this->getModel('contact');
+		$params = JComponentHelper::getParams('com_contact');
 		//$id 	= (int) $app->getUserState('com_contact.contact.id');
-		$id		= JRequest::getVar('id');
+		$id		= JRequest::getInt('id');
+		
+		// check for a valid session cookie
+		if($params->get('validate_session', 0)){
+			if(JFactory::getSession()->getState() != 'active'){
+				JError::raiseWarning(403, JText::_('COM_CONTACT_SESSION_INVALID'));
+				
+				// Save the data in the session.
+				$app->setUserState('com_contact.contact.data', $data);
+				
+				// Redirect back to the contact form.
+				$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false));
+				return false;
+			}
+		}
 		
 		// Get the data from POST
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
