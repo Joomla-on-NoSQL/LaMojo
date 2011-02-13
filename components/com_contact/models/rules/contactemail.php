@@ -11,6 +11,8 @@ defined('JPATH_BASE') or die;
 
 jimport('joomla.form.formrule');
 
+require_once 'libraries/joomla/form/rules/email.php';
+
 /**
  * Form Rule class for the Joomla Framework.
  *
@@ -18,7 +20,7 @@ jimport('joomla.form.formrule');
  * @subpackage	Form
  * @since		1.6
  */
-class JFormRuleEmailContact extends JFormRuleEmail
+class JFormRuleContactEmail extends JFormRuleEmail
 {
 	/**
 	 * The regular expression to use in testing a form field value.
@@ -60,9 +62,10 @@ class JFormRuleEmailContact extends JFormRuleEmail
 		}
 
 		// Get params and component configurations
+		$app = JFactory::getApplication();
 		$params = new JRegistry;
 		$params->loadJSON($contact->params);
-		$pparams	= $app->getParams('com_contact');
+		$pparams = $app->getParams('com_contact');
 		
 			// Determine banned emails
 		$configEmail	= $pparams->get('banned_email', '');
@@ -74,7 +77,28 @@ class JFormRuleEmailContact extends JFormRuleEmail
 			$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT', JText::_('JGLOBAL_EMAIL')));
 			return false;
 		}
-
+		return true;
+	}
+	
+	/**
+	 * Checks $text for values contained in the array $array, and sets error message if true...
+	 *
+	 * @param String	$text		Text to search against
+	 * @param String	$list		semicolon (;) seperated list of banned values
+	 * @return Boolean
+	 * @access protected
+	 * @since 1.5.4
+	 */
+	private function _checkText($text, $list) {
+		if (empty($list) || empty($text)) return true;
+		$array = explode(';', $list);
+		foreach ($array as $value) {
+			$value = trim($value);
+			if (empty($value)) continue;
+			if (JString::stristr($text, $value) !== false) {
+				return false;
+			}
+		}
 		return true;
 	}
 }

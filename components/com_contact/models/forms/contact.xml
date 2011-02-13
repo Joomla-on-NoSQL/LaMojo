@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	<fieldset name="contact">
-		<field name="name" type="text" 
-		 id="contact-formname" 
-		 size="30" 
-		 class="inputbox" 
-		 required="true"
+	<fieldset name="contact" addrulepath="components/com_contact/models/rules">
+		<field name="contact_name" 
+			type="text"
+			id="contact-name"
+			size="30"
+			description="COM_CONTACT_CONTACT_NAME_DESC"
+			label="COM_CONTACT_CONTACT_NAME_LABEL"
+			filter="string"
+			required="true"
 		/>
-
-		<field name="email_to" 
-			type="hidden"
-			description="CONTACT_INFORMATION_EMAIL_DESC"
-			label="CONTACT_INFORMATION_EMAIL_LABEL"
-			size="30"			
-		/>
-
 		<field name="contact_email" 
 			type="text"
-			id="contact-emailmsg"
+			id="contact-email"
 			size="30"
-			description="CONTACT_EMAIL_DESC"
-			label="JGLOBAL_EMAIL"
+			description="COM_CONTACT_CONTACT_EMAIL_DESC"
+			label="COM_CONTACT_CONTACT_EMAIL_LABEL"
 			filter="string"
 			validate="contactemail"
 			required="true"
@@ -28,40 +23,29 @@
 		<field name="contact_subject" 
 			type="text"
 			id="contact-emailmsg"
-			size="30"
+			size="60"
 			description="COM_CONTACT_CONTACT_MESSAGE_SUBJECT_DESC"
-			label="COM_CONTACT_CONTACT_MESSAGE_SUBJECT_DESC"
+			label="COM_CONTACT_CONTACT_MESSAGE_SUBJECT_LABEL"
 			filter="string"
 			required="true"
 			vadiate="emailsubject"
 		/>
-		<field name="contact-msg" 
-			type="text"
-			id="contact-emailmsg"
-			size="30"
+		<field name="contact_message" 
+			type="textarea"
+			cols="50"
+			rows="10"
+			id="contact_message"
 			description="COM_CONTACT_CONTACT_MESSAGE_DESC"
 			label="COM_CONTACT_CONTACT_MESSAGE_MESSAGE_LABEL"
 			filter="htmlsafe"
 			required="true"
 		/>
-		<field name="contact-text" 
-			type="textarea"
-			id="contact-emailmsg"
-			cols="50"
-			rows="10"
-			description="COM_CONTACT_CONTACT_MESSAGE_TEXT_DESC"
-			label="COM_CONTACT_CONTACT_MESSAGE_TEXT_DESC"
-			filter="string"
-			required="true"
-		/>
-		<field name="email_copy" 
+		<field name="contact_email_copy" 
 			type="checkbox"
-			id="contact-email-copy"
+			id="contact_email_copy"
 			description="COM_CONTACT_CONTACT_EMAIL_A_COPY_DESC"
 			label="COM_CONTACT_CONTACT_EMAIL_A_COPY_LABEL"
 			default="1"
 		/>		
-
-		</fieldset>
-
+	</fieldset>
 </form>

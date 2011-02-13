@@ -21,103 +21,139 @@ class ContactControllerContact extends JControllerForm
 	 */
 	protected $view_item = 'contact';
 	
-
-	/**
-	 * Validates some inputs based on component configuration
-	 *
-	 * @param Object	$contact	JTable Object
-	 * @param String	$email		Email address
-	 * @param String	$subject	Email subject
-	 * @param String	$body		Email body
-	 * @return Boolean
-	 * @access protected
-	 * @since 1.5
-	 */
-	function _validateInputs($contact, $email, $subject, $body)
+	public function getModel($name = '', $prefix = '', $config = array('ignore_request' => true))
 	{
+		return parent::getModel($name, $prefix, array('ignore_request' => false));
+	}
+
+	public function submit(){
+		// Check for request forgeries.
+		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		// Initialise variables.
 		$app	= JFactory::getApplication();
-		$session = JFactory::getSession();
+		$model	= $this->getModel('contact');
+		$id 	= (int) $app->getUserState('com_contact.contact.id');
+		
+		// Get the data from POST
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		
+		$contact = $model->getItem($id);
+		if ($contact->email_to == '' && $contact->user_id != 0)
+		{
+			$contact_user = JUser::getInstance($contact->user_id);
+			$contact->email_to = $contact_user->get('email');
+		}
+		
+		// Contact plugins
+		JPluginHelper::importPlugin('contact');
+		$dispatcher	= JDispatcher::getInstance();
 
-		// Get params and component configurations
-		$params = new JRegistry;
-		$params->loadJSON($contact->params);
-		$pparams	= $app->getParams('com_contact');
+		// Validate the posted data.
+		$form = $model->getForm();
+		if (!$form) {
+			JError::raiseError(500, $model->getError());
+			return false;
+		}
 
-		// check for session cookie
-	//	$sessionCheck	= $pparams->get('validate_session', 1);
-	//	$sessionName	= $session->getName();
-	/*	if  ($sessionCheck) {
-			if (!isset($_COOKIE[$sessionName])) {
-				$this->setError(JText::_('JERROR_ALERTNOAUTHOR'));
+		// Validate the posted data.
+		$validate = $model->validate($form,$data);
+		
+		if ($validate === false) {
+			// Get the validation messages.
+			$errors	= $model->getErrors();
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+				if (JError::isError($errors[$i])) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+			
+			// Save the data in the session.
+			$app->setUserState('com_contact.contact.data', $data);
+			
+			// Redirect back to the contact form.
+			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false));
+			return false;
+		}
+		
+		// Validation succeeded, continue with custom handlers
+		$results	= $dispatcher->trigger('onValidateContact', array(&$contact, &$data));
+		foreach ($results as $result)
+		{
+			if (JError::isError($result)) {
 				return false;
 			}
 		}
-*/
-		// Determine banned emails
-		//$configEmail	= $pparams->get('banned_email', '');
-		//$paramsEmail	= $params->get('banned_mail', '');
-		//$bannedEmail	= $configEmail . ($paramsEmail ? ';'.$paramsEmail : '');
+		
+		// Passed Validation: Process the contact plugins to integrate with other applications
+		$results	= $dispatcher->trigger('onSubmitContact', array(&$contact, &$post));
+		
+		$default	= JText::sprintf('MAILENQUIRY', $SiteName);
+		$name		= $data['contact_name'];
+		$email		= $data['contact_email'];
+		$subject	= $data['contact_subject'];
+		$body		= $data['contact_message'];
+		$emailCopy	= (int)$data['contact_email_copy'];
+		
+		// Send the email
+		$pparams = $app->getParams('com_contact');
+		if (!$pparams->get('custom_reply'))
+		{
+			$MailFrom	= $app->getCfg('mailfrom');
+			$FromName	= $app->getCfg('fromname');
 
-		// Prevent form submission if one of the banned text is discovered in the email field
-	//	if (false === $this->_checkText($email, $bannedEmail)) {
-	//		$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT', JText::_('JGLOBAL_EMAIL')));
-	//		return false;
-	//	}
+			// Prepare email body
+			$prefix = JText::sprintf('COM_CONTACT_ENQUIRY_TEXT', JURI::base());
+			$body	= $prefix."\n".$name.' <'.$email.'>'."\r\n\r\n".stripslashes();
 
-		// Determine banned subjects
-	/*	$configSubject	= $pparams->get('banned_subject', '');
-		$paramsSubject	= $params->get('banned_subject', '');
-		$bannedSubject	= $configSubject . ($paramsSubject ? ';'.$paramsSubject : '');
+			$mail = JFactory::getMailer();
+			$mail->addRecipient($contact->email_to);
+			$mail->setSender(array($email, $name));
+			$mail->setSubject($FromName.': '.$subject);
+			$mail->setBody($body);
+			$sent = $mail->Send();
 
-		// Prevent form submission if one of the banned text is discovered in the subject field
-		if (false === $this->_checkText($subject, $bannedSubject)) {
-			$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT',JText::_('COM_CONTACT_CONTACT_MESSAGE_SUBJECT')));
-			return false;
-		}
+			//If we are supposed to copy the admin, do so.
+			$params = new JRegistry($contact->params);
+			$emailcopyCheck = $params->get('show_email_copy', 0);
 
-		// Determine banned Text
-		$configText		= $pparams->get('banned_text', '');
-		$paramsText		= $params->get('banned_text', '');
-		$bannedText	= $configText . ($paramsText ? ';'.$paramsText : '');
+			// check whether email copy function activated
+			if ($emailCopy && $emailcopyCheck)
+			{
+				$copyText		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $SiteName);
+				$copyText		.= "\r\n\r\n".$body;
+				$copySubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
 
-		// Prevent form submission if one of the banned text is discovered in the text field
-		if (false === $this->_checkText($body, $bannedText)) {
-			$this->setError(JText::sprintf('COM_CONTACT_EMAIL_BANNEDTEXT', JText::_('COM_CONTACT_CONTACT_ENTER_MESSAGE')));
-			return false;
-		}
+				$mail = JFactory::getMailer();
 
-		// test to ensure that only one email address is entered
-		$check = explode('@', $email);
-		if (strpos($email, ';') || strpos($email, ',') || strpos($email, ' ') || count($check) > 2) {
-			$this->setError(JText::_('COM_CONTACT_NOT_MORE_THAN_ONE_EMAIL_ADDRESS', true));
-			return false;
-		}
+				$mail->addRecipient($email);
+				$mail->setSender(array($MailFrom, $FromName));
+				$mail->setSubject($copySubject);
+				$mail->setBody($copyText);
 
-		return true;*/
-	}
-public function getModel($name = '', $prefix = '', $config = array('ignore_request' => false))
-	{
-		return parent::getModel($name, $prefix, $config);
-	}
-	/**
-	 * Checks $text for values contained in the array $array, and sets error message if true...
-	 *
-	 * @param String	$text		Text to search against
-	 * @param String	$list		semicolon (;) seperated list of banned values
-	 * @return Boolean
-	 * @access protected
-	 * @since 1.5.4
-	 */
-	function _checkText($text, $list) {
-		if (empty($list) || empty($text)) return true;
-		$array = explode(';', $list);
-		foreach ($array as $value) {
-			$value = trim($value);
-			if (empty($value)) continue;
-			if (JString::stristr($text, $value) !== false) {
-				return false;
+				$sent = $mail->Send();
 			}
 		}
+
+		if (!JError::isError($sent)) {
+			$msg = JText::_('COM_CONTACT_EMAIL_THANKS');
+		}
+		
+		// Flush the data from the session
+		$app->setUserState('com_contact.contact.data', null);
+		
+		//redirect if it is set
+		if ($contact->params->get('redirect')){
+			$link=$contact->params->get('redirect');
+			$this->setRedirect($link, $msg);
+		} else {
+			// stay on the same  contact page
+			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false));
+		}
+
 		return true;
 	}
 }

@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.keepalive');
 JHtml::_('behavior.formvalidation');
 
-
  if (isset($this->error)) : ?>
 	<div class="contact-error">
 		<?php echo $this->error; ?>
@@ -19,39 +18,41 @@ JHtml::_('behavior.formvalidation');
 <?php endif; ?>
 
 <div class="contact-form">
-	<form id="emailForm" action="<?php echo JRoute::_('index.php?option=com_contact&task=contact.submit'); ?>" method="post" class="form-validate">
-
- 	
-			<div class="formelm">
-				<?php echo $this->form->getLabel('contact_email'); ?>
-				<?php echo $this->form->getInput('contact_email'); ?>
-			</div>
-		
-			<div>
-				<?php echo $this->form->getLabel('contact_subject'); ?>
-				<?php echo $this->form->getInput('contact_subject'); ?>
-			</div>
-			<div>
-				<?php echo $this->form->getLabel('contact-text'); ?>
-				<?php echo $this->form->getInput('contact-text'); ?>
-			</div>
-
-			<?php if ($this->params->get('show_email_copy')) : ?>
-			<div>
-				<?php echo $this->form->getLabel('email_copy'); ?>
-				<?php echo $this->form->getInput('email_copy'); ?>
-
-			</div>
-			<?php endif; ?>
+	<form id="emailForm" action="<?php echo JRoute::_('index.php'); ?>" method="post" class="form-validate">
+	
+		<div class="formelm">
+			<?php echo $this->form->getLabel('contact_name'); ?>
+			<?php echo $this->form->getInput('contact_name'); ?>
+		</div>
+	
+		<div class="formelm">
+			<?php echo $this->form->getLabel('contact_email'); ?>
+			<?php echo $this->form->getInput('contact_email'); ?>
+		</div>
 			
-				<button class="button validate" type="submit"><?php echo JText::_('COM_CONTACT_CONTACT_SEND'); ?></button>
-			</div>
+		<div class="formelm">
+			<?php echo $this->form->getLabel('contact_subject'); ?>
+			<?php echo $this->form->getInput('contact_subject'); ?>
+		</div>
+		
+		<div class="formelm">
+			<?php echo $this->form->getLabel('contact_message'); ?>
+			<?php echo $this->form->getInput('contact_message'); ?>
+		</div>
 
+		<?php if ($this->params->get('show_email_copy')) : ?>
+		<div class="formelm">
+			<?php echo $this->form->getLabel('contact_email_copy'); ?>
+			<?php echo $this->form->getInput('contact_email_copy'); ?>
+		</div>
+		<?php endif; ?>
+		<div>
+			<button class="button validate" type="submit"><?php echo JText::_('COM_CONTACT_CONTACT_SEND'); ?></button>
+		</div>
+
+		<input type="hidden" name="option" value="com_contact" />
 		<input type="hidden" name="task" value="contact.submit" />
 		<input type="hidden" name="return" value="<?php echo $this->return_page;?>" />
 		<?php echo JHTML::_( 'form.token' ); ?>
-		<?php echo JHtml::_('form.token'); ?>
-		</div>
-<?php   ?>
 	</form>
 </div>
