@@ -331,6 +331,7 @@ class ContactModelContact extends JModelItem
 		}
 
 		// Get the form.
+		jimport('joomla.form.form');		
 		JForm::addFormPath(JPATH_COMPONENT.'/models/forms');
 		JForm::addFieldPath(JPATH_COMPONENT.'/models/fields');
 		JForm::addFieldPath(JPATH_COMPONENT.'/models/rules');
@@ -367,9 +368,6 @@ class ContactModelContact extends JModelItem
 		$user = JFactory::getUser();
 		$data = new stdClass();
 
-
-
-
 		return $data;
 	}
 	/**
@@ -402,37 +400,7 @@ class ContactModelContact extends JModelItem
 				throw new Exception($error);
 			}
 		}
-	}
 
-	/**
-	 * Method to validate the form data.
-	 *
-	 * @param	object		$form		The form to validate against.
-	 * @param	array		$data		The data to validate.
-	 * @return	mixed		Array of filtered data if valid, false otherwise.
-	 * @since	1.1
-	 */
-	function validate($form, $data)
-	{
-		// Filter and validate the form data.
-		$data	= $form->filter($data);
-		$return	= $form->validate($data);
-
-		// Check for an error.
-		if (JError::isError($return)) {
-			$this->setError($return->getMessage());
-			return false;
-		}
-
-		// Check the validation results.
-		if ($return === false) {
-			// Get the validation messages from the form.
-			foreach ($form->getErrors() as $message) {
-				$this->setError(JText::_($message));
-			}
-
-			return false;
-		}
 
 		return $data;
 	}

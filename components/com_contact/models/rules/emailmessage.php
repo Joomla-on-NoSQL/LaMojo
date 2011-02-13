@@ -1,27 +1,4 @@
 <?php
-/**
- * @version
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- */
-
-// no direct access
-defined('_JEXEC') or die;
-
-jimport('joomla.application.component.controller');
-jimport('joomla.application.component.controllerform');
-/**
- * @package		Joomla.Site
- * @subpackage	com_content
- */
-class ContactControllerContact extends JControllerForm
-{
-	/**
-	 * @since	1.6
-	 */
-	protected $view_item = 'contact';
-	
-
 	/**
 	 * Validates some inputs based on component configuration
 	 *
@@ -95,29 +72,3 @@ class ContactControllerContact extends JControllerForm
 
 		return true;*/
 	}
-public function getModel($name = '', $prefix = '', $config = array('ignore_request' => false))
-	{
-		return parent::getModel($name, $prefix, $config);
-	}
-	/**
-	 * Checks $text for values contained in the array $array, and sets error message if true...
-	 *
-	 * @param String	$text		Text to search against
-	 * @param String	$list		semicolon (;) seperated list of banned values
-	 * @return Boolean
-	 * @access protected
-	 * @since 1.5.4
-	 */
-	function _checkText($text, $list) {
-		if (empty($list) || empty($text)) return true;
-		$array = explode(';', $list);
-		foreach ($array as $value) {
-			$value = trim($value);
-			if (empty($value)) continue;
-			if (JString::stristr($text, $value) !== false) {
-				return false;
-			}
-		}
-		return true;
-	}
-}

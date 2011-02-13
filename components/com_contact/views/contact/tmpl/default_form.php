@@ -23,20 +23,13 @@ JHtml::_('behavior.formvalidation');
 
  	
 			<div class="formelm">
-				<?php echo $this->form->getLabel('contact-email'); ?>
-				<?php echo $this->form->getInput('contact-email'); ?>
+				<?php echo $this->form->getLabel('contact_email'); ?>
+				<?php echo $this->form->getInput('contact_email'); ?>
 			</div>
 		
 			<div>
-		
-				<label id="contact-emailmsg" for="contact-email">
-					<?php echo JText::_('JGLOBAL_EMAIL');?>
-				</label>
-				<input type="text" id="contact-email" name="email" size="30" value="" class="inputbox required validate-email" maxlength="100" />
-			</div>
-			<div>
-				<?php echo $this->form->getLabel('contact-subject'); ?>
-				<?php echo $this->form->getInput('contact-subject'); ?>
+				<?php echo $this->form->getLabel('contact_subject'); ?>
+				<?php echo $this->form->getInput('contact_subject'); ?>
 			</div>
 			<div>
 				<?php echo $this->form->getLabel('contact-text'); ?>
