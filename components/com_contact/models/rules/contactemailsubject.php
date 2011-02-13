@@ -18,32 +18,11 @@ class JFormRuleContactEmailSubject extends JFormRule
 		$params = JComponentHelper::getParams('com_contact');
 		$banned = $params->get('banned_subject');
 
-		if (false === $this->_checkText($value, $banned)) {
-			return false;
+		foreach(explode(';', $banned) as $item){
+			if (JString::stristr($item, $value) !== false)
+					return false;
 		}
 		
-		return true;
-	}
-	
-	/**
-	 * Checks $text for values contained in the array $array, and sets error message if true...
-	 *
-	 * @param String	$text		Text to search against
-	 * @param String	$list		semicolon (;) seperated list of banned values
-	 * @return Boolean
-	 * @access protected
-	 * @since 1.5.4
-	 */
-	private function _checkText($text, $list) {
-		if (empty($list) || empty($text)) return true;
-		$array = explode(';', $list);
-		foreach ($array as $value) {
-			$value = trim($value);
-			if (empty($value)) continue;
-			if (JString::stristr($text, $value) !== false) {
-				return false;
-			}
-		}
 		return true;
 	}
 }
