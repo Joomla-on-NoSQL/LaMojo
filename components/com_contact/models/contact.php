@@ -26,6 +26,8 @@ class ContactModelContact extends JModelForm
 	 */
 	protected $view_item = 'contact';
 	
+	protected $_item = null;
+	
 	/**
 	 * Model context string.
 	 *
