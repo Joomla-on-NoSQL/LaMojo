@@ -1,19 +1,18 @@
 <?php
 /**
- * @version
+ * @version		$Id$
+ * @package		Joomla.Site
+ * @subpackage	Contact
  * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// no direct access
-defined('_JEXEC') or die;
+defined('JPATH_BASE') or die;
 
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.controllerform');
-/**
- * @package		Joomla.Site
- * @subpackage	com_content
- */
+
+
 class ContactControllerContact extends JControllerForm
 {
 	/**
