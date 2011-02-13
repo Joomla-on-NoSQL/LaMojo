@@ -77,6 +77,12 @@ class ContactModelContact extends JModelForm
 		if (empty($form)) {
 			return false;
 		}
+		
+		$params = $this->getState('params');
+		if(!$params->get('show_email_copy', 0)){
+			$form->removeField('contact_email_copy');
+		}
+		
 		return $form;
 	}
 	
