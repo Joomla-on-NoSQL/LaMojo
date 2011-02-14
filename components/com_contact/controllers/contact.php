@@ -19,8 +19,8 @@ class ContactControllerContact extends JControllerForm
 		return parent::getModel($name, $prefix, array('ignore_request' => false));
 	}
 
-	public function submit(){
-		
+	public function submit()
+	{
 		// Check for request forgeries.
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
@@ -28,11 +28,10 @@ class ContactControllerContact extends JControllerForm
 		$app	= JFactory::getApplication();
 		$model	= $this->getModel('contact');
 		$params = JComponentHelper::getParams('com_contact');
-		//$id 	= (int) $app->getUserState('com_contact.contact.id');
 		$id		= JRequest::getInt('id');
 		
 		// Check for a valid session cookie
-		if($params->get('validate_session', 0)){
+		if($params->get('validate_session', 0)) {
 			if(JFactory::getSession()->getState() != 'active'){
 				JError::raiseWarning(403, JText::_('COM_CONTACT_SESSION_INVALID'));
 				
@@ -49,7 +48,7 @@ class ContactControllerContact extends JControllerForm
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
 		
 		$contact = $model->getItem($id);
-		if ($contact->email_to == '' && $contact->user_id != 0){
+		if ($contact->email_to == '' && $contact->user_id != 0) {
 			$contact_user = JUser::getInstance($contact->user_id);
 			$contact->email_to = $contact_user->get('email');
 		}
@@ -90,8 +89,7 @@ class ContactControllerContact extends JControllerForm
 		// Validation succeeded, continue with custom handlers
 		$results	= $dispatcher->trigger('onValidateContact', array(&$contact, &$data));
 		
-		foreach ($results as $result)
-		{
+		foreach ($results as $result) {
 			if (JError::isError($result)) {
 				return false;
 			}
@@ -101,62 +99,73 @@ class ContactControllerContact extends JControllerForm
 		$results = $dispatcher->trigger('onSubmitContact', array(&$contact, &$post));
 		
 		// Send the email
-		if (!$params->get('custom_reply'))
-		{
-			$default	= JText::sprintf('MAILENQUIRY', $SiteName);
-			$name		= $data['contact_name'];
-			$email		= $data['contact_email'];
-			$subject	= $data['contact_subject'];
-			$body		= $data['contact_message'];
-			$emailCopy	= (int)$data['contact_email_copy'];
-			
-			$MailFrom	= $app->getCfg('mailfrom');
-			$FromName	= $app->getCfg('fromname');
-
-			// Prepare email body
-			$prefix = JText::sprintf('COM_CONTACT_ENQUIRY_TEXT', JURI::base());
-			$body	= $prefix."\n".$name.' <'.$email.'>'."\r\n\r\n".stripslashes();
-
-			$mail = JFactory::getMailer();
-			$mail->addRecipient($contact->email_to);
-			$mail->setSender(array($email, $name));
-			$mail->setSubject($FromName.': '.$subject);
-			$mail->setBody($body);
-			$sent = $mail->Send();
-
-			//If we are supposed to copy the admin, do so.
-			$emailcopyCheck = $params->get('show_email_copy', 0);
-
-			// check whether email copy function activated
-			if ($emailCopy && $emailcopyCheck)
-			{
-				$copyText		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $default);
-				$copyText		.= "\r\n\r\n".$body;
-				$copySubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
-
-				$mail = JFactory::getMailer();
-				$mail->addRecipient($email);
-				$mail->setSender(array($MailFrom, $FromName));
-				$mail->setSubject($copySubject);
-				$mail->setBody($copyText);
-				$sent = $mail->Send();
-			}
+		$sent = false;
+		if (!$params->get('custom_reply')) {
+			$sent = $this->_sendEmail($data, $contact);
 		}
-
+		
+		// Set the success message if it was a success
 		if (!JError::isError($sent)) {
 			$msg = JText::_('COM_CONTACT_EMAIL_THANKS');
 		}
-		
+
 		// Flush the data from the session
 		$app->setUserState('com_contact.contact.data', null);
 		
 		// Redirect if it is set in the parameters, otherwise redirect back to where we came from
-		if ($contact->params->get('redirect')){
+		if ($contact->params->get('redirect')) {
 			$this->setRedirect($contact->params->get('redirect'), $msg);
 		} else {
 			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false), $msg);
 		}
 
 		return true;
+	}
+	
+	private function _sendEmail($data, $contact)
+	{
+			$app		= JFactory::getApplication();
+			$params 	= JComponentHelper::getParams('com_contact');
+			
+			$mailfrom	= $app->getCfg('mailfrom');
+			$fromname	= $app->getCfg('fromname');
+			$sitename	= $app->getCfg('sitename');
+		
+			$default	= JText::sprintf('COM_CONTACT_ENQUIRY', $sitename);
+			$name		= $data['contact_name'];
+			$email		= $data['contact_email'];
+			$subject	= $data['contact_subject'];
+			$body		= $data['contact_message'];
+			$emailcopy	= JArrayHelper::getValue($data, 'contact_email_copy', 0, 'int');
+			
+			// Prepare email body
+			$prefix = JText::sprintf('COM_CONTACT_ENQUIRY_TEXT', JURI::base());
+			$body	= $prefix."\n".$name.' <'.$email.'>'."\r\n\r\n".stripslashes($body);
+
+			$mail = JFactory::getMailer();
+			$mail->addRecipient($contact->email_to);
+			$mail->setSender(array($email, $name));
+			$mail->setSubject($fromname.': '.$subject);
+			$mail->setBody($body);
+			$sent = $mail->Send();
+
+			//If we are supposed to copy the admin, do so.
+			$emailcopycheck = $params->get('show_email_copy', 0);
+
+			// check whether email copy function activated
+			if ($emailcopy && $emailcopycheck) {
+				$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $default);
+				$copytext		.= "\r\n\r\n".$body;
+				$copysubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
+
+				$mail = JFactory::getMailer();
+				$mail->addRecipient($email);
+				$mail->setSender(array($mailfrom, $fromname));
+				$mail->setSubject($copysubject);
+				$mail->setBody($copytext);
+				$sent = $mail->Send();
+			}
+
+			return $sent;
 	}
 }
