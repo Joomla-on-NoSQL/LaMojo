@@ -12,20 +12,15 @@ defined('JPATH_BASE') or die;
 jimport('joomla.application.component.controller');
 jimport('joomla.application.component.controllerform');
 
-
 class ContactControllerContact extends JControllerForm
 {
-	/**
-	 * @since	1.6
-	 */
-	protected $view_item = 'contact';
-	
 	public function getModel($name = '', $prefix = '', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, array('ignore_request' => false));
 	}
 
 	public function submit(){
+		
 		// Check for request forgeries.
 		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
@@ -36,7 +31,7 @@ class ContactControllerContact extends JControllerForm
 		//$id 	= (int) $app->getUserState('com_contact.contact.id');
 		$id		= JRequest::getInt('id');
 		
-		// check for a valid session cookie
+		// Check for a valid session cookie
 		if($params->get('validate_session', 0)){
 			if(JFactory::getSession()->getState() != 'active'){
 				JError::raiseWarning(403, JText::_('COM_CONTACT_SESSION_INVALID'));
@@ -54,8 +49,7 @@ class ContactControllerContact extends JControllerForm
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
 		
 		$contact = $model->getItem($id);
-		if ($contact->email_to == '' && $contact->user_id != 0)
-		{
+		if ($contact->email_to == '' && $contact->user_id != 0){
 			$contact_user = JUser::getInstance($contact->user_id);
 			$contact->email_to = $contact_user->get('email');
 		}
@@ -71,7 +65,6 @@ class ContactControllerContact extends JControllerForm
 			return false;
 		}
 
-		// Validate the posted data.
 		$validate = $model->validate($form,$data);
 				
 		if ($validate === false) {
@@ -96,6 +89,7 @@ class ContactControllerContact extends JControllerForm
 		
 		// Validation succeeded, continue with custom handlers
 		$results	= $dispatcher->trigger('onValidateContact', array(&$contact, &$data));
+		
 		foreach ($results as $result)
 		{
 			if (JError::isError($result)) {
@@ -104,19 +98,18 @@ class ContactControllerContact extends JControllerForm
 		}
 		
 		// Passed Validation: Process the contact plugins to integrate with other applications
-		$results	= $dispatcher->trigger('onSubmitContact', array(&$contact, &$post));
-		
-		$default	= JText::sprintf('MAILENQUIRY', $SiteName);
-		$name		= $data['contact_name'];
-		$email		= $data['contact_email'];
-		$subject	= $data['contact_subject'];
-		$body		= $data['contact_message'];
-		$emailCopy	= (int)$data['contact_email_copy'];
+		$results = $dispatcher->trigger('onSubmitContact', array(&$contact, &$post));
 		
 		// Send the email
-		$pparams = $app->getParams('com_contact');
-		if (!$pparams->get('custom_reply'))
+		if (!$params->get('custom_reply'))
 		{
+			$default	= JText::sprintf('MAILENQUIRY', $SiteName);
+			$name		= $data['contact_name'];
+			$email		= $data['contact_email'];
+			$subject	= $data['contact_subject'];
+			$body		= $data['contact_message'];
+			$emailCopy	= (int)$data['contact_email_copy'];
+			
 			$MailFrom	= $app->getCfg('mailfrom');
 			$FromName	= $app->getCfg('fromname');
 
@@ -132,23 +125,20 @@ class ContactControllerContact extends JControllerForm
 			$sent = $mail->Send();
 
 			//If we are supposed to copy the admin, do so.
-			$params = new JRegistry($contact->params);
 			$emailcopyCheck = $params->get('show_email_copy', 0);
 
 			// check whether email copy function activated
 			if ($emailCopy && $emailcopyCheck)
 			{
-				$copyText		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $SiteName);
+				$copyText		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $default);
 				$copyText		.= "\r\n\r\n".$body;
 				$copySubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
 
 				$mail = JFactory::getMailer();
-
 				$mail->addRecipient($email);
 				$mail->setSender(array($MailFrom, $FromName));
 				$mail->setSubject($copySubject);
 				$mail->setBody($copyText);
-
 				$sent = $mail->Send();
 			}
 		}
@@ -160,12 +150,10 @@ class ContactControllerContact extends JControllerForm
 		// Flush the data from the session
 		$app->setUserState('com_contact.contact.data', null);
 		
-		//redirect if it is set
+		// Redirect if it is set in the parameters, otherwise redirect back to where we came from
 		if ($contact->params->get('redirect')){
-			$link=$contact->params->get('redirect');
-			$this->setRedirect($link, $msg);
+			$this->setRedirect($contact->params->get('redirect'), $msg);
 		} else {
-			// stay on the same  contact page
 			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false), $msg);
 		}
 
