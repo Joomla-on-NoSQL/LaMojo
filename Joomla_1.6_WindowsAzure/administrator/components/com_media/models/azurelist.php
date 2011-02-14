@@ -82,40 +82,45 @@ class MediaModelAzureList extends JModel
 		if ($current == 'undefined') {
 			$current = '';
 		}
-
+		WinAzureHelper::initialize();
 		// Initialise variables.
+		
 		if (strlen($current) > 0) {
-			$basePath = COM_MEDIA_BASE.'/'.$current;
+			$basePath = WinAzureHelper::getBaseUrl().'/'.$current;
+		}else{
+			$basePath = WinAzureHelper::getBaseUrl();
 		}
-		else {
-			$basePath = COM_MEDIA_BASE;
-		}
-
-		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
-
+		$mediaBase = str_replace(DS, '/', WinAzureHelper::getBaseUrl().'/');
+		
 		$images		= array ();
 		$folders	= array ();
 		$docs		= array ();
 
-		WinAzureHelper::initialize();
 		// Get the list of files and folders from the given folder
-		$fileList	= JFolder::files($basePath);
-		$folderList = JFolder::folders($basePath);
-		$folderList = $this->getFolderList();
-
+		//$fileList	= JFolder::files($basePath);
+		//$folderList = JFolder::folders($basePath);
+		if (strlen($current) > 0) {
+			$fileList = $this->getFileList($current);
+			$folderList = array();
+		}else{
+			$fileList	= array();
+			$folderList = $this->getFolderList();
+		}
+		//echo '<pre>';
+		//print_r($fileList); 
 		// Iterate over the files if they exist
 		if ($fileList !== false) {
 			foreach ($fileList as $file)
 			{
-				if (is_file($basePath.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+				if (is_file($file['path']) && substr($file['name'], 0, 1) != '.' && strtolower($file['name']) !== 'index.html') {
 					$tmp = new JObject();
-					$tmp->name = $file;
-					$tmp->title = $file;
-					$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$file));
-					$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
-					$tmp->size = filesize($tmp->path);
+					$tmp->name = $file['name'];
+					$tmp->title = $file['name'];
+					$tmp->path = str_replace(DS, '/', $file['path']);
+					$tmp->path_relative = $tmp->path;
+					$tmp->size = filesize($file['path']);
 
-					$ext = strtolower(JFile::getExt($file));
+					$ext = strtolower(JFile::getExt($file['name']));
 					switch ($ext)
 					{
 						// Image
@@ -126,7 +131,7 @@ class MediaModelAzureList extends JModel
 						case 'odg':
 						case 'bmp':
 						case 'jpeg':
-							$info = @getimagesize($tmp->path);
+							$info = @getimagesize($file['path']);
 							$tmp->width		= @$info[0];
 							$tmp->height	= @$info[1];
 							$tmp->type		= @$info[2];
@@ -172,7 +177,7 @@ class MediaModelAzureList extends JModel
 			{
 				$tmp = new JObject();
 				$tmp->name = basename($folder);
-				$tmp->path = str_replace(DS, '/', JPath::clean($basePath.DS.$folder));
+				$tmp->path = str_replace(DS, '/', $basePath.DS.$folder);
 				$tmp->path_relative = str_replace($mediaBase, '', $tmp->path);
 				$count = MediaHelper::countFiles($tmp->path);
 				$tmp->files = $count[0];
@@ -183,7 +188,8 @@ class MediaModelAzureList extends JModel
 		}
 
 		$list = array('folders' => $folders, 'docs' => $docs, 'images' => $images);
-
+//echo '<pre>';
+//print_r($list['images']);
 		return $list;
 	}
 	
@@ -195,5 +201,22 @@ class MediaModelAzureList extends JModel
 			$folders[] = $container->name;
 		}
 		return $folders;
+	}
+	
+	public function getFileList($container)
+	{
+		$file_list = array();
+		$files = WinAzureHelper::listBlobs($container);
+		$count = 0;
+		
+		foreach($files as $file)
+		{
+			$file_list[$count]['name'] = $file->name;
+			$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
+		    //$file_list[$count]['data'] = WinAzureHelper::getBlobData($container, $file->name);
+		    WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
+		    $count++;
+		}
+		return $file_list;
 	}
 }

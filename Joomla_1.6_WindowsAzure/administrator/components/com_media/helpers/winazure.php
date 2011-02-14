@@ -91,4 +91,60 @@ class WinAzureHelper
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
 		}
 	}
+	
+	public static function listBlobs($container)
+	{
+		try{
+			return self::$win_azure_conn->listBlobs($container);
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	}
+	
+	public static function getBaseUrl()
+	{
+		try{
+			return self::$win_azure_conn->getBaseUrl();
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	}
+	
+	public static function getBlobData($container, $file_name)
+	{
+		try{
+			return self::$win_azure_conn->getBlobData($container, $file_name);
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	}
+	
+	public static function getBlobFile($container, $file_name, $temp_file_name)
+	{
+		try{
+			return self::$win_azure_conn->getBlob($container, $file_name, $temp_file_name);
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	}
 }
