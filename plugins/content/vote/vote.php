@@ -70,8 +70,7 @@ class plgContentVote extends JPlugin
 				$html .= '<form method="post" action="' . $uri->toString() . '">';
 				$html .= '<div id="content-vote">';
 				$html .= '<span id="content-rating">';
-				$html .= JText::_( 'PLG_VOTE_USER_RATING' ) .':&#160;'. $buttons .'&#160;/&#160;';
-				$html .= '<span id="rating-count">'.$rating_count.'</span>';
+				$html .= JText::sprintf('PLG_VOTE_USER_RATING', $buttons, '<span id="rating-count">'.$rating_count.'</span>');
 				$html .= "</span>\n";
 				$html .= '<input type="hidden" name="task" value="article.vote" />';
 				$html .= '<input type="hidden" name="hitcount" value="0" />';
@@ -81,9 +80,8 @@ class plgContentVote extends JPlugin
 				$html .= '</form>';
 			} else {
 				$html .= '<span class="content_rating">';
-				$html .= JText::_( 'PLG_VOTE_USER_RATING' ) .':&#160;'. $img .'&#160;/&#160;';
-				$html .= $rating_count;
-				$html .= "</span>\n<br />\n";
+				$html .= JText::sprintf('PLG_VOTE_USER_RATING', $img,  $rating_count);
+				$html .= "</span>\n";
 			}
 		}
 

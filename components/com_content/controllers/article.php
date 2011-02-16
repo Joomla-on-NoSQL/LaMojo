@@ -277,7 +277,7 @@ class ContentControllerArticle extends JControllerForm
 	 * Method to save a vote.
 	 *
 	 * @return	void
-	 * @since	1.7
+	 * @since	1.6.1
 	 */
 	function vote()
 	{
