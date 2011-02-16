@@ -1027,7 +1027,7 @@ class JController extends JObject
  		
  		// If messages exist render them
  		if (is_array($lists)) {
- 			$this->messages = json_encode($lists);
+ 			$this->messages = $lists;
  		}
 
 		// Check if we are dealing with an error.	 

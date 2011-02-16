@@ -20,6 +20,9 @@ Install.submitform = function(task) {
 		url: url,
 		onSuccess: function(r) {
 			var lang = $$('html').getProperty('lang')[0];
+			if (r.messages) {
+				Joomla.renderMessages(r.messages);
+			}
 			if (lang.toLowerCase() === r.lang.toLowerCase()) {
 				Install.goToPage(r.data.view);
 			} else {

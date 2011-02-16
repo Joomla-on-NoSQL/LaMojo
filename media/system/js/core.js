@@ -91,6 +91,33 @@ Joomla.isEmail = function(text) {
 	return regex.test(text);
 };
 
+Joomla.renderMessages = function(messages) {
+	var container = document.id('system-message');
+	var children = $$('#system-message > *');
+	children.destroy();
+	Object.each(messages, function (item, type) {
+		var dt = new Element('dt', {
+			'class': type,
+			html: type
+		});
+		dt.inject(container);
+		var dd = new Element('dd', {
+			'class': type,
+		});
+		dd.addClass('message');
+		var list = new Element('ul');
+		
+		Array.each(item, function (item, index, object) {
+			var li = new Element('li', {
+				html: item
+			});
+			li.inject(list);
+		}, this);
+		list.inject(dd);
+		dd.inject(container);
+	}, this);
+}
+
 /**
  * USED IN: administrator/components/com_modules/views/module/tmpl/default.php
  *
