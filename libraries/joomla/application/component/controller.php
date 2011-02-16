@@ -1025,8 +1025,8 @@ class JController extends JObject
  			}
  		}
  		
- 		// If messages exist render them
- 		if (is_array($lists)) {
+ 		// If messages exist add them to the output
+ 		if (isset($lists) && is_array($lists)) {
  			$this->messages = $lists;
  		}
 
