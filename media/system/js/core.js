@@ -91,6 +91,14 @@ Joomla.isEmail = function(text) {
 	return regex.test(text);
 };
 
+/**
+ * USED IN: installation/template/js/installation.js
+ *
+ * Render messages send via JSON
+ *
+ * @param object
+ * @return void
+ */
 Joomla.renderMessages = function(messages) {
 	var container = document.id('system-message');
 	var children = $$('#system-message > *');
@@ -116,7 +124,7 @@ Joomla.renderMessages = function(messages) {
 		list.inject(dd);
 		dd.inject(container);
 	}, this);
-}
+};
 
 /**
  * USED IN: administrator/components/com_modules/views/module/tmpl/default.php

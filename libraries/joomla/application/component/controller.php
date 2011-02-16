@@ -981,9 +981,10 @@ class JController extends JObject
 		if (JError::isError($response)) {
 			// Send the appropriate error code response.
 			JResponse::setHeader('status', $response->getCode());
-			JResponse::setHeader('Content-Type', 'application/json; charset=utf-8');
-			JResponse::sendHeaders();
 		}
+		//Set the correct MIME type and send the headers
+		JResponse::setHeader('Content-Type', 'application/json; charset=utf-8');
+		JResponse::sendHeaders();
 
 		// Send the JSON response.
 		echo json_encode(new JJsonResponse($response));
@@ -994,7 +995,7 @@ class JController extends JObject
 	}
 }
 
-	 /**	 
+/**	 
   * Joomla Core  JSON Response Class	 
   *	 
   * @package             Joomla.Framework	 

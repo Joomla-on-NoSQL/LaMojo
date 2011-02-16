@@ -27,6 +27,9 @@ window.addEvent('domready', function() {
 				onSuccess: function(r) {
 					if (r) {
 						Joomla.replaceTokens(r.token);
+						if (r.messages) {
+							Joomla.renderMessages(r.messages);
+						}
 						if (r.error === false) {
 							document.id('rating-count').set('text', r.data.rating_count);
 							$$('.vote-button').each(function(el) {
