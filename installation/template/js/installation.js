@@ -12,9 +12,56 @@ if (typeof(Install) === 'undefined') {
 };
 
 Install.submitform = function(task) {
+	var url = baseUrl+'?tmpl=body';
+	var content = document.id('main-content');
 	var form = document.id('adminForm');
-	Joomla.submitform(task, form);
-}
+	var req = new Request.JSON({
+		method: 'post',
+		url: url,
+		onSuccess: function(r) {
+			var lang = $$('html').getProperty('lang')[0];
+			if (lang.toLowerCase() === r.lang.toLowerCase()) {
+				Install.goToPage(r.data.view);
+			} else {
+				window.location = baseUrl+'?view='+r.data.view;
+			}
+		},
+		onFailure: function(xhr) {
+			var r = JSON.decode(xhr.responseText);
+			if (r) {
+				Joomla.replaceTokens(r.token);
+				alert(r.message);
+			}
+		}
+	});
+	req.post(form.toQueryString()+'&task='+task+'&format=json');
+
+	return false;
+};
+
+Install.goToPage = function(page) {
+	var url = baseUrl+'?tmpl=body&view='+page;
+	var req = new Request.HTML({
+		method: 'get',
+		url: url,
+		onSuccess: function (r) {
+			document.id('main-content').empty().adopt(r);
+
+			//Re-attach the validator
+			var forms = $$('form.form-validate');
+			forms.each(function(form){ this.attachToForm(form); }, document.formvalidator);
+			Install.addToggler();
+
+			//Take care of the sidebar
+			var active = $$('.active');
+			active.removeClass('active');
+			var nextStep = document.id(page);
+			nextStep.addClass('active');
+		}
+	}).send();
+
+	return false;
+};
 
 Install.addToggler = function () {
 	new Accordion($$('h3.moofx-toggler'), $$('div.moofx-slider'), {

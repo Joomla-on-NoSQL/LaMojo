@@ -1011,6 +1011,24 @@ class JController extends JObject
 		// Get the language and send it's code along
 		$lang = JFactory::getLanguage();
 		$this->lang = $lang->getTag();
+		
+		// Get the message queue
+ 		$messages = JFactory::getApplication()->getMessageQueue();
+ 		
+ 		// Build the sorted message list
+ 		if (is_array($messages) && count($messages)) {
+ 			foreach ($messages as $msg)
+ 			{
+ 				if (isset($msg['type']) && isset($msg['message'])) {
+ 					$lists[$msg['type']][] = $msg['message'];
+ 				}
+ 			}
+ 		}
+ 		
+ 		// If messages exist render them
+ 		if (is_array($lists)) {
+ 			$this->messages = json_encode($lists);
+ 		}
 
 		// Check if we are dealing with an error.	 
 		if (JError::isError($state)) {	 
