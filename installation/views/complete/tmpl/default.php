@@ -7,27 +7,7 @@
  */
 
 defined('_JEXEC') or die;
-
-// Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 ?>
-<div id="stepbar">
-	<div class="t">
-		<div class="t">
-			<div class="t"></div>
-		</div>
-	</div>
-	<div class="m">
-		<?php echo JHtml::_('installation.stepbar'); ?>
-		<div class="box"></div>
-	</div>
-	<div class="b">
-		<div class="b">
-			<div class="b"></div>
-		</div>
-	</div>
-</div>
-
 <form action="index.php" method="post" id="adminForm" class="form-validate">
 <div id="right">
 	<div id="rightpad">

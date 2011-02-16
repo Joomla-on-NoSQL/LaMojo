@@ -10,6 +10,9 @@ defined('_JEXEC') or die;
 
 jimport('joomla.html.html');
 
+// Include the component HTML helpers.
+JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
+
 // Load the JavaScript behaviors
 JHtml::_('behavior.framework', true);
 JHtml::_('behavior.keepalive');
@@ -31,6 +34,9 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 		<!--[if IE 7]>
 			<link href="template/css/ie7.css" rel="stylesheet" type="text/css" />
 		<![endif]-->
+		<script type="text/javascript">
+			var baseUrl = '<?php echo JURI::current(); ?>';
+ 		</script>
 	</head>
 	<body>
 		<div id="header1">
@@ -44,7 +50,32 @@ JHtml::_('script', 'installation/template/js/installation.js', true, false, fals
 		<jdoc:include type="message" />
 		<div id="content-box">
 			<div id="content-pad">
-				<jdoc:include type="installation" />
+				<div id="stepbar">
+					<div class="t">
+						<div class="t">
+							<div class="t"></div>
+						</div>
+					</div>
+					<div class="m">
+						<?php echo JHtml::_('installation.stepbar'); ?>
+						<div class="box"></div>
+					</div>
+					<div class="b">
+						<div class="b">
+							<div class="b"></div>
+						</div>
+					</div>
+				</div>
+				<div id="warning">
+					<noscript>
+						<div id="javascript-warning">
+							<?php echo JText::_('INSTL_WARNJAVASCRIPT'); ?>
+						</div>
+					</noscript>
+				</div>
+				<div id="main-content">
+					<jdoc:include type="installation" />
+				</div>
 			</div>
 		</div>
 		<div id="footer1">

@@ -7,9 +7,6 @@
  */
 
 defined('_JEXEC') or die;
-
-// Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 ?>
 <?php if ($this->sample_installed) : ?>
 <script type="text/javascript">
@@ -22,23 +19,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 	});
 </script>
 <?php endif; ?>
-<div id="stepbar">
-	<div class="t">
-		<div class="t">
-			<div class="t"></div>
-		</div>
-	</div>
-	<div class="m">
-		<?php echo JHtml::_('installation.stepbar'); ?>
-		<div class="box"></div>
-	</div>
-	<div class="b">
-		<div class="b">
-			<div class="b"></div>
-		</div>
-	</div>
-</div>
-
 <div id="right">
 	<div id="rightpad">
 		<div id="step">

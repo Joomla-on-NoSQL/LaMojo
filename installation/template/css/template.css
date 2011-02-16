@@ -34,7 +34,7 @@ a:hover {
 
 h1, h2, h3, h4, h5,
 #header3 span,
-.step-on, .step-off, .step-grey,
+.step-grey,
 .step,
 .button1-left a,
 .button1-right a {
@@ -385,8 +385,9 @@ div.moofx-slider {
 }
 
 .final-table {
-	width: 100%;
 	text-align: center;
+	margin-top: 90px;
+	margin-right: 20px;
 }
 
 td em {

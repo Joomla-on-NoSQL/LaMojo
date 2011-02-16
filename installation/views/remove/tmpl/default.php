@@ -36,4 +36,4 @@ defined('_JEXEC') or die;
 		</td>
 	</tr>
 </table>
-
+<div class="clr"></div>
