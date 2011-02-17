@@ -67,7 +67,11 @@ class WinAzureHelper
 	public static function deleteContainer($container)
 	{
 		try{
-			self::$win_azure_conn->deleteContainer($container);
+				if(self::$win_azure_conn->containerExists($container))
+				{
+					self::$win_azure_conn->deleteContainer($container);
+				}
+			
 		}catch (Microsoft_WindowsAzure_Exception $ex)
 		{
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";

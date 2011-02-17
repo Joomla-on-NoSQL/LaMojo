@@ -79,7 +79,6 @@ class MediaController extends JController
 			// Push the model into the view (as default)
 			$view->setModel($model, true);
 		}
-
 		if($mName == 'azuremanager')
 			$model->syncLocaltoAzure();
 		

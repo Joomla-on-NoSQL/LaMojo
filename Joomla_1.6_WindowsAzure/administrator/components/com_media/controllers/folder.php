@@ -10,7 +10,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
-
+ini_set('include_path', 'components/com_media/includes');
+require_once 'components\com_media\helpers\winazure.php';
 /**
  * Folder Media Controller
  *
@@ -69,7 +70,7 @@ class MediaControllerFolder extends JController
 						JError::raiseWarning(100, JText::sprintf('COM_MEDIA_ERROR_UNABLE_TO_DELETE_FOLDER_WARNDIRNAME', substr($dirname, strlen(COM_MEDIA_BASE))));
 						continue;
 					}
-
+										
 					$fullPath = JPath::clean(COM_MEDIA_BASE.DS.$folder.DS.$path);
 					$object_file = new JObject(array('filepath' => $fullPath));
 					if (is_file($fullPath))
@@ -101,7 +102,8 @@ class MediaControllerFolder extends JController
 							}
 
 							$ret &= !JFolder::delete($fullPath);
-
+							if(JFactory::checkAzureExists())
+					 	 		$this->deleteAzureFolder($path);
 							// Trigger the onContentAfterDelete event.
 							$dispatcher->trigger('onContentAfterDelete', array('com_media.folder', &$object_file));
 							$this->setMessage(JText::sprintf('COM_MEDIA_DELETE_COMPLETE', substr($fullPath, strlen(COM_MEDIA_BASE))));
@@ -111,9 +113,16 @@ class MediaControllerFolder extends JController
 							//This makes no sense...
 							JError::raiseWarning(100, JText::sprintf('COM_MEDIA_ERROR_UNABLE_TO_DELETE_FOLDER_NOT_EMPTY',substr($fullPath, strlen(COM_MEDIA_BASE))));
 						}
+					}else{
+						if(JFactory::checkAzureExists())
+					 	 $ret = $this->deleteAzureFolder($path);
+					 	 // Trigger the onContentAfterDelete event.
+						$dispatcher->trigger('onContentAfterDelete', array('com_media.folder', &$object_file));
+						$this->setMessage(JText::sprintf('COM_MEDIA_DELETE_COMPLETE', substr($fullPath, strlen(COM_MEDIA_BASE))));
 					}
 				}
 			}
+			
 			return $ret;
 		}
 	}
@@ -170,16 +179,31 @@ class MediaControllerFolder extends JController
 					JError::raiseWarning(100, JText::plural('COM_MEDIA_ERROR_BEFORE_SAVE', count($errors = $object_file->getErrors()), implode('<br />', $errors)));
 					continue;
 				}
-
-				JFolder::create($path);
-				$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
-				JFile::write($path.DS."index.html", $data);
-
+				if(JFactory::checkAzureExists()){
+					 	 $ret = $this->createAzureFolder($folder);
+				}else{
+					JFolder::create($path);
+					$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
+					JFile::write($path.DS."index.html", $data);
+				}
 				// Trigger the onContentAfterSave event.
 				$dispatcher->trigger('onContentAfterSave', array('com_media.folder', &$object_file));
 				$this->setMessage(JText::sprintf('COM_MEDIA_CREATE_COMPLETE', substr($path, strlen(COM_MEDIA_BASE))));
 			}
 			JRequest::setVar('folder', ($parent) ? $parent.'/'.$folder : $folder);
 		}
+	}
+	
+	public function deleteAzureFolder($path)
+	{
+		WinAzureHelper::initialize();
+		WinAzureHelper::deleteContainer($path);
+		return 0;
+	}
+	
+	public function createAzureFolder($folder)
+	{
+		WinAzureHelper::initialize();
+		WinAzureHelper::createFolder($folder);
 	}
 }
