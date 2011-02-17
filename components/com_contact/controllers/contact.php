@@ -30,6 +30,17 @@ class ContactControllerContact extends JControllerForm
 		$params = JComponentHelper::getParams('com_contact');
 		$id		= JRequest::getInt('id');
 		
+		// Get the data from POST
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		
+		$contact = $model->getItem($id);
+		if ($contact->email_to == '' && $contact->user_id != 0) {
+			$contact_user = JUser::getInstance($contact->user_id);
+			$contact->email_to = $contact_user->get('email');
+		}
+		
+		$params->merge($contact->params);
+
 		// Check for a valid session cookie
 		if($params->get('validate_session', 0)) {
 			if(JFactory::getSession()->getState() != 'active'){
@@ -42,15 +53,6 @@ class ContactControllerContact extends JControllerForm
 				$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id='.$id, false));
 				return false;
 			}
-		}
-		
-		// Get the data from POST
-		$data = JRequest::getVar('jform', array(), 'post', 'array');
-		
-		$contact = $model->getItem($id);
-		if ($contact->email_to == '' && $contact->user_id != 0) {
-			$contact_user = JUser::getInstance($contact->user_id);
-			$contact->email_to = $contact_user->get('email');
 		}
 		
 		// Contact plugins
@@ -126,6 +128,7 @@ class ContactControllerContact extends JControllerForm
 	{
 			$app		= JFactory::getApplication();
 			$params 	= JComponentHelper::getParams('com_contact');
+			
 			
 			$mailfrom	= $app->getCfg('mailfrom');
 			$fromname	= $app->getCfg('fromname');

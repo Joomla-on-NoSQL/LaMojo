@@ -39,6 +39,11 @@ class ContactViewContact extends JView
 		$state		= $this->get('State');
 		$item		= $this->get('Item');
 		$this->data		= $this->get('Data');
+		
+		// Get the parameters
+		$params = JComponentHelper::getParams('com_contact');
+		$params->merge($item->params);
+		
 		$this->form		= $this->get('Form');
 		
 		// Get Category Model data
@@ -56,14 +61,7 @@ class ContactViewContact extends JView
 
 			return false;
 		}
-
-		// Get the parameters of the active menu item
-		$menus	= $app->getMenu();
-		$menu	= $menus->getActive();
-		$params	= $app->getParams();
-
-		$params->merge($item->params);
-
+		
 		// check if access is not public
 		$groups	= $user->getAuthorisedViewLevels();
 
