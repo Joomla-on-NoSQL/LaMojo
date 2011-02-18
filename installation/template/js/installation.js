@@ -225,8 +225,6 @@ Install.removeFolder = function(el) {
 					el.set('value', r.data.text);
 					el.set('onclick','');
 					el.set('disabled', 'disabled');
-					filename.set('disabled', 'disabled');
-					document.id('jform_sample_installed').set('value','1');
 				} else {
 					document.id('theDefaultError').setStyle('display','block');
 					document.id('theDefaultErrorMessage').set('html', r.message);

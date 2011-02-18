@@ -27,12 +27,46 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+18-Feb-2011 Jean-Marie Simonet
+ # [#24975] JS patch for Beez5 - IE issue hide.js. Thanks Ole.
+ # [#24947] Incorrect ID attribute's value in backend menu. Thanks Serge
+ $ Deleted a duplicate string and corrected some extra spaces
+ # [#24933] The "Ordering" form field type defaults to "0", causing accidental changes to ordering of plugins. Thanks Bernie and Bill.
+
+17-Feb-2011 Mark Dexter
+ # [#24231] JS error notices default template in IE7+8
+ # [#24825] in sql file bug
+ # [#24506] com_categories doesn't properly update paths of children categories when moved to a new parent
+ # [#24532] Unused JDate code causing "Catchable fatal error"
+ # [#24646] Send HTTP result code 503 for the offline page
+ # [#24911] Redirect component does not list 404 errors for missing child page when parent page does exist (patch supplied)
+ # [#24496] Improve installation.js
+ # [#24859] Debug Language showing up
+ # [#24856] Get error after save options for component
+ # [#24455] Alias URL does not work with Language filter plugin active - sef off
+ # [#24816] 404 errors when using pagebreak with sef enabled
+ # [#24314] Remove com_search SEF encoding of search term
+ # [#24896] Module Banners: "All categories" option does not include all categories
+ # [#24883] Plugin User-Profile Birthday field alpha entry crashes Profile Fields in Admin
+ # [#24890] A registered user can change their user name
+ # [#24965] Banner Manager: Banners - increase is needed for colspan of table's footer
+ # [#24419] JController class lacks a unregisterTask method
+
+17-Feb-2011 Jean-Marie Simonet
+ $ Updating ar-AA and sv-SE
+ $ Adding Installation language nn-NO. Updating Credits.
+ # [#24926] JTRASH instead JTRASHED in jgrid.publishedOptions. Thanks Serge.
+ # [#24877] * Menu manager Multilanguage Deactivate Home
+ # [#24869] Accommodating for longer string value in Banners Edit page. Thanks Bill and Andrea.
+
 16-Feb-2011 Jean-Marie Simonet
  [#24932] *Search lower and upper limit do not take into account localise.php settings
  [#24923] *Normalise modals UI
  # [#24927] Modules do not have Trashed state. Thanks Serge.
  $ Correcting an html tag in an ini string
  #$ [#24497] Improve the voting plugin. Thanks Rouven and Christophe.
+ $ Taking off underline html tag in some ini strings. Thanks Serge.
+ $ Small correction in an ini file. Thanks Stella.
 
 15-Feb-2011 Jean-Marie Simonet
  $# [#24897] Untranslated strings TPL_BEEZ5_ISCLOSED and TPL_BEEZ5_LOGO. Thanks Serge.
