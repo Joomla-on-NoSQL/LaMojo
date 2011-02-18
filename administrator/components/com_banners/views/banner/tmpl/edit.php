@@ -29,7 +29,7 @@ JHtml::_('behavior.formvalidation');
 		});
 		document.id('jform_type1').addEvent('click', function(e){
 			document.id('image').setStyle('display', 'none');
-			document.id('url').setStyle('display', 'none');
+			document.id('url').setStyle('display', 'block');
 			document.id('custom').setStyle('display', 'block');
 		});
 		if(document.id('jform_type0').checked==true) {
@@ -56,12 +56,12 @@ JHtml::_('behavior.formvalidation');
 
 				<li><?php echo $this->form->getLabel('catid'); ?>
 				<?php echo $this->form->getInput('catid'); ?></li>
-
-				<li><?php echo $this->form->getLabel('type'); ?>
-				<?php echo $this->form->getInput('type'); ?></li>
-
+				
 				<li><?php echo $this->form->getLabel('state'); ?>
 				<?php echo $this->form->getInput('state'); ?></li>
+
+				<li><?php echo $this->form->getLabel('type'); ?>
+				<?php echo $this->form->getInput('type'); ?></li> 
 
 				<li>
 				<div id="image">
@@ -88,8 +88,6 @@ JHtml::_('behavior.formvalidation');
 
 				<li><?php echo $this->form->getLabel('description'); ?>
 				<?php echo $this->form->getInput('description'); ?></li>
-
-
 
 				<li><?php echo $this->form->getLabel('language'); ?>
 				<?php echo $this->form->getInput('language'); ?></li>

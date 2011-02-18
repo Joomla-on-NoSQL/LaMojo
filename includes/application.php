@@ -62,7 +62,7 @@ final class JSite extends JApplication
 		// if a language was specified it has priority
 		// otherwise use user or default language settings
 		jimport('joomla.plugin.helper');
-		JPluginHelper::importPlugin('system');
+		JPluginHelper::importPlugin('system', 'languagefilter');
 
 		if (empty($options['language'])) {
 			$lang = JRequest::getString('language', null);
@@ -222,6 +222,7 @@ final class JSite extends JApplication
 					$return		= (string)$uri;
 					$this->setUserState('users.login.form.data',array( 'return' => $return ) );
 					$file = 'offline';
+					JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
 				}
 				if (!is_dir(JPATH_THEMES.DS.$template->template) && !$this->getCfg('offline')) {
 					$file = 'component';

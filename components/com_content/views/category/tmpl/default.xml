@@ -257,7 +257,7 @@
 		
 </fieldset>
 
-<fieldset name="article">
+<fieldset name="article" label="COM_CONTENT_ATTRIBS_FIELDSET_LABEL">
 			<field name="show_title" type="list"
 				description="JGLOBAL_SHOW_TITLE_DESC"
 				label="JGLOBAL_SHOW_TITLE_LABEL"
@@ -335,8 +335,8 @@
 				label="JGLOBAL_LINK_AUTHOR_LABEL"
 			>
 				<option value="">JGLOBAL_USE_GLOBAL</option>
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
+				<option value="0">JNo</option>
+				<option value="1">JYes</option>
 			</field>
 
 			<field name="show_create_date" type="list"

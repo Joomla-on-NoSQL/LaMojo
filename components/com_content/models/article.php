@@ -148,12 +148,12 @@ class ContentModelArticle extends JModelItem
 				}
 
 				if (empty($data)) {
-					throw new JException(JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'), 404);
+					return JError::raiseError(404,JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
 				// Check for published state if filter set.
 				if (((is_numeric($published)) || (is_numeric($archived))) && (($data->state != $published) && ($data->state != $archived))) {
-					throw new JException(JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'), 404);
+					return JError::raiseError(404,JText::_('COM_CONTENT_ERROR_ARTICLE_NOT_FOUND'));
 				}
 
 				// Convert parameter fields to objects.
@@ -294,7 +294,7 @@ class ContentModelArticle extends JModelItem
             }
             return true;
         }
-        JError::raiseWarning( 'SOME_ERROR_CODE', 'Article Rating:: Invalid Rating:' .$rate, "JModelArticle::storeVote($rate)");
+        JError::raiseWarning( 'SOME_ERROR_CODE', JText::sprintf('COM_CONTENT_INVALID_RATING', $rate), "JModelArticle::storeVote($rate)");
         return false;
     }
 }

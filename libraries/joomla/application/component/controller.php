@@ -94,6 +94,14 @@ class JController extends JObject
 	protected $name;
 
 	/**
+	 * The prefix of the models
+	 *
+	 * @var		string
+	 * @since	1.6
+	 */
+	protected $model_prefix;
+
+	/**
 	 * The set of search directories for resources (views).
 	 *
 	 * @var		array
@@ -129,12 +137,13 @@ class JController extends JObject
 	 * Adds to the stack of model paths in LIFO order.
 	 *
 	 * @param	string|array The directory (string), or list of directories (array) to add.
+	 * @param	string	A prefix for models
 	 * @return	void
 	 */
-	public static function addModelPath($path)
+	public static function addModelPath($path, $prefix='')
 	{
 		jimport('joomla.application.component.model');
-		JModel::addIncludePath($path);
+		JModel::addIncludePath($path, $prefix);
 	}
 
 	/**
@@ -320,13 +329,24 @@ class JController extends JObject
 			$this->registerDefaultTask('display');
 		}
 
+		// set the models prefix
+		if (empty($this->model_prefix)) {
+			if (array_key_exists('model_prefix', $config)) {
+				// user-defined prefix
+				$this->model_prefix = $config['model_prefix'];
+			}
+			else {
+				$this->model_prefix = $this->name . 'Model';
+			}
+		}
+
 		// set the default model search path
 		if (array_key_exists('model_path', $config)) {
 			// user-defined dirs
-			$this->addModelPath($config['model_path']);
+			$this->addModelPath($config['model_path'], $this->model_prefix);
 		}
 		else {
-			$this->addModelPath($this->basePath.'/models');
+			$this->addModelPath($this->basePath.'/models', $this->model_prefix);
 		}
 
 		// set the default view search path
@@ -650,7 +670,7 @@ class JController extends JObject
 		}
 
 		if (empty($prefix)) {
-			$prefix = $this->getName() . 'Model';
+			$prefix = $this->model_prefix;
 		}
 
 		if ($model = $this->createModel($name, $prefix, $config)) {
@@ -830,6 +850,19 @@ class JController extends JObject
 		if (in_array(strtolower($method), $this->methods)) {
 			$this->taskMap[strtolower($task)] = $method;
 		}
+
+		return $this;
+	}
+	/**
+	 * Unregister (unmap) a task in the class.
+	 *
+	 * @param	string		The task.
+	 * @return	JController	This object to support chaining.
+	 * @since	1.6
+	 */
+	public function unregisterTask($task)
+	{
+		unset($this->taskMap[strtolower($task)]);
 
 		return $this;
 	}
