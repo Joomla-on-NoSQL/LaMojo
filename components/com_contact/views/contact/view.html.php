@@ -38,16 +38,17 @@ class ContactViewContact extends JView
 		$dispatcher = JDispatcher::getInstance();
 		$state		= $this->get('State');
 		$item		= $this->get('Item');
-		$this->data		= $this->get('Data');
+		$this->data	= $this->get('Data');
+		$this->form	= $this->get('Form');
 		
 		// Get the parameters
 		$params = JComponentHelper::getParams('com_contact');
-		$params->merge($item->params);
 		
-		$this->form		= $this->get('Form');
-		
-		// Get Category Model data
 		if ($item) {
+			// If we found an item, merge the item parameters
+			$params->merge($item->params);
+			
+			// Get Category Model data
 			$categoryModel = JModel::getInstance('Category', 'ContactModel', array('ignore_request' => true));
 			$categoryModel->setState('category.id', $item->catid);
 			$categoryModel->setState('list.ordering', 'a.name');
