@@ -16,7 +16,7 @@ $cparams = JComponentHelper::getParams ('com_media');
 <h1>
 	<?php echo $this->escape($this->params->get('page_heading')); ?>
 </h1>
-<?php endif; ?>hi <?php //  die; ?>
+<?php endif; ?>
 	<?php if ($this->contact->name && $this->params->get('show_name')) : ?>
 		<h2>
 			<span class="contact-name"><?php echo $this->contact->name; ?></span>
