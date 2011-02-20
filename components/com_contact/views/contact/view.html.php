@@ -22,14 +22,10 @@ require_once JPATH_COMPONENT.'/models/category.php';
  */
 class ContactViewContact extends JView
 {
+	protected $state;
 	protected $form;
 	protected $item;
-	protected $return_page;
-	protected $state;
-	protected $data;
-	protected $params;
 
-	
 	function display($tpl = null)
 	{
 		// Initialise variables.
@@ -38,7 +34,6 @@ class ContactViewContact extends JView
 		$dispatcher = JDispatcher::getInstance();
 		$state		= $this->get('State');
 		$item		= $this->get('Item');
-		$this->data	= $this->get('Data');
 		$this->form	= $this->get('Form');
 		
 		// Get the parameters
