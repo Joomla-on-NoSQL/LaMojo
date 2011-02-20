@@ -9,7 +9,6 @@
 
 defined('JPATH_BASE') or die;
 
-jimport('joomla.application.component.controller');
 jimport('joomla.application.component.controllerform');
 
 class ContactControllerContact extends JControllerForm
