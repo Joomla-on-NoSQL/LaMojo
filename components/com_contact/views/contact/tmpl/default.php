@@ -66,7 +66,6 @@ $cparams = JComponentHelper::getParams ('com_media');
 	<?php endif; ?>
 	<p></p>
 	<?php if ($this->params->get('show_email_form') && ($this->contact->email_to || $this->contact->user_id)) : ?>
-		<div class="contact-form">
 		<?php if ($this->params->get('presentation_style')!='plain'):?>
 			<?php  echo JHtml::_($this->params->get('presentation_style').'.panel', JText::_('COM_CONTACT_EMAIL_FORM'), 'display-form');  ?>
 		<?php endif; ?>
@@ -74,7 +73,6 @@ $cparams = JComponentHelper::getParams ('com_media');
 			<?php  echo '<h3>'. JText::_('COM_CONTACT_EMAIL_FORM').'</h3>';  ?>
 		<?php endif; ?>
 		<?php  echo $this->loadTemplate('form');  ?>
-		</div>
 	<?php endif;  ?>
 	<?php if ($this->params->get('show_links')) : ?>
 		<?php echo $this->loadTemplate('links'); ?>
