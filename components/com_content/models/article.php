@@ -74,6 +74,8 @@ class ContentModelArticle extends JModelItem
 			$this->_item = array();
 		}
 
+		$this->populateState();
+
 		if (!isset($this->_item[$pk])) {
 
 			try {
@@ -209,14 +211,8 @@ class ContentModelArticle extends JModelItem
 			}
 			catch (JException $e)
 			{
-				if ($e->getCode() == 404) {
-					// Need to go thru the error handler to allow Redirect to work.
-					JError::raiseError(404, $e->getMessage());
-				}
-				else {
-					$this->setError($e);
-					$this->_item[$pk] = false;
-				}
+				$this->setError($e);
+				$this->_item[$pk] = false;
 			}
 		}
 

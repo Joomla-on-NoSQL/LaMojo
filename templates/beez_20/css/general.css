@@ -268,3 +268,33 @@ a img.calendar {
     font-weight: bold;
     padding: 0;
 }
+
+input.vote-button {
+	width: 9px;
+	height: 11px;
+	margin: 0;
+	border: 0;
+	cursor: pointer; /* hand-shaped cursor */
+	overflow: hidden;
+	text-indent: -10000em;
+}
+
+input.star-off {
+	background: transparent url(../../../media/system/images/rating_star_blank.png) no-repeat;
+}
+
+input.star-on {
+	background: transparent url(../../../media/system/images/rating_star.png) no-repeat;
+}
+
+#content-rating:hover .vote-button {
+	background: transparent url(../../../media/system/images/rating_star_blank.png) no-repeat;
+}
+
+.vote-button:hover {
+	background: transparent url(../../../media/system/images/rating_star.png) no-repeat !important;
+}
+
+input.star-hover {
+	background: transparent url(../../../media/system/images/rating_star.png) no-repeat !important;
+}

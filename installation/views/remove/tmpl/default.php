@@ -8,7 +8,6 @@
 
 defined('_JEXEC') or die;
 ?>
-
 <div class="t">
 	<div class="t">
 		<div class="t"></div>
@@ -37,4 +36,4 @@ defined('_JEXEC') or die;
 		</td>
 	</tr>
 </table>
-
+<div class="clr"></div>

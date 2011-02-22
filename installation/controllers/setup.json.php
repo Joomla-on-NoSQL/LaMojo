@@ -17,10 +17,252 @@ defined('_JEXEC') or die;
  */
 class JInstallationControllerSetup extends JController
 {
+	/**
+	 * Method to set the setup language for the application.
+	 *
+	 * @return	void
+	 * @since	1.6
+	 */
+	public function setlanguage()
+	{
+		// Check for request forgeries.
+		JRequest::checkToken() or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		
+		// Get the application object.
+		$app = JFactory::getApplication();
+
+		// Check for potentially unwritable session
+		$session = JFactory::getSession();
+
+		if ($session->isNew()) {
+			$this->sendJsonResponse(new JException(JText::_('INSTL_COOKIES_NOT_ENABLED'), 500));
+		}
+
+		// Get the setup model.
+		$model = $this->getModel('Setup', 'JInstallationModel', array('dbo' => null));
+
+		// Get the posted values from the request and validate them.
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		$return	= $model->validate($data, 'language');
+
+		$r = new JObject();
+		// Check for validation errors.
+		if ($return === false) {
+			// Get the validation messages.
+			$errors	= $model->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+				if (JError::isError($errors[$i])) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+
+			// Redirect back to the language selection screen.
+			$r->view = 'language';
+			$this->sendJsonResponse($r);
+			return false;
+		}
+
+		// Store the options in the session.
+		$vars = $model->storeOptions($return);
+
+		// Redirect to the next page.
+		$r->view = 'preinstall';
+		$this->sendJsonResponse($r);
+	}
+	
+	/**
+	 * @since	1.6
+	 */
+	function database()
+	{
+		// Check for request forgeries.
+		JRequest::checkToken() or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+
+		// Get the application object.
+		$app = JFactory::getApplication();
+
+		// Get the setup model.
+		$model = $this->getModel('Setup', 'JInstallationModel', array('dbo' => null));
+
+		// Get the posted values from the request and validate them.
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		$return	= $model->validate($data, 'database');
+
+		$r = new JObject();
+		// Check for validation errors.
+		if ($return === false) {
+			// Store the options in the session.
+			$vars = $model->storeOptions($data);
+
+			// Get the validation messages.
+			$errors	= $model->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+
+				if (JError::isError($errors[$i])) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+
+			// Redirect back to the database selection screen.
+			$r->view = 'database';
+			$this->sendJsonResponse($r);
+
+			return false;
+		}
+
+		// Store the options in the session.
+		$vars = $model->storeOptions($return);
+
+		// Get the database model.
+		$database = $this->getModel('Database', 'JInstallationModel', array('dbo' => null));
+
+		// Attempt to initialise the database.
+		$return = $database->initialise($vars);
+
+		// Ensure a language was set.
+		if (!$return) {
+			$this->setMessage($database->getError(), 'notice');
+			$r->view = 'database';
+			$this->sendJsonResponse($r);
+		} else {
+			// Mark sample content as not installed yet
+			$data = array(
+				'sample_installed' => '0'
+			);
+			$dummy = $model->storeOptions($data);
+
+			$r->view = 'filesystem';
+			$this->sendJsonResponse($r);
+		}
+	}
+
+	/**
+	 * @since	1.6
+	 */
+	function filesystem()
+	{
+		// Check for request forgeries.
+		JRequest::checkToken() or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+
+		// Get the application object.
+		$app = JFactory::getApplication();
+
+		// Get the setup model.
+		$model = $this->getModel('Setup', 'JInstallationModel', array('dbo' => null));
+
+		// Get the posted values from the request and validate them.
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		$return	= $model->validate($data, 'filesystem');
+
+		$r = new JObject();
+		// Check for validation errors.
+		if ($return === false) {
+			// Get the validation messages.
+			$errors	= $model->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+
+				if (JError::isError($errors[$i])) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+
+			// Redirect back to the database selection screen.
+			$r->view = 'filesystem';
+			$this->sendJsonResponse($r);
+
+			return false;
+		}
+
+		// Store the options in the session.
+		$vars = $model->storeOptions($return);
+
+		$r->view = 'site';
+		$this->sendJsonResponse($r);
+	}
+
+	/**
+	 * @since	1.6
+	 */
+	function saveconfig()
+	{
+		// Check for request forgeries.
+		JRequest::checkToken() or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+
+		// Get the application object.
+		$app = JFactory::getApplication();
+
+		// Get the setup model.
+		$model = $this->getModel('Setup', 'JInstallationModel', array('dbo' => null));
+
+		// Get the posted values from the request and validate them.
+		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		$return	= $model->validate($data, 'site');
+
+		// Attempt to save the data before validation
+		$form = $model->getForm();
+		$data = $form->filter($data);
+		unset($data['admin_password2']);
+		$model->storeOptions($data);
+
+		$r = new JObject();
+		// Check for validation errors.
+		if ($return === false) {
+			// Get the validation messages.
+			$errors	= $model->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+
+				if (JError::isError($errors[$i])) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+
+			// Redirect back to the configuration screen.
+			$r->view = 'site';
+			$this->sendJsonResponse($r);
+
+			return false;
+		}
+
+		// Store the options in the session.
+		unset($return['admin_password2']);
+		$vars = $model->storeOptions($return);
+
+		// Get the configuration model.
+		$configuration = $this->getModel('Configuration', 'JInstallationModel', array('dbo' => null));
+
+		// Attempt to setup the configuration.
+		$return = $configuration->setup($vars);
+
+		// Ensure a language was set.
+		if (!$return) {
+			$this->setMessage($configuration->getError(), 'notice');
+			$r->view = 'site';
+		} else {
+			$r->view = 'complete';
+		}
+		$this->sendJsonResponse($r);
+	}
+	
 	function loadSampleData()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -39,7 +281,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($database->getError(), 500));
+			$this->sendJsonResponse(new JException($database->getError(), 500));
 		} else {
 			// Mark sample content as installed
 			$data = array(
@@ -53,13 +295,13 @@ class JInstallationControllerSetup extends JController
 		$r->text = JText::_('INSTL_SITE_SAMPLE_LOADED');
 
 		// Send the response.
-		$this->sendResponse($r);
+		$this->sendJsonResponse($r);
 	}
 
 	function detectFtpRoot()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -78,7 +320,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($filesystem->getError(), 500));
+			$this->sendJsonResponse(new JException($filesystem->getError(), 500));
 		}
 
 		// Create a response body.
@@ -86,13 +328,13 @@ class JInstallationControllerSetup extends JController
 		$r->root = $return;
 
 		// Send the response.
-		$this->sendResponse($r);
+		$this->sendJsonResponse($r);
 	}
 
 	function verifyFtpSettings()
 	{
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -111,7 +353,7 @@ class JInstallationControllerSetup extends JController
 
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException($filesystem->getError(), 500));
+			$this->sendJsonResponse(new JException($filesystem->getError(), 500));
 		}
 
 		// Create a response body.
@@ -119,15 +361,15 @@ class JInstallationControllerSetup extends JController
 		$r->valid = $return;
 
 		// Send the response.
-		$this->sendResponse($r);
+		$this->sendJsonResponse($r);
 	}
-	
+
 	function removeFolder()
 	{
 		jimport('joomla.filesystem.folder');
 
 		// Check for a valid token. If invalid, send a 403 with the error message.
-		JRequest::checkToken('request') or $this->sendResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
+		JRequest::checkToken('request') or $this->sendJsonResponse(new JException(JText::_('JINVALID_TOKEN'), 403));
 
 		// Get the posted config options.
 		$vars = JRequest::getVar('jform', array());
@@ -135,7 +377,7 @@ class JInstallationControllerSetup extends JController
 		$path = JPATH_INSTALLATION;
 		//check whether the folder still exists
 		if (!file_exists($path)) {
-			$this->sendResponse(new JException(JText::sprintf('INSTL_COMPLETE_ERROR_FOLDER_ALREADY_REMOVED'), 500));
+			$this->sendJsonResponse(new JException(JText::sprintf('INSTL_COMPLETE_ERROR_FOLDER_ALREADY_REMOVED'), 500));
 		}
 
 		// check whether we need to use FTP 
@@ -178,7 +420,7 @@ class JInstallationControllerSetup extends JController
 		
 		// If an error was encountered return an error.
 		if (!$return) {
-			$this->sendResponse(new JException(JText::_('INSTL_COMPLETE_ERROR_FOLDER_DELETE'), 500));
+			$this->sendJsonResponse(new JException(JText::_('INSTL_COMPLETE_ERROR_FOLDER_DELETE'), 500));
 		}
 
 		// Create a response body.
@@ -186,68 +428,9 @@ class JInstallationControllerSetup extends JController
 		$r->text = JText::_('INSTL_COMPLETE_FOLDER_REMOVED');
 
 		// Send the response.
-		$this->sendResponse($r);
-	}
-
-	/**
-	 * Method to handle a send a JSON response. The data parameter
-	 * can be a JException object for when an error has occurred or
-	 * a JObject for a good response.
-	 *
-	 * @access	public
-	 * @param	object	JObject on success, JException on failure.
-	 * @return	void
-	 * @since	1.6
-	 */
-	function sendResponse($response)
-	{
-		// Check if we need to send an error code.
-		if (JError::isError($response))
-		{
-			// Send the appropriate error code response.
-			JResponse::setHeader('status', $response->getCode());
-			JResponse::setHeader('Content-Type', 'application/json; charset=utf-8');
-			JResponse::sendHeaders();
-		}
-
-		// Send the JSON response.
-		echo json_encode(new JInstallationJsonResponse($response));
-
-		// Close the application.
-		$app = JFactory::getApplication();
-		$app->close();
-	}
-}
-
-/**
- * Joomla Core Installation JSON Response Class
- *
- * @package		Joomla.Installation
- * @since		1.6
- */
-class JInstallationJsonResponse
-{
-	function __construct($state)
-	{
-		// The old token is invalid so send a new one.
-		$this->token = JUtility::getToken(true);
-
-		// Check if we are dealing with an error.
-		if (JError::isError($state))
-		{
-			// Prepare the error response.
-			$this->error	= true;
-			$this->header	= JText::_('INSTL_HEADER_ERROR');
-			$this->message	= $state->getMessage();
-		}
-		else
-		{
-			// Prepare the response data.
-			$this->error	= false;
-			$this->data		= $state;
-		}
+		$this->sendJsonResponse($r);
 	}
 }
 
 // Set the error handler.
-//JError::setErrorHandling(E_ALL, 'callback', array('JInstallationControllerSetup', 'sendResponse'));
+//JError::setErrorHandling(E_ALL, 'callback', array('JInstallationControllerSetup', 'sendJsonResponse'));

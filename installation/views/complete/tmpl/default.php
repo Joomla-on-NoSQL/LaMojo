@@ -7,34 +7,7 @@
  */
 
 defined('_JEXEC') or die;
-
-// Include the component HTML helpers.
-JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
-
-// Load the JavaScript behaviors.
-JHtml::_('behavior.keepalive');
-JHtml::_('behavior.tooltip');
-JHtml::_('behavior.formvalidation');
-JHtml::_('script', 'installation/template/js/installation.js', true, false, false, false);
 ?>
-
-<div id="stepbar">
-	<div class="t">
-		<div class="t">
-			<div class="t"></div>
-		</div>
-	</div>
-	<div class="m">
-		<?php echo JHtml::_('installation.stepbar', 7); ?>
-		<div class="box"></div>
-	</div>
-	<div class="b">
-		<div class="b">
-			<div class="b"></div>
-		</div>
-	</div>
-</div>
-
 <form action="index.php" method="post" id="adminForm" class="form-validate">
 <div id="right">
 	<div id="rightpad">

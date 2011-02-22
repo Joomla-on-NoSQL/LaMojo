@@ -34,7 +34,7 @@ a:hover {
 
 h1, h2, h3, h4, h5,
 #header3 span,
-.step-on, .step-off, .step-grey,
+.step-grey,
 .step,
 .button1-left a,
 .button1-right a {
@@ -161,19 +161,17 @@ td.item + td {
 	background: url(../images/j_divider.png) 0 100% repeat-x;
 }
 
-.step-on, .step-off, .step-grey {
+.step,
+.step-grey {
 	padding-top: 10px;
 	padding-bottom: 12px;
 	font-size: 12px;
 	font-weight: bold;
 	background: url(../images/j_divider.png) 0 100% repeat-x;
-}
-
-.step-off {
 	color: #333;
 }
 
-.step-on {
+.step.active {
 	color: #f48b06;
 }
 
@@ -387,8 +385,9 @@ div.moofx-slider {
 }
 
 .final-table {
-	width: 100%;
 	text-align: center;
+	margin-top: 90px;
+	margin-right: 20px;
 }
 
 td em {

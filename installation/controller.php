@@ -48,6 +48,14 @@ class JInstallationController extends JController
 		$vFormat	= $document->getType();
 		$lName		= JRequest::getWord('layout', 'default');
 
+		if (strcmp($vName, $default_view) == 0) {
+			JRequest::setVar('view', $default_view);
+		}
+
+		if (strcmp($vName, $default_view) == 0) {
+			JRequest::setVar('view', $default_view);
+		}
+
 		if ($view = $this->getView($vName, $vFormat)) {
 
 			switch ($vName) {
