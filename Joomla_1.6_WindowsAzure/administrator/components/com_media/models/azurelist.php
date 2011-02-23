@@ -100,8 +100,15 @@ class MediaModelAzureList extends JModel
 		//$fileList	= JFolder::files($basePath);
 		//$folderList = JFolder::folders($basePath);
 		if (strlen($current) > 0) {
-			$fileList = $this->getFileList($current);
-			$folderList = $this->getFolderListFiles($current);
+			if(strstr($current, '/'))
+			{
+				$fileList = $this->getNestedFileList($current);
+				//$fileList = array();
+				$folderList = $this->getNestedFolderList($current);
+			}else{
+				$fileList = $this->getFileList($current);
+				$folderList = $this->getFolderListFiles($current);
+			}
 		}else{
 			$folderList = $this->getFolderList();
 			$fileList = $this->getFileList('images');
@@ -226,6 +233,7 @@ class MediaModelAzureList extends JModel
 	
 	public function getFolderListFiles($container)
 	{
+		$folders = array();
 		$files = WinAzureHelper::listBlobs($container);
 		foreach($files as $file)
 		{
@@ -236,5 +244,50 @@ class MediaModelAzureList extends JModel
 			}
 		}
 		return array_unique($folders);
+	}
+	
+	public function getNestedFolderList($container)
+	{
+		$container_split = explode('/', $container);
+		$container_main = $container_split['0'];
+		$container_other = str_replace($container_main.'/', '', $container);
+		$files = WinAzureHelper::listBlobs($container_main);
+		$folders = array();
+		foreach($files as $file)
+		{
+			if(strstr($file->name, $container_other.'/'))
+			{
+				$file_name = str_replace($container_other.'/', '', $file->name);
+				$list = explode('/', $file_name);
+				if(count($list) > 1)
+					$folders[] = $list[0];
+			}
+		}
+		return array_unique($folders);
+	}
+	
+	public function getNestedFileList($container)
+	{
+		$container_split = explode('/', $container);
+		$container_main = $container_split['0'];
+		$container_other = str_replace($container_main.'/', '', $container);
+		$files = WinAzureHelper::listBlobs($container_main);
+		$file_list = array();
+		$count = 0;
+		foreach($files as $file)
+		{
+			if(strstr($file->name, $container_other.'/'))
+			{
+				$file_name = str_replace($container_other.'/', '', $file->name);
+				$list = explode('/', $file_name);
+				if(count($list) == 1){
+					$file_list[$count]['name'] = $list[0];
+					$file_list[$count]['path'] = 'components/com_media/tmp/'.$list[0];
+				    WinAzureHelper::getBlobFile($container_main, $container_other.'/'.$list[0], $file_list[$count]['path']);
+				    $count++;
+				}
+			}
+		}
+		return $file_list;
 	}
 }
