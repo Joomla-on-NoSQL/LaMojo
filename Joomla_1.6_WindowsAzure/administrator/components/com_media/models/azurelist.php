@@ -113,10 +113,7 @@ class MediaModelAzureList extends JModel
 			$folderList = $this->getFolderList();
 			$fileList = $this->getFileList('images');
 		}
-		//$size = WinAzureHelper::getBlobProperties('sampledata', 'parks/parks.gif');
-		//echo $size->size;
-		//echo '<pre>';
-		//print_r($fileList); 
+		
 		// Iterate over the files if they exist
 		if ($fileList !== false) {
 			foreach ($fileList as $file)
@@ -197,8 +194,7 @@ class MediaModelAzureList extends JModel
 		}
 
 		$list = array('folders' => $folders, 'docs' => $docs, 'images' => $images);
-//echo '<pre>';
-//print_r($list['images']);
+
 		return $list;
 	}
 	
@@ -227,9 +223,6 @@ class MediaModelAzureList extends JModel
 				$size = WinAzureHelper::getBlobProperties($container, $file->name);
 				$file_list[$count]['size'] = $size->size;
 				$file_list[$count]['path'] = $size->url;
-				//$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
-			    //$file_list[$count]['data'] = WinAzureHelper::getBlobData($container, $file->name);
-			    //WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
 			    $count++;
 			}
 		}
@@ -290,8 +283,6 @@ class MediaModelAzureList extends JModel
 					$size = WinAzureHelper::getBlobProperties($container_main, $container_other.'/'.$list[0]);
 					$file_list[$count]['size'] = $size->size;
 					$file_list[$count]['path'] = $size->url;
-					//$file_list[$count]['path'] = 'components/com_media/tmp/'.$list[0];
-				    //WinAzureHelper::getBlobFile($container_main, $container_other.'/'.$list[0], $file_list[$count]['path']);
 				    $count++;
 				}
 			}
