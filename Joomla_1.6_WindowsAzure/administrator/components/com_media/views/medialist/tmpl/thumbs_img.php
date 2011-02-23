@@ -17,8 +17,8 @@ $dispatcher->trigger('onContentBeforeDisplay', array('com_media.file', &$this->_
 		<div class="imgOutline">
 			<div class="imgTotal">
 				<div class="imgBorder center">
-					<a class="img-preview" href="<?php echo JURI::base().'/'.$this->_tmp_img->path_relative; ?>" title="<?php echo $this->_tmp_img->name; ?>" style="display: block; width: 100%; height: 100%">
-						<?php echo JHTML::_('image',JURI::base().'/'.$this->_tmp_img->path_relative, JText::sprintf('COM_MEDIA_IMAGE_TITLE', $this->_tmp_img->title, MediaHelper::parseSize($this->_tmp_img->size)), array('width' => $this->_tmp_img->width_60, 'height' => $this->_tmp_img->height_60, 'border' => 0)); ?>
+					<a class="img-preview" href="<?php echo $this->_tmp_img->path_relative; ?>" title="<?php echo $this->_tmp_img->name; ?>" style="display: block; width: 100%; height: 100%">
+						<?php echo JHTML::_('image',$this->_tmp_img->path_relative, JText::sprintf('COM_MEDIA_IMAGE_TITLE', $this->_tmp_img->title, MediaHelper::parseSize($this->_tmp_img->size)), array('width' => $this->_tmp_img->width_60, 'height' => $this->_tmp_img->height_60, 'border' => 0)); ?>
 					</a>
 				</div>
 			</div>
@@ -29,7 +29,7 @@ $dispatcher->trigger('onContentBeforeDisplay', array('com_media.file', &$this->_
 			<?php endif;?>
 			</div>
 			<div class="imginfoBorder">
-				<a href="<?php echo JURI::base().'/'.$this->_tmp_img->path_relative; ?>" title="<?php echo $this->_tmp_img->name; ?>" class="preview"><?php echo $this->escape(substr($this->_tmp_img->title, 0, 10) . (strlen($this->_tmp_img->title) > 10 ? '...' : '')); ?></a>
+				<a href="<?php echo $this->_tmp_img->path_relative; ?>" title="<?php echo $this->_tmp_img->name; ?>" class="preview"><?php echo $this->escape(substr($this->_tmp_img->title, 0, 10) . (strlen($this->_tmp_img->title) > 10 ? '...' : '')); ?></a>
 			</div>
 		</div>
 <?php

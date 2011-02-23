@@ -113,19 +113,21 @@ class MediaModelAzureList extends JModel
 			$folderList = $this->getFolderList();
 			$fileList = $this->getFileList('images');
 		}
+		//$size = WinAzureHelper::getBlobProperties('sampledata', 'parks/parks.gif');
+		//echo $size->size;
 		//echo '<pre>';
 		//print_r($fileList); 
 		// Iterate over the files if they exist
 		if ($fileList !== false) {
 			foreach ($fileList as $file)
 			{
-				if (is_file($file['path']) && substr($file['name'], 0, 1) != '.' && strtolower($file['name']) !== 'index.html') {
+				if (substr($file['name'], 0, 1) != '.' && strtolower($file['name']) !== 'index.html') {
 					$tmp = new JObject();
 					$tmp->name = $file['name'];
 					$tmp->title = $file['name'];
 					$tmp->path = str_replace(DS, '/', $file['path']);
 					$tmp->path_relative = $tmp->path;
-					$tmp->size = filesize($file['path']);
+					$tmp->size = $file['size'];
 
 					$ext = strtolower(JFile::getExt($file['name']));
 					switch ($ext)
@@ -222,9 +224,12 @@ class MediaModelAzureList extends JModel
 			if(!strstr($file->name, '/'))
 			{
 				$file_list[$count]['name'] = $file->name;
-				$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
+				$size = WinAzureHelper::getBlobProperties($container, $file->name);
+				$file_list[$count]['size'] = $size->size;
+				$file_list[$count]['path'] = $size->url;
+				//$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
 			    //$file_list[$count]['data'] = WinAzureHelper::getBlobData($container, $file->name);
-			    WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
+			    //WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
 			    $count++;
 			}
 		}
@@ -282,8 +287,11 @@ class MediaModelAzureList extends JModel
 				$list = explode('/', $file_name);
 				if(count($list) == 1){
 					$file_list[$count]['name'] = $list[0];
-					$file_list[$count]['path'] = 'components/com_media/tmp/'.$list[0];
-				    WinAzureHelper::getBlobFile($container_main, $container_other.'/'.$list[0], $file_list[$count]['path']);
+					$size = WinAzureHelper::getBlobProperties($container_main, $container_other.'/'.$list[0]);
+					$file_list[$count]['size'] = $size->size;
+					$file_list[$count]['path'] = $size->url;
+					//$file_list[$count]['path'] = 'components/com_media/tmp/'.$list[0];
+				    //WinAzureHelper::getBlobFile($container_main, $container_other.'/'.$list[0], $file_list[$count]['path']);
 				    $count++;
 				}
 			}

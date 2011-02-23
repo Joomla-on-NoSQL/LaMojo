@@ -151,4 +151,18 @@ class WinAzureHelper
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
 		}
 	}
+	
+	public static function getBlobProperties($container, $file_name)
+	{
+		try{
+			return self::$win_azure_conn->getBlobProperties($container, $file_name);
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	}
 }
