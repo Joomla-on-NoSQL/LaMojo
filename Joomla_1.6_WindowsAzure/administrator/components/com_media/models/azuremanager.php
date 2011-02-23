@@ -100,9 +100,9 @@ class MediaModelAzureManager extends JModel
 		$mediaBase = str_replace(DS, '/', COM_MEDIA_BASE.'/');
 
 		// Get the list of folders
-		//jimport('joomla.filesystem.folder');
-		//$folders = JFolder::folders($base, '.', true, true);
-		$folders = $this->getFolders($mediaBase);
+		jimport('joomla.filesystem.folder');
+		$folders = JFolder::folders($base, '.', true, true);
+		//$folders = $this->getFolders($mediaBase);
 
 		$tree = array();
 		
@@ -163,14 +163,16 @@ class MediaModelAzureManager extends JModel
 		
 		// Get the list of folders
 		$folders = JFolder::folders($base, '.', true, true);
-		
+		//echo '<pre>';
+		$root_folders = $this->getRootFolders($folders, $base);
+				
 		foreach($folders as $folder)
 		{
 			$folder		= str_replace(DS, '/', $folder);
-			$container_names[]	= substr($folder, strrpos($folder, '/') + 1);
+			//$container_names[]	= substr($folder, strrpos($folder, '/') + 1);
 			$file_list[$folder] = JFolder::files($folder);
 		}
-		
+		//print_r($file_list);die();
 		WinAzureHelper::initialize();
 		
 		//Check any files in the base folder
@@ -178,12 +180,12 @@ class MediaModelAzureManager extends JModel
 		if(!empty($base_files))
 			WinAzureHelper::createFolder(substr($base, strrpos($base, '/') + 1));
 		$def_file_list[$base] = $base_files;
-		$this->createFolderFiles($def_file_list);
+		
+		$this->createBaseFolderFiles($def_file_list);
 		
 		//create the nested folders and their files
-		$this->createFolders($container_names);
-		$this->createFolderFiles($file_list);
-		
+		$this->createFolders($root_folders);
+		$this->createFolderFiles($file_list, $root_folders, $base);
 	}
 	
 	public function createFolders($container_names)
@@ -194,7 +196,7 @@ class MediaModelAzureManager extends JModel
 		}
 	}
 	
-	public function createFolderFiles($file_list)
+	public function createBaseFolderFiles($file_list)
 	{
 		foreach($file_list as $path=>$files)
 		{
@@ -206,5 +208,52 @@ class MediaModelAzureManager extends JModel
 				}
 			}
 		}
+	}
+	
+	public function createFolderFiles($file_list, $root_folders, $base)
+	{
+		foreach($file_list as $path=>$files)
+		{
+			//$folder_name = substr($path, strrpos($path, '/') + 1);
+			$folder_name = str_replace($base.'/', '', $path);
+			if(in_array($folder_name,  $root_folders))
+			{
+				foreach($files as $file)
+				{
+					if (is_file($path.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+						WinAzureHelper::createBlob($folder_name, $file, $path.'/'.$file); 
+					}
+				}
+			}else{
+				foreach($root_folders as $root)
+				{
+					if(strstr($path, $base.'/'.$root))
+					{
+						$folder_name = str_replace($base.'/'.$root.'/', '', $path);
+						if($folder_name != '')
+						{
+							foreach($files as $file)
+							{
+								if (is_file($path.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
+									WinAzureHelper::createBlob($root, $folder_name.'/'.$file, $path.'/'.$file); 
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public function getRootFolders($folders, $base)
+	{
+		foreach($folders as $folder)
+		{
+			$folder		= str_replace(DS, '/', $folder);
+			$folder		= str_replace($base.'/', '', $folder);
+			if(!strstr($folder, '/'))
+				$root_folder[] = $folder;
+		}
+		return $root_folder;
 	}
 }

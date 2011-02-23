@@ -101,10 +101,10 @@ class MediaModelAzureList extends JModel
 		//$folderList = JFolder::folders($basePath);
 		if (strlen($current) > 0) {
 			$fileList = $this->getFileList($current);
-			$folderList = array();
+			$folderList = $this->getFolderListFiles($current);
 		}else{
-			$fileList	= array();
 			$folderList = $this->getFolderList();
+			$fileList = $this->getFileList('images');
 		}
 		//echo '<pre>';
 		//print_r($fileList); 
@@ -198,7 +198,8 @@ class MediaModelAzureList extends JModel
 		$containers = WinAzureHelper::listContainers();
 		foreach($containers as $container)
 		{
-			$folders[] = $container->name;
+			if($container->name != 'images')
+				$folders[] = $container->name;
 		}
 		return $folders;
 	}
@@ -211,12 +212,29 @@ class MediaModelAzureList extends JModel
 		
 		foreach($files as $file)
 		{
-			$file_list[$count]['name'] = $file->name;
-			$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
-		    //$file_list[$count]['data'] = WinAzureHelper::getBlobData($container, $file->name);
-		    WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
-		    $count++;
+			if(!strstr($file->name, '/'))
+			{
+				$file_list[$count]['name'] = $file->name;
+				$file_list[$count]['path'] = 'components/com_media/tmp/'.$file->name;
+			    //$file_list[$count]['data'] = WinAzureHelper::getBlobData($container, $file->name);
+			    WinAzureHelper::getBlobFile($container, $file->name, $file_list[$count]['path']);
+			    $count++;
+			}
 		}
 		return $file_list;
+	}
+	
+	public function getFolderListFiles($container)
+	{
+		$files = WinAzureHelper::listBlobs($container);
+		foreach($files as $file)
+		{
+			if(strstr($file->name, '/'))
+			{
+				$list = explode('/', $file->name);
+				$folders[] = $list[0];
+			}
+		}
+		return array_unique($folders);
 	}
 }
