@@ -110,6 +110,20 @@ class WinAzureHelper
 		}
 	}
 	
+	public static function deleteBlob($container, $blob_name)
+	{
+		try{
+			self::$win_azure_conn->deleteBlob($container, $blob_name);
+		}catch (Microsoft_WindowsAzure_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+		catch (Microsoft_Http_Transport_Exception $ex)
+		{
+			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+		}
+	} 
+	
 	public static function listBlobs($container)
 	{
 		try{

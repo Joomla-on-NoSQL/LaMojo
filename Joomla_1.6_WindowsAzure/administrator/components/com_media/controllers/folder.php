@@ -103,7 +103,7 @@ class MediaControllerFolder extends JController
 
 							$ret &= !JFolder::delete($fullPath);
 							if(JFactory::checkAzureExists())
-					 	 		$this->deleteAzureFolder($path);
+					 	 		$this->deleteAzureFolder($path, $folder);
 							// Trigger the onContentAfterDelete event.
 							$dispatcher->trigger('onContentAfterDelete', array('com_media.folder', &$object_file));
 							$this->setMessage(JText::sprintf('COM_MEDIA_DELETE_COMPLETE', substr($fullPath, strlen(COM_MEDIA_BASE))));
@@ -115,7 +115,7 @@ class MediaControllerFolder extends JController
 						}
 					}else{
 						if(JFactory::checkAzureExists())
-					 	 $ret = $this->deleteAzureFolder($path);
+					 	 $ret = $this->deleteAzureFolder($path, $folder);
 					 	 // Trigger the onContentAfterDelete event.
 						$dispatcher->trigger('onContentAfterDelete', array('com_media.folder', &$object_file));
 						$this->setMessage(JText::sprintf('COM_MEDIA_DELETE_COMPLETE', substr($fullPath, strlen(COM_MEDIA_BASE))));
@@ -194,10 +194,27 @@ class MediaControllerFolder extends JController
 		}
 	}
 	
-	public function deleteAzureFolder($path)
+	public function deleteAzureFolder($path, $folder)
 	{
 		WinAzureHelper::initialize();
-		WinAzureHelper::deleteContainer($path);
+		if($folder == ''){
+			WinAzureHelper::deleteContainer($path);
+		}else{
+			$folders = explode('/', $folder);
+			$root_folder = $folders['0'];
+			$files = WinAzureHelper::listBlobs($root_folder);
+			if(strstr($folder, '/'))
+				$path_rest = str_replace($root_folder.'/', '', $folder).'/'.$path.'/';
+			else 	
+				$path_rest = $path.'/';
+			
+			foreach($files as $file){
+				if(strstr($file->name, $path_rest))
+				{
+					WinAzureHelper::deleteBlob($root_folder, $file->name);
+				}
+			}
+		}
 		return 0;
 	}
 	
