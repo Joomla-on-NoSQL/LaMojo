@@ -180,7 +180,7 @@ class MediaControllerFolder extends JController
 					continue;
 				}
 				if(JFactory::checkAzureExists()){
-					 	 $ret = $this->createAzureFolder($folder);
+					 	 $ret = $this->createAzureFolder($folder, $parent);
 				}else{
 					JFolder::create($path);
 					$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
@@ -201,9 +201,20 @@ class MediaControllerFolder extends JController
 		return 0;
 	}
 	
-	public function createAzureFolder($folder)
+	public function createAzureFolder($folder, $path)
 	{
 		WinAzureHelper::initialize();
-		WinAzureHelper::createFolder($folder);
+		if($path == ''){
+			WinAzureHelper::createFolder($folder);
+		}else{
+			$folders = explode('/', $path);
+			$root_folder = $folders['0'];
+			if(strstr($path, '/'))
+				$path_rest = str_replace($root_folder.'/', '', $path).'/'.$folder.'/';
+			else 	
+				$path_rest = $folder.'/';
+			
+			WinAzureHelper::createBlobData($root_folder, $path_rest);			
+		}
 	}
 }

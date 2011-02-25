@@ -278,7 +278,7 @@ class MediaModelAzureList extends JModel
 			{
 				$file_name = str_replace($container_other.'/', '', $file->name);
 				$list = explode('/', $file_name);
-				if(count($list) == 1){
+				if(count($list) == 1 && !empty($list[0])){
 					$file_list[$count]['name'] = $list[0];
 					$size = WinAzureHelper::getBlobProperties($container_main, $container_other.'/'.$list[0]);
 					$file_list[$count]['size'] = $size->size;

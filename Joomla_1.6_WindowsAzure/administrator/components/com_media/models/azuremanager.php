@@ -101,15 +101,18 @@ class MediaModelAzureManager extends JModel
 
 		// Get the list of folders
 		jimport('joomla.filesystem.folder');
-		$folders = JFolder::folders($base, '.', true, true);
-		//$folders = $this->getFolders($mediaBase);
+		//$folders = JFolder::folders($base, '.', true, true);
+		$folders = $this->getFolders($mediaBase);
 
 		$tree = array();
 		
 		foreach ($folders as $folder)
 		{
 			$folder		= str_replace(DS, '/', $folder);
-			$name		= substr($folder, strrpos($folder, '/') + 1);
+			if(strstr($folder, '/'))
+				$name		= substr($folder, strrpos($folder, '/') + 1);
+			else 	
+				$name = $folder;
 			$relative	= str_replace($mediaBase, '', $folder);
 			$absolute	= $folder;
 			$path		= explode('/', $relative);
@@ -152,9 +155,32 @@ class MediaModelAzureManager extends JModel
 		$containers = WinAzureHelper::listContainers();
 		foreach($containers as $container)
 		{
-			$folders[] = $path.$container->name;
+			if($container->name != 'images')
+				$folders[] = $container->name;
 		}
-		return $folders;
+		foreach($containers as $container)
+		{
+			if($container->name != 'images')
+			{
+				$files = WinAzureHelper::listBlobs($container->name);
+				foreach($files as $file)
+				{
+					$file_split = explode('/', $file->name);
+					$folder_name = $container->name;
+					foreach($file_split as $split)
+					{
+						if(!strstr($split, '.') && $split != '')
+						{
+							$folder_name .= '/'.$split;
+						}
+					}
+					if(strstr($folder_name, '/'))
+						$folders[] = $folder_name;
+				}
+			}
+		}
+		sort($folders);
+		return array_unique($folders);
 	}
 	
 	public function syncLocaltoAzure()
