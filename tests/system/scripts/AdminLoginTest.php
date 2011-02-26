@@ -8,8 +8,6 @@
  * checks that all menu choices are shown in back end
  */
 require_once 'JoomlaTestCase.php';
-require_once 'AdminLoginPage.php';
-require_once 'ControlPanelPage.php';
 
 class AdminLoginTest extends JoomlaTestCase
 {
@@ -40,6 +38,7 @@ class AdminLoginTest extends JoomlaTestCase
 	 */
 	public function adminLoginSuccessTest()
 	{
+		new UserManagerPage;
 		try
 		{
 			$landing = new AdminLoginPage();

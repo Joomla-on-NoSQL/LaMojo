@@ -1,6 +1,5 @@
 <?php
 
-require_once 'pages/BasePage.php';
 require_once 'includes/SeleniumConnection.php';
 
 class AdminLoginPage extends BasePage
