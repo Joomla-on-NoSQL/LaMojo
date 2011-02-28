@@ -10,6 +10,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
+ini_set('include_path', 'components/com_media/includes');
+require_once 'components\com_media\helpers\winazure.php';
 
 /**
  * Media File Controller
@@ -88,19 +90,25 @@ class MediaControllerFile extends JController
 				JError::raiseWarning(403, JText::_('COM_MEDIA_ERROR_CREATE_NOT_PERMITTED'));
 				return false;
 			}
-
-			if (!JFile::upload($file['tmp_name'], $file['filepath']))
+			if(JFactory::checkAzureExists())
 			{
-				// Error in upload
-				JError::raiseWarning(100, JText::_('COM_MEDIA_ERROR_UNABLE_TO_UPLOAD_FILE'));
-				return false;
-			}
-			else
-			{
+				$this->createAzureFile($folder, $file);
 				// Trigger the onContentAfterSave event.
 				$dispatcher->trigger('onContentAfterSave', array('com_media.file', &$object_file));
 				$this->setMessage(JText::sprintf('COM_MEDIA_UPLOAD_COMPLETE', substr($file['filepath'], strlen(COM_MEDIA_BASE))));
 				return true;
+			}else{
+					if (!JFile::upload($file['tmp_name'], $file['filepath']))
+					{
+						// Error in upload
+						JError::raiseWarning(100, JText::_('COM_MEDIA_ERROR_UNABLE_TO_UPLOAD_FILE'));
+						return false;
+					}else{
+						// Trigger the onContentAfterSave event.
+						$dispatcher->trigger('onContentAfterSave', array('com_media.file', &$object_file));
+						$this->setMessage(JText::sprintf('COM_MEDIA_UPLOAD_COMPLETE', substr($file['filepath'], strlen(COM_MEDIA_BASE))));
+						return true;
+					}
 			}
 		}
 		else
@@ -208,6 +216,25 @@ class MediaControllerFile extends JController
 				}
 			}
 			return $ret;
+		}
+	}
+	
+	public function createAzureFile($folder, $file)
+	{
+		WinAzureHelper::initialize();
+		if($folder == '')
+		{
+			WinAzureHelper::createBlob('images', $file['name'], $file['tmp_name']);		
+		}else{
+			$folder_names = explode('/', $folder);
+			$container_name = $folder_names[0];
+			if(count($folder_names) == 1)
+			{
+				WinAzureHelper::createBlob($container_name, $file['name'], $file['tmp_name']);
+			}else{
+				$folder_other = str_replace($container_name.'/', '', $folder);
+				WinAzureHelper::createBlob($container_name, $folder_other.'/'.$file['name'], $file['tmp_name']);
+			}
 		}
 	}
 }
