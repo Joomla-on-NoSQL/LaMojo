@@ -1366,8 +1366,8 @@ class JInstallerComponent extends JAdapterInstance
 		$query	= $db->getQuery(true);
 		$query->select('id');
 		$query->from('#__menu');
-		$query->where('`client_id` = 1');
-		$query->where('`component_id` = '.(int) $id);
+		$query->where($db->nameQuote('client_id').' = 1');
+		$query->where($db->nameQuote('component_id').' = '.(int) $id);
 
 		$db->setQuery($query);
 

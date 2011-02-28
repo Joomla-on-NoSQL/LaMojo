@@ -146,9 +146,11 @@ class BannersModelClients extends JModelList
 				$query->where('a.name LIKE '.$search);
 			}
 		}
-
+		$ordering_o = $this->getState('list.ordering', 'ordering');
+		if($ordering_o == 'nbanners')
+			$ordering_o = 'COUNT(b.id)';
 		// Add the list ordering clause.
-		$query->order($db->getEscaped($this->getState('list.ordering', 'ordering')).' '.$db->getEscaped($this->getState('list.direction', 'ASC')));
+		$query->order($db->getEscaped($ordering_o).' '.$db->getEscaped($this->getState('list.direction', 'ASC')));
 
 		//echo nl2br(str_replace('#__','jos_',$query));
 		return $query;

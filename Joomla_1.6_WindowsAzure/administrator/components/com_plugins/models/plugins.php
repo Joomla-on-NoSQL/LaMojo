@@ -142,6 +142,7 @@ class PluginsModelPlugins extends JModelList
 		else {
 			if ($ordering == 'ordering') {
 				$query->order('a.folder ASC');
+				$ordering = 'a.ordering';
 			}
 			$query->order($ordering . ' ' . $this->getState('list.direction'));
 			if($ordering == 'folder') {

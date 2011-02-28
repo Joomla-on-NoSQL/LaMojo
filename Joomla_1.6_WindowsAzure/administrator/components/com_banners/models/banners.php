@@ -156,8 +156,10 @@ class BannersModelBanners extends JModelList
 		$orderCol	= $this->state->get('list.ordering');
 		$orderDirn	= $this->state->get('list.direction');
 		if ($orderCol == 'ordering' || $orderCol == 'category_title') {
-			$orderCol = 'category_title '.$orderDirn.', ordering';
+			$orderCol = 'c.title '.$orderDirn.', a.ordering';
 		}
+		if($orderCol == 'client_name')
+			$orderCol = 'cl.name';
 		$query->order($db->getEscaped($orderCol.' '.$orderDirn));
 
 		//echo nl2br(str_replace('#__','jos_',$query));
