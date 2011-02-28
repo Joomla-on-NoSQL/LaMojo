@@ -92,7 +92,11 @@ class MediaModelAzureManager extends JModel
 			$base = COM_MEDIA_BASE;
 		}
 		
-		WinAzureHelper::initialize();
+		if (!WinAzureHelper::initialize())
+		{
+			JError::raiseWarning(100, JText::sprintf('Error while connecting to azure'));
+			return false;
+		}
 
 		//WinAzureHelper::createFolder('sachin'); 
 		

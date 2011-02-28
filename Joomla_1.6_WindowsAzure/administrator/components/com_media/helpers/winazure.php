@@ -13,17 +13,20 @@ class WinAzureHelper
 			$usePathStyleUri = false;
 			$retryPolicy = Microsoft_WindowsAzure_RetryPolicy_RetryPolicyAbstract::retryN(10, 250);
 			$host = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
-			self::$win_azure_conn = new Microsoft_WindowsAzure_Storage_Blob($host, $config->getValue('cloud_acc_name'), $config->getValue('secret_key'),
+			self::$win_azure_conn = new Microsoft_WindowsAzure_Storage_Blob($host, $config->getValue('cloud_acc_name'), $config->getValue('cloud_access_key'),
 			$usePathStyleUri,
 			$retryPolicy);
 		}catch (Microsoft_WindowsAzure_Exception $ex)
 		{
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+			return false;
 		}
 		catch (Microsoft_Http_Transport_Exception $ex)
 		{
 			echo "<p style='color: red'>Windows Azure Blob Service: Exception: \"{$ex->getMessage()}\"<p/>";
+			return false;
 		}
+		return true;
 	}
 
 	public static function createFolder($container, $access = 'public')

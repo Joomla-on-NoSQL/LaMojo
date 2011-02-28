@@ -51,7 +51,7 @@
 				default="local"
 			>
 				<option value="local">Local</option>
-				<option value="winazure">Windows Azure</option>
+				<option value="winazure">Windows Azure Storage</option>
 				<option value="amazon">Amazon</option>
 			</field>
 			<field name="acc_name" type="text" id="acc_name" class="inputbox"
@@ -60,14 +60,6 @@
 			/>
 			<field name="access_key" type="password" id="access_key" class="inputbox"
 				label="INSTL_CLOUD_ACCESS_KEY"
-				required="true"
-			/>
-			<field name="secret_key" type="password" id="secret_key" class="inputbox"
-				label="INSTL_CLOUD_DOMAIN_NAME"
-				required="true"
-			/>
-			<field name="container" type="text" id="container" class="inputbox"
-				label="INSTL_CLOUD_CONTAINER"
 				required="true"
 			/>
 		</fieldset>

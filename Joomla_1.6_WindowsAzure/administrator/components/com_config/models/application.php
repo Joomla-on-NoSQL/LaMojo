@@ -285,8 +285,6 @@ class ConfigModelApplication extends JModelForm
 		{
 			$form->setFieldAttribute('cloud_acc_name', 'required', 'false');
 			$form->setFieldAttribute('cloud_access_key', 'required', 'false');
-			$form->setFieldAttribute('secret_key', 'required', 'false');
-			$form->setFieldAttribute('container', 'required', 'false');
 		}
 		// Filter and validate the form data.
 		$data	= $form->filter($data);

@@ -29,8 +29,6 @@ window.addEvent('domready', function(){
 		  }else{
 			  document.id('jform_acc_name').set("value", "");
 				document.id('jform_access_key').set("value", "");
-				document.id('jform_secret_key').set("value", "");
-				document.id('jform_container').set("value", "");
 			  $$('.server_details_req').fade('out');
 			  $$('.server_details_req').set('style', 'display:none');
 		  }
@@ -263,30 +261,6 @@ window.addEvent('domready', function(){
 										</em>
 									</td>
 								</tr>
-								<tr  class="server_details_req">
-						       <td>
-										<?php echo $this->form->getLabel('secret_key'); ?>
-									</td>
-									<td>
-										<?php echo $this->form->getInput('secret_key'); ?>
-									</td><td>
-									<em>
-										<?php echo JText::_('INSTL_CLOUD_DOMAIN_NAME_DESC'); ?>
-										</em>
-						        </td>
-						      </tr>
-						     <tr  class="server_details_req">
-						       <td>
-										<?php echo $this->form->getLabel('container'); ?>
-									</td>
-									<td>
-										<?php echo $this->form->getInput('container'); ?>
-									</td><td>
-									<em>
-										<?php echo JText::_('INSTL_CLOUD_CONTAINER_DESC'); ?>
-										</em>
-						        </td>
-						      </tr>
 							</table>
 
 						</div>
