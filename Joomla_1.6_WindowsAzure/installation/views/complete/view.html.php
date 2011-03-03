@@ -10,7 +10,8 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.view');
 jimport('joomla.html.html');
-
+ini_set('include_path', JPATH_LIBRARIES);
+require_once JPATH_ADMINISTRATOR.'\components\com_media\helpers\winazure.php';
 /**
  * The HTML Joomla Core Install Complete View
  *
@@ -38,11 +39,22 @@ class JInstallationViewComplete extends JView
 			JError::raiseError(500, implode("\n", $errors));
 			return false;
 		}
-
+		if($options['storage_type'] == 'winazure')
+			$this->backupConfiguration($options);
 		$this->assignRef('state', $state);
 		$this->assignRef('options', $options);
 		$this->assignRef('config', $config);
 
 		parent::display($tpl);
+	}
+	
+	private function backupConfiguration($options)
+	{
+		if(file_exists(JPATH_SITE.'/configuration.php'))
+		{
+			WinAzureHelper::initialize($options['acc_name'], $options['access_key']);
+			WinAzureHelper::createFolder('config');
+			WinAzureHelper::createBlob('config', 'configuration.php', JPATH_SITE.'/configuration.php');
+		}
 	}
 }

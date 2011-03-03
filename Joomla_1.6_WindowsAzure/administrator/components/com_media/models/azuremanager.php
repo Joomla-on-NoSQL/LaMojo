@@ -7,7 +7,7 @@
 
 // No direct access
 defined('_JEXEC') or die;
-ini_set('include_path', 'components/com_media/includes');
+ini_set('include_path', JPATH_LIBRARIES);
 require_once 'components\com_media\helpers\winazure.php';
 jimport('joomla.application.component.model');
 jimport('joomla.filesystem.folder');
@@ -159,7 +159,7 @@ class MediaModelAzureManager extends JModel
 		$containers = WinAzureHelper::listContainers();
 		foreach($containers as $container)
 		{
-			if($container->name != 'images')
+			if($container->name != 'images' && $container->name != 'config')
 				$folders[] = $container->name;
 		}
 		foreach($containers as $container)

@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
-ini_set('include_path', 'components/com_media/includes');
+ini_set('include_path', JPATH_LIBRARIES);
 require_once 'components\com_media\helpers\winazure.php';
 
 /**

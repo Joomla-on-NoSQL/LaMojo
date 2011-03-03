@@ -3,17 +3,22 @@ class WinAzureHelper
 {
 	public static $win_azure_conn = null;
 
-	public static function initialize()
+	public static function initialize($acc_name = null, $access_key = null)
 	{
-		require_once('components/com_media/includes/Microsoft/WindowsAzure/Storage.php');
-		require_once('components/com_media/includes/Microsoft/WindowsAzure/Storage/Blob.php');
-		$config = JFactory::getConfig();
+		require_once(JPATH_LIBRARIES.'/Microsoft/WindowsAzure/Storage.php');
+		require_once(JPATH_LIBRARIES.'/Microsoft/WindowsAzure/Storage/Blob.php');
 		
+		if(is_null($acc_name) || is_null($access_key))
+		{
+			$config = JFactory::getConfig();
+			$acc_name = $config->getValue('cloud_acc_name');
+			$access_key = $config->getValue('cloud_access_key');
+		}
 		try{
 			$usePathStyleUri = false;
 			$retryPolicy = Microsoft_WindowsAzure_RetryPolicy_RetryPolicyAbstract::retryN(10, 250);
 			$host = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
-			self::$win_azure_conn = new Microsoft_WindowsAzure_Storage_Blob($host, $config->getValue('cloud_acc_name'), $config->getValue('cloud_access_key'),
+			self::$win_azure_conn = new Microsoft_WindowsAzure_Storage_Blob($host, $acc_name, $access_key,
 			$usePathStyleUri,
 			$retryPolicy);
 		}catch (Microsoft_WindowsAzure_Exception $ex)
