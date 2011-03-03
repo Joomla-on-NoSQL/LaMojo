@@ -36,7 +36,7 @@ class JDatabaseSQLAzure extends JDatabase
 	 *
 	 * @var string
 	 */
-	var $_nullDate		= '1999-01-01 00:00:00';
+	var $_nullDate		= '1900-01-01 00:00:00';
 
 	/**
 	 * Quote for named objects
