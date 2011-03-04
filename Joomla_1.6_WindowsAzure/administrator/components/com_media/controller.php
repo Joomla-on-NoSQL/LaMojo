@@ -37,12 +37,18 @@ class MediaController extends JController
 		{
 			case 'images':
 				$vLayout = JRequest::getCmd('layout', 'default');
-				$mName = 'manager';
+				if(JFactory::checkAzureExists())
+					$mName = 'azuremanager';
+				else
+					$mName = 'manager';
 
 				break;
 
 			case 'imagesList':
-				$mName = 'list';
+				if(JFactory::checkAzureExists())
+					$mName = 'azurelist';
+				else
+					$mName = 'list';
 				$vLayout = JRequest::getCmd('layout', 'default');
 
 				break;

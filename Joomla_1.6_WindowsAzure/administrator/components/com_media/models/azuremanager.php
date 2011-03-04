@@ -53,10 +53,16 @@ class MediaModelAzureManager extends JModel
 		if (empty($base)) {
 			$base = COM_MEDIA_BASE;
 		}
+		if (!WinAzureHelper::initialize())
+		{
+			JError::raiseWarning(100, JText::sprintf('Error while connecting to azure'));
+			return false;
+		}
 
+		$folders = $this->getFolders($mediaBase);
 		// Get the list of folders
-		jimport('joomla.filesystem.folder');
-		$folders = JFolder::folders($base, '.', true, true);
+		//jimport('joomla.filesystem.folder');
+		//$folders = JFolder::folders($base, '.', true, true);
 
 		$document = JFactory::getDocument();
 		$document->setTitle(JText::_('COM_MEDIA_INSERT_IMAGE'));
@@ -66,6 +72,7 @@ class MediaModelAzureManager extends JModel
 
 		foreach ($folders as $folder)
 		{
+			$folder     = '/'.$folder;
 			$folder		= str_replace(COM_MEDIA_BASE, "", $folder);
 			$value		= substr($folder, 1);
 			$text		= str_replace(DS, "/", $folder);
