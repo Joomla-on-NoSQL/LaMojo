@@ -198,9 +198,13 @@ class MediaControllerFolder extends JController
 	{
 		WinAzureHelper::initialize();
 		if($folder == ''){
-			WinAzureHelper::deleteContainer($path);
+			$folder = 'images';
+			//WinAzureHelper::deleteContainer($path);
 		}else{
-			$folders = explode('/', $folder);
+			$folder = 'images/'.$folder;
+			
+		}
+	$folders = explode('/', $folder);
 			$root_folder = $folders['0'];
 			$files = WinAzureHelper::listBlobs($root_folder);
 			if(strstr($folder, '/'))
@@ -214,7 +218,6 @@ class MediaControllerFolder extends JController
 					WinAzureHelper::deleteBlob($root_folder, $file->name);
 				}
 			}
-		}
 		return 0;
 	}
 	
@@ -222,16 +225,18 @@ class MediaControllerFolder extends JController
 	{
 		WinAzureHelper::initialize();
 		if($path == ''){
-			WinAzureHelper::createFolder($folder);
+			$path = 'images';
+			//WinAzureHelper::createFolder($folder);
 		}else{
-			$folders = explode('/', $path);
+			$path = 'images/'.$path;
+		}
+		$folders = explode('/', $path);
 			$root_folder = $folders['0'];
 			if(strstr($path, '/'))
 				$path_rest = str_replace($root_folder.'/', '', $path).'/'.$folder.'/';
 			else 	
 				$path_rest = $folder.'/';
 			
-			WinAzureHelper::createBlobData($root_folder, $path_rest);			
-		}
+			WinAzureHelper::createBlobData($root_folder, $path_rest);	
 	}
 }

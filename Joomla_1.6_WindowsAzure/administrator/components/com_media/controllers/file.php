@@ -238,10 +238,10 @@ class MediaControllerFile extends JController
 			$container_name = $folder_names[0];
 			if(count($folder_names) == 1)
 			{
-				WinAzureHelper::createBlob($container_name, $file['name'], $file['tmp_name']);
+				WinAzureHelper::createBlob('images', $container_name.'/'.$file['name'], $file['tmp_name']);
 			}else{
 				$folder_other = str_replace($container_name.'/', '', $folder);
-				WinAzureHelper::createBlob($container_name, $folder_other.'/'.$file['name'], $file['tmp_name']);
+				WinAzureHelper::createBlob('images', $container_name.'/'.$folder_other.'/'.$file['name'], $file['tmp_name']);
 			}
 		}
 	}
@@ -257,10 +257,10 @@ class MediaControllerFile extends JController
 			$container_name = $folder_names[0];
 			if(count($folder_names) == 1)
 			{
-				WinAzureHelper::deleteBlob($container_name, $path);
+				WinAzureHelper::deleteBlob('images', $container_name.'/'.$path);
 			}else{
 				$folder_other = str_replace($container_name.'/', '', $folder);
-				WinAzureHelper::deleteBlob($container_name, $folder_other.'/'.$path);
+				WinAzureHelper::deleteBlob('images', $container_name.'/'.$folder_other.'/'.$path);
 			}
 		}
 	}

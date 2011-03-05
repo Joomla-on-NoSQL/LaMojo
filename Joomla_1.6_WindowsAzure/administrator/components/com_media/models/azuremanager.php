@@ -163,8 +163,25 @@ class MediaModelAzureManager extends JModel
 			JError::raiseWarning(21, JText::sprintf('JLIB_FILESYSTEM_ERROR_PATH_IS_NOT_A_FOLDER_FOLDER', $path));
 			return false;
 		}
-		$containers = WinAzureHelper::listContainers();
-		foreach($containers as $container)
+	$files = WinAzureHelper::listBlobs('images');
+	
+				foreach($files as $file)
+				{
+					$file_split = explode('/', $file->name);
+					$folder_name = '';
+					if(!strstr($file_split[0], '.') && $file_split[0] != '')	
+						$folders[] = $file_split[0];
+					foreach($file_split as $split)
+					{
+						if(!strstr($split, '.') && $split != '')
+						{
+							$folder_name .= $split.'/';
+						}
+					}
+					if(strstr($folder_name, '/'))
+						$folders[] = rtrim($folder_name, '/');
+				}
+		/*foreach($containers as $container)
 		{
 			if($container->name != 'images' && $container->name != 'config')
 				$folders[] = $container->name;
@@ -189,7 +206,7 @@ class MediaModelAzureManager extends JModel
 						$folders[] = $folder_name;
 				}
 			}
-		}
+		}*/
 		sort($folders);
 		return array_unique($folders);
 	}
@@ -200,6 +217,7 @@ class MediaModelAzureManager extends JModel
 		
 		// Get the list of folders
 		$folders = JFolder::folders($base, '.', true, true);
+		//
 		//echo '<pre>';
 		$root_folders = $this->getRootFolders($folders, $base);
 				
@@ -215,13 +233,13 @@ class MediaModelAzureManager extends JModel
 		//Check any files in the base folder
 		$base_files = JFolder::files($base);
 		if(!empty($base_files))
-			WinAzureHelper::createFolder(substr($base, strrpos($base, '/') + 1));
+			WinAzureHelper::createFolder(substr($base, strrpos($base, '/') + 1)); // images folder
 		$def_file_list[$base] = $base_files;
 		
-		$this->createBaseFolderFiles($def_file_list);
+		$this->createBaseFolderFiles($def_file_list); //image files under image folder
 		
 		//create the nested folders and their files
-		$this->createFolders($root_folders);
+		//$this->createFolders($root_folders);
 		$this->createFolderFiles($file_list, $root_folders, $base);
 	}
 	
@@ -253,32 +271,15 @@ class MediaModelAzureManager extends JModel
 		{
 			//$folder_name = substr($path, strrpos($path, '/') + 1);
 			$folder_name = str_replace($base.'/', '', $path);
-			if(in_array($folder_name,  $root_folders))
-			{
+			//if(in_array($folder_name,  $root_folders))
+			//{
 				foreach($files as $file)
 				{
 					if (is_file($path.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
-						WinAzureHelper::createBlob($folder_name, $file, $path.'/'.$file); 
+						WinAzureHelper::createBlob('images', $folder_name.'/'.$file, $path.'/'.$file); 
 					}
 				}
-			}else{
-				foreach($root_folders as $root)
-				{
-					if(strstr($path, $base.'/'.$root))
-					{
-						$folder_name = str_replace($base.'/'.$root.'/', '', $path);
-						if($folder_name != '')
-						{
-							foreach($files as $file)
-							{
-								if (is_file($path.'/'.$file) && substr($file, 0, 1) != '.' && strtolower($file) !== 'index.html') {
-									WinAzureHelper::createBlob($root, $folder_name.'/'.$file, $path.'/'.$file); 
-								}
-							}
-						}
-					}
-				}
-			}
+			
 		}
 	}
 	

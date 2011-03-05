@@ -99,19 +99,24 @@ class MediaModelAzureList extends JModel
 		// Get the list of files and folders from the given folder
 		//$fileList	= JFolder::files($basePath);
 		//$folderList = JFolder::folders($basePath);
+		
 		if (strlen($current) > 0) {
-			if(strstr($current, '/'))
-			{
+			$current = 'images/'.$current;
+			//if(strstr($current, '/'))
+			//{
 				$fileList = $this->getNestedFileList($current);
 				//$fileList = array();
 				$folderList = $this->getNestedFolderList($current);
-			}else{
+			/*}else{
 				$fileList = $this->getFileList($current);
 				$folderList = $this->getFolderListFiles($current);
-			}
+			}*/
 		}else{
-			$folderList = $this->getFolderList();
 			$fileList = $this->getFileList('images');
+				//$fileList = array();
+			$folderList = $this->getFolderListFiles('images');
+			//$folderList = $this->getFolderList();
+			//$fileList = $this->getFileList('images');
 		}
 		
 		// Iterate over the files if they exist
