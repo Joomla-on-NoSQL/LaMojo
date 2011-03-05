@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.5" type="plugin" group="system" method="upgrade">
+	<name>System - Windows Azure</name>
+	<author>JoomlArt.com</author>
+	<creationDate>30 Sep 2010</creationDate>
+	<authorEmail>webmaster@joomlart.com</authorEmail>
+	<license>GNU/GPL V2 for PHP files. Read Terms of Service for details</license>
+	<copyright>Copyright 2005 - 2010 JoomlArt.com. All rights reserved.</copyright>
+	<authorUrl>www.joomlart.com</authorUrl>
+	<version>2.0.0</version>
+	<description>The plugin JA Amazon S3 is used to enable your site to using resource from Amazon Cloud Servers</description>
+	<files>
+		<filename plugin="plg_azure">plg_azure.php</filename>
+		<folder>plg_azure/</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_system_plg_jaamazons3.ini</language>
+	</languages>
+	<params addpath="/plugins/system/plg_azure/elements">
+		<param name="protocol" type="radio" default="http" label="Protocol" description="Select a protocol for distribute urls">
+			<option value="http">HTTP</option>
+			<option value="https">HTTPS</option>
+		</param>
+		<param name="apply_admin" type="radio" default="0" label="Apply to Admin" description="Apply to Admin System">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</param>
+	</params>
+</install>
