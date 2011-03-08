@@ -127,13 +127,12 @@ class ContactControllerContact extends JControllerForm
 	{
 			$app		= JFactory::getApplication();
 			$params 	= JComponentHelper::getParams('com_contact');
-			
-			
+
 			$mailfrom	= $app->getCfg('mailfrom');
 			$fromname	= $app->getCfg('fromname');
 			$sitename	= $app->getCfg('sitename');
-		
-			$default	= JText::sprintf('COM_CONTACT_ENQUIRY', $sitename);
+			$copytext 	= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $sitename);
+
 			$name		= $data['contact_name'];
 			$email		= $data['contact_email'];
 			$subject	= $data['contact_subject'];
@@ -156,7 +155,7 @@ class ContactControllerContact extends JControllerForm
 
 			// check whether email copy function activated
 			if ($emailcopy && $emailcopycheck) {
-				$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $default);
+				$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $sitename);
 				$copytext		.= "\r\n\r\n".$body;
 				$copysubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
 
