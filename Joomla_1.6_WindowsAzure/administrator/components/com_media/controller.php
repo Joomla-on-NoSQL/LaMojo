@@ -87,6 +87,15 @@ class MediaController extends JController
 		}
 		if($mName == 'azuremanager')
 			$model->syncLocaltoAzure();
+			
+		//Enable Azure plugin if windows azure
+		if(JFactory::checkAzureExists()) {
+			$db = JFactory::getDBO();
+			$db->setQuery("update #__extensions set enabled=1 where extension_id=436");
+			if (!$db->query()) {
+				JError::raiseWarning(500,'Could not update the azure plugin- enable manually from "Plugin Manager"');
+			}
+		}
 		
 		// Set the layout
 		$view->setLayout($vLayout);
