@@ -25,6 +25,7 @@ class ContactViewContact extends JView
 	protected $state;
 	protected $form;
 	protected $item;
+	protected $return_page;
 
 	function display($tpl = null)
 	{
