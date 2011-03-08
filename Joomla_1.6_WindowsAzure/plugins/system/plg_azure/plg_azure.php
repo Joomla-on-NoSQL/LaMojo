@@ -18,7 +18,7 @@ require_once JPATH_ADMINISTRATOR.DS.'components\com_media\helpers\winazure.php';
 
 class plgSystemPlg_azure extends JPlugin
 {
-	var $_component = "azurePlugin";
+	var $_component = "AzurePlugin";
 
 
 	function plgSystemPlg_azure(&$subject, $config)
