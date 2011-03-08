@@ -46,7 +46,7 @@ function ContentBuildRoute(&$query)
 	}
 
 	// are we dealing with an article or category that is attached to a menu item?
-	if ($menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
+	if (($menuItem instanceof stdClass) && $menuItem->query['view'] == $query['view'] && isset($query['id']) && $menuItem->query['id'] == intval($query['id'])) {
 		unset($query['view']);
 
 		if (isset($query['catid'])) {
@@ -115,7 +115,7 @@ function ContentBuildRoute(&$query)
 		$array = array_reverse($array);
 
 		if (!$advanced && count($array)) {
-			$array[0] = $catid.':'.$array[0];
+			$array[0] = (int)$catid.':'.$array[0];
 		}
 
 		$segments = array_merge($segments, $array);

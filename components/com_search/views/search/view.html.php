@@ -24,7 +24,7 @@ class SearchViewSearch extends JView
 {
 	function display($tpl = null)
 	{
-		require_once JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'search.php';
+		require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/search.php';
 
 		// Initialise some variables
 		$app	= JFactory::getApplication();
@@ -153,6 +153,12 @@ class SearchViewSearch extends JView
 				$result->count		= $i + 1;
 			}
 		}
+		
+		// Check for layout override
+		$active = JFactory::getApplication()->getMenu()->getActive();
+		if (isset($active->query['layout'])) {
+			$this->setLayout($active->query['layout']);
+		}	
 
 		//Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));

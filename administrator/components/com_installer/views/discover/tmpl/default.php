@@ -11,8 +11,10 @@
 // no direct access
 defined('_JEXEC') or die;
 
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+JHTML::_('script','system/multiselect.js',false,true);
+
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_installer&view=discover');?>" method="post" name="adminForm" id="adminForm">
 	<?php if ($this->showMessage) : ?>

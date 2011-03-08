@@ -27,6 +27,72 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+08-Mar-2011 Jean-Marie Simonet
+ $ Updating xx-XX.ini
+ # [#25177] hr.gif and sr.gif are transparent. Thanks Erik.
+ $ Correcting typo in ini file
+ $ [#25136] "Plugin" instead of "Module" in en-GB.lib_joomla.ini
+ $ Changing milkyway to beez_20 in ini file. Thanks Sovann Heng.
+ #$ Typo in ini key. Thanks Sovann Heng
+
+-------------------- 1.6.1 Stable Release [07-Mar-2011] ------------------
+
+04-Mar-2011 Jean-Marie Simonet
+ $ Updating ja-JP
+
+03-Mar-2011 Mark Dexter
+ # [#25006] Alternative Layout Not Implemented in com_search, com_users
+ # [#24821] Add support for defer/async to JDocument
+ # [#25035] extra closing div in \components\com_weblinks\views\form\tmpl\edit.php
+ # [#25042] Extra markup in some component views
+ # [#24865] sef plugin results in a blank page for large content
+ # [#25110] *Duplicated module is published
+ # [#25091] Sample Data Typo
+ # [#25034] *modifying Beez5 to compatibility with RTL 
+
+01-Mar-2011 Ian MacLennan
+ # [#25038] Codemirror update causes improper characters in template html/css editing
+
+24-Feb-2011 Mark Dexter
+ # Revert 24710 Contact language is ignored in frontend
+
+21-Feb-2011 Mark Dexter
+ # [#24886] No save icon in article editor for new article with category level permission
+ # [#24909] *Category Save as Copy does not save with different title/alias
+ # [#22624] bug: old extension version reported from cache after automatic extension update**
+ # [#24433] *modal_contacts field type problems
+ # [#24963] Missing "parent" css class if menu is collapsed
+ # [#24589] Systematic elimination of DS as directory separator - Round 2
+ # [#24838] mod_articles_category generates a PHP warning when using language filter
+ # [#24489] Joomla displaying error after uploading an image using Media Manager and the path does not stay where it is after the upload
+ # [#24799] Double category strings in URLs
+ # [#24524] Redirect is Not Working with SEF
+ # [#24908] A banner with limited impressions will never show
+ # [#24903] Cannot Translate Option Values using JForm SQL Field Type**
+ # [#24857] Users with create permission in a category cannot see the image button below the editor
+ # [#24993] Cannot allow a group to create in a single sub category
+ # [#24307] Login form does not use https
+ # [#24528] Fatal error in mod_articles_category when showing readmore
+ # [#24880] Can't display teaser text in full article view.
+ # [#24914] Wrong class in kategory list mode
+ # [#24548] Abort during install of component and module fail due to rollback methods being protected instead of public.
+ # [#24389] Plugins installed via discover are enabled
+ # [#22832] PNG images are not optimized
+ # [#24519] Don't use the $() function in JavaScript.
+ # [#25022] Upgrade Geshi to 1.0.8.10
+ # [#24675] typo in databasequery.php - udpate
+ # [#25011] Beez_20 and Beez 5 xml patch
+ # [#23491] Upgrade Codemirror to Version 0.94
+ # [#24740] Make some scripts compatible with Mootools 1.3
+ 
+21-Feb-2011 Jean-Marie Simonet
+ # [#24999] The strings used for the display column in the module assignment slider are confusing. Thanks Elin and Andrea
+ # [#24983] modifying Beez 20 to compatibility with RTL Thanks Mahmood and Ofer.
+ # [#24996] There is no featured button in the tool bar, so no way to make multiple articles featured. Thanks Elin.
+ # [#24929] Multiselect not implemented in all views. Thanks Ian and Andrea.
+ # [#25008] JNO/JYES instead JSHOW/JHIDE in mod_weblinks.xml Thanks Serge and Bill.
+ $ Adding mn-MN to installation langs
+ 
 20-Feb-2011 Jean-Marie Simonet
  # [#24916] Missing class blog_children. Thanks Markus and Bill.
  # [#24915] Missing class default_children. Thanks Markus and Bill.
