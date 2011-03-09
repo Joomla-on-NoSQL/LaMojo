@@ -27,6 +27,37 @@ $ -> Language fix or change
 - -> Removed
 ! -> Note
 
+09-Mar-2011 Jean-Marie Simonet
+ $ [#25231] Typo in en-GB.lib_joomla.ini. Thanks Serge.
+ # [#25213] Several places calling getXMLparser instead of getXMLParser. Thanks Bill and Anon 
+ $ [#25145] Incorrect SMTP security option. Thanks Ian and Jozcef.
+ 
+08-Mar-2011 Jean-Marie Simonet
+ $ Updating xx-XX.ini
+ # [#25177] hr.gif and sr.gif are transparent. Thanks Erik.
+ $ Correcting typo in ini file
+ $ [#25136] "Plugin" instead of "Module" in en-GB.lib_joomla.ini
+ $ Changing milkyway to beez_20 in ini file. Thanks Sovann Heng.
+ #$ Typo in ini key. Thanks Sovann Heng
+
+-------------------- 1.6.1 Stable Release [07-Mar-2011] ------------------
+
+04-Mar-2011 Jean-Marie Simonet
+ $ Updating ja-JP
+
+03-Mar-2011 Mark Dexter
+ # [#25006] Alternative Layout Not Implemented in com_search, com_users
+ # [#24821] Add support for defer/async to JDocument
+ # [#25035] extra closing div in \components\com_weblinks\views\form\tmpl\edit.php
+ # [#25042] Extra markup in some component views
+ # [#24865] sef plugin results in a blank page for large content
+ # [#25110] *Duplicated module is published
+ # [#25091] Sample Data Typo
+ # [#25034] *modifying Beez5 to compatibility with RTL 
+
+01-Mar-2011 Ian MacLennan
+ # [#25038] Codemirror update causes improper characters in template html/css editing
+
 24-Feb-2011 Mark Dexter
  # Revert 24710 Contact language is ignored in frontend
 
