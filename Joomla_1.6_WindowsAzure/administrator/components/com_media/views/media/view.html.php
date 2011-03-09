@@ -80,11 +80,22 @@ class MediaViewMedia extends JView
 			);
 		}
 
-		if (DS == '\\')
-		{
-			$base = str_replace(DS,"\\\\",COM_MEDIA_BASE);
+		if(JFactory::checkAzureExists()) {
+			if (!WinAzureHelper::initialize())
+			{
+				JError::raiseWarning(100, JText::sprintf('Error while connecting to azure'));
+				return false;
+			}
+			
+			$base =WinAzureHelper::getBaseUrl().'/images';
+			
 		} else {
-			$base = COM_MEDIA_BASE;
+			if (DS == '\\')
+			{
+				$base = str_replace(DS,"\\\\",COM_MEDIA_BASE);
+			} else {
+				$base = COM_MEDIA_BASE;
+			}
 		}
 
 		$js = "
