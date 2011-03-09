@@ -892,6 +892,14 @@ a.jgrid:hover {
 	background-image: url(../images/admin/publish_y.png);
 }
 
+.jgrid span.featured {
+	background-image: url(../images/admin/featured.png);
+}
+
+.jgrid span.unfeatured {
+	background-image: url(../images/admin/disabled.png);
+}
+
 /**
  * Menu Icons
  * These icons are used on the Administrator menu

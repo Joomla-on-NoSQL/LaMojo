@@ -1987,6 +1987,8 @@ a.jgrid:hover {	text-decoration: none;}
 .jgrid span.published				{ background-image: url(../images/admin/publish_g.png); }
 .jgrid span.expired					{ background-image: url(../images/admin/publish_r.png); }
 .jgrid span.pending					{ background-image: url(../images/admin/publish_y.png); }
+.jgrid span.unfeatured				{ background-image: url(../images/admin/disabled.png); }
+.jgrid span.featured				{ background-image: url(../images/admin/featured.png); }
 
 /* -- ICON STYLES ----------------------------- */
 .icon-16-archive					{	background-image: url(../images/menu/icon-16-archive.png);	}
