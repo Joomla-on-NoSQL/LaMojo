@@ -30,9 +30,10 @@ JHtml::_('behavior.formvalidation');
 				<dd><?php echo $this->form->getInput('contact_subject'); ?></dd>
 				<dt><?php echo $this->form->getLabel('contact_message'); ?></dt>
 				<dd><?php echo $this->form->getInput('contact_message'); ?></dd>
-				<dt><?php echo $this->form->getLabel('contact_email_copy'); ?></dt>
-				<dd><?php echo $this->form->getInput('contact_email_copy'); ?></dd>
-
+			<?php 	if ($this->params->get(show_email_copy)){ ?>
+					<dt><?php echo $this->form->getLabel('contact_email_copy'); ?></dt>
+					<dd><?php echo $this->form->getInput('contact_email_copy'); ?></dd>
+			<?php 	} ?>
 			</dl>
 		<div>
 			<button class="button validate" type="submit"><?php echo JText::_('COM_CONTACT_CONTACT_SEND'); ?></button>

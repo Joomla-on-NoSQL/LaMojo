@@ -137,7 +137,6 @@ class ContactControllerContact extends JControllerForm
 			$email		= $data['contact_email'];
 			$subject	= $data['contact_subject'];
 			$body		= $data['contact_message'];
-			$emailcopy	= JArrayHelper::getValue($data, 'contact_email_copy', 0, 'int');
 			
 			// Prepare email body
 			$prefix = JText::sprintf('COM_CONTACT_ENQUIRY_TEXT', JURI::base());
@@ -146,22 +145,21 @@ class ContactControllerContact extends JControllerForm
 			$mail = JFactory::getMailer();
 			$mail->addRecipient($contact->email_to);
 			$mail->setSender(array($email, $name));
-			$mail->setSubject($fromname.': '.$subject);
+			$mail->setSubject($sitename.': '.$subject);
 			$mail->setBody($body);
 			$sent = $mail->Send();
 
-			//If we are supposed to copy the admin, do so.
-			$emailcopycheck = $params->get('show_email_copy', 0);
+			//If we are supposed to copy the sender, do so.
 
 			// check whether email copy function activated
-			if ($emailcopy && $emailcopycheck) {
+			if ( array_key_exists('contact_email_copy',$data)  ) {
 				$copytext		= JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $sitename);
 				$copytext		.= "\r\n\r\n".$body;
 				$copysubject	= JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
 
 				$mail = JFactory::getMailer();
 				$mail->addRecipient($email);
-				$mail->setSender(array($mailfrom, $fromname));
+				$mail->setSender(array($email, $name));
 				$mail->setSubject($copysubject);
 				$mail->setBody($copytext);
 				$sent = $mail->Send();

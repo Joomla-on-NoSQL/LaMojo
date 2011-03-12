@@ -46,7 +46,8 @@
 			id="contact-email-copy"
 			description="COM_CONTACT_CONTACT_EMAIL_A_COPY_DESC"
 			label="COM_CONTACT_CONTACT_EMAIL_A_COPY_LABEL"
-			default="1"
-		/>		
+			default="0"
+		/>
+		
 	</fieldset>
 </form>
