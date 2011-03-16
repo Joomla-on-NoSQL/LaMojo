@@ -38,7 +38,6 @@ class AdminLoginTest extends JoomlaTestCase
 	 */
 	public function adminLoginSuccessTest()
 	{
-		new UserManagerPage;
 		try
 		{
 			$landing = new AdminLoginPage();

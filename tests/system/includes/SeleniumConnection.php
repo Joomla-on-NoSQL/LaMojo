@@ -8,9 +8,7 @@ class SeleniumConnection {
   private static $m_pInstance; 
 
   private function __construct() {
-	global $site, $selenium;
-	var_dump($site); print_r($selenium);
-	$this->selenium = new Testing_Selenium($selenium['browser'], $site['baseurl'], $selenium['host'], $selenium['port']);
+	$this->selenium = new Testing_Selenium(SeleniumSettings::$browser, SiteSettings::$url, SeleniumSettings::$host, SeleniumSettings::$port);
   }
 
   public static function getInstance() 

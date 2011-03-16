@@ -47,11 +47,18 @@ class AdminLoginPage extends BasePage
 	function open_default_base_url()
 	{
 		global $site;
-		$this->selenium->open($site['baseurl'] . '/administrator');
+		$this->selenium->open(SiteSettings::$url . 'administrator');
 	}
 
-	function login_success()
+	function login_success($username = null, $password = null)
 	{
+		if (is_null($username)) {
+			$username = SiteSettings::$username;
+			$password = SiteSettings::$password;
+		}
+		$this->username = $username;
+		$this->password = $password;
+		
 		$this->selenium->click($this->locators['submit_button']);
 		$this->selenium->waitForPageToLoad(parent::$string_timeout);
 		$controlPanelPage = new ControlPanelPage();
